@@ -8,7 +8,7 @@ var challengeSchema = new mongoose.Schema({
 	location_name: {type: String, required: true},
 	location_zipcode: {type: Number, required: true},
 	points: {type: Number, required: true},
-	category_tags: String[]
+	category_tags: [String]
 });
 
 var Challenge = mongoose.model('Challenge', challengeSchema);

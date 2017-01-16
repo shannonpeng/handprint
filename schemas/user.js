@@ -7,10 +7,10 @@ var userSchema = new mongoose.Schema({
 	location_name: String,
 	location_zipcode: Number,
 	profile_pic_url: {type: String, required: true},
-	friends: String[],
+	friends: [String],
 	challenges: {
-		ongoing: String[],
-		past: String[]
+		ongoing: [String],
+		past: [String]
 	},
 	points: {type: Number, required: true},
 	level: {type: Number, required: true}

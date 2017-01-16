@@ -2,12 +2,16 @@
   "name": "handprint",
   "private": true,
   "scripts": {
-    "start": "meteor run"
+    "start": "node ./bin/www"
   },
-  "dependencies": {
-    "babel-runtime": "^6.18.0",
-    "express": "^4.14.0",
-    "meteor-node-stubs": "~0.2.3",
-    "mongoose": "^4.7.7"
+"dependencies": {
+    "body-parser": "~1.13.2",
+    "cookie-parser": "~1.3.5",
+    "debug": "~2.2.0",
+    "express": "~4.13.1",
+    "express-handlebars": "^3.0.0",
+    "mongoose": "^4.7.6",
+    "morgan": "~1.6.1",
+    "serve-favicon": "~2.3.0"
   }
 }
