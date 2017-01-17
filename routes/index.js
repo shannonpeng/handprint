@@ -83,6 +83,8 @@ RETURNS:
 */
 function addOrganization(org) {
 
+	org = JSON.parse(org);
+
 	var Organization = require('../schemas/organization.js');
 	
 	Organization.find({ email: org.email }, function(err, orgs) {
