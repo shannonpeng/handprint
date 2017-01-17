@@ -6,7 +6,7 @@ var userSchema = new mongoose.Schema({
 	email: {type: String, required: true},
 	bio: String,
 	location_name: String,
-	location_zipcode: Number,
+	location_zipcode: String,
 	profile_pic_url: {type: String, required: true},
 	friends: [String],
 	challenges: {

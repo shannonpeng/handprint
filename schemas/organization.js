@@ -4,7 +4,7 @@ var orgSchema = new mongoose.Schema({
 	name: {type: String, required: true},
 	email: {type: String, required: true},
 	location_name: String,
-	location_zipcode: Number,
+	location_zipcode: String,
 	profile_pic_url: {type: String, required: true},
 	description: String,
 	challenges: [String]

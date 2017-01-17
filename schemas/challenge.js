@@ -6,7 +6,7 @@ var challengeSchema = new mongoose.Schema({
 	end_date: {type: Number, required: true},
 	description: {type: String, required: true},
 	location_name: {type: String, required: true},
-	location_zipcode: {type: Number, required: true},
+	location_zipcode: {type: String, required: true},
 	points: {type: Number, required: true},
 	category_tags: [String]
 });
