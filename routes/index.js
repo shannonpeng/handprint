@@ -107,7 +107,7 @@ function addOrganization(org) {
 				location_zipcode: org.location_zipcode,
 				profile_pic_url: org.profile_pic_url,
 				description: org.description,
-				challenges: challengeIDs;
+				challenges: challengeIDs
 			});
 
 			newOrg.save(function(err, org) {

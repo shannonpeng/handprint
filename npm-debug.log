@@ -3,7 +3,7 @@
 1 verbose cli   '/usr/local/bin/npm',
 1 verbose cli   'start' ]
 2 info using npm@4.0.5
-3 info using node@v7.3.0
+3 info using node@v7.4.0
 4 verbose run-script [ 'prestart', 'start', 'poststart' ]
 5 info lifecycle handprint@~prestart: handprint@
 6 silly lifecycle handprint@~prestart: no script for prestart, continuing
@@ -28,7 +28,7 @@
 16 verbose cwd /Users/shannon/Documents/Github/handprint
 17 error Darwin 16.3.0
 18 error argv "/usr/local/Cellar/node/7.3.0/bin/node" "/usr/local/bin/npm" "start"
-19 error node v7.3.0
+19 error node v7.4.0
 20 error npm  v4.0.5
 21 error code ELIFECYCLE
 22 error handprint@ start: `node ./bin/www`
