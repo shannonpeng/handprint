@@ -6,6 +6,7 @@ $(document).ready(function() {
 		url: '/register',
 		type: 'POST',
 		data: {
+			mode: 'user',
 			username: 'tim',
 			name: 'Tim Beaver',
 			email: 'tim@mit.edu',

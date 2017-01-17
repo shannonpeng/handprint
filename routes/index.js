@@ -141,7 +141,7 @@ router.get('/register', function(req, res, next) {
 
 
 /* POST to register. */
-router.get('/register', function(req, res, next) {
+router.post('/register', function(req, res, next) {
 
 	/* User Registration */
 	if (req.body.mode == "user") {
