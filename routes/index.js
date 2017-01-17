@@ -157,7 +157,7 @@ router.post('/register', function(req, res, next) {
 
 	else {
 		res.send("Invalid registration mode");
-	}
+	}	
 
 });
 
