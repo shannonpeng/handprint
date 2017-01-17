@@ -7,8 +7,6 @@ var orgSchema = new mongoose.Schema({
 	location_zipcode: Number,
 	profile_pic_url: {type: String, required: true},
 	description: String,
-	profile_pic_url: {type: String, required: true},
-	friends: [String],
 	challenges: [String]
 });
 
