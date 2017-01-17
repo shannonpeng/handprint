@@ -96,7 +96,9 @@ function addOrganization(org) {
 			var challenges = org.challenges;
 			var challengeIDs = [];
 
-			for (var i = 0; i < challenges.length ; i++) {
+			console.log(org);
+
+			for (var i = 0; i < challenges.length; i++) {
 				challengeIDs.append(addChallenge(challenges[i]));
 			}
 
