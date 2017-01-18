@@ -177,10 +177,20 @@ Parts of the page:
 /*GET organization dashboard*/
 router.get('/dashboard', function(req, res, next) {
     var Organization = require('../schemas/organization');
+    var Challenge = require('../schemas/challenge');
     Organization.find({}, function(err, organizations) {
         if (organizations.length > 0) {
-            var challenges = organizations[0].challenges;
-            res.send(challenges);
+            var challengeIds = organizations[0].challenges;
+            var challengeNames = [];
+                Challenge.find({}, function(err, challenges) {
+                    console.log(challenges);
+                    for (var i = 0; i < challenges.length; i++) {
+                        if (challengeIds.indexOf(challenges[i]._id) > -1) {
+                            challengeNames.push(challenges[i].title);
+                        }
+                    }
+                    res.send(challengeNames);
+                });
         }
         else {
             res.render('Your organization has no challenges');
