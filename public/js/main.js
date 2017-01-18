@@ -38,7 +38,7 @@ $(document).ready(function() {
 			location_zipcode: '02115',
 			description: 'Children\'s hospital in Boston, MA.',
 			profile_pic_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/89/Boston_Children\'s_Hospital_logo.svg/1280px-Boston_Children\'s_Hospital_logo.svg.png',
-			challenges: [new Object({
+			challenges: [{
 				title: 'Paint a room',
 				start_date: 1484283600000,
 				end_date: 1484974800000,
@@ -47,7 +47,7 @@ $(document).ready(function() {
 				location_zipcode: '02115',
 				points: 140,
 				category_tags: ['art', 'kids']
-			}), new Object({
+			}, {
 				title: 'Read a book to kids',
 				start_date: 1484197200000,
 				end_date: 1485579600000,
@@ -56,7 +56,7 @@ $(document).ready(function() {
 				location_zipcode: '02115',
 				points: 80,
 				category_tags: ['books', 'reading', 'kids']
-			})]
+			}]
 		}),
 		success: function(data) {
 			console.log(data);

@@ -8,10 +8,11 @@ var Organization = require('../schemas/organization');
 /* Add user
 INPUT:
 - user: object with user properties
+- callback: callback function
 RETURNS:
 - String: Mongo ObjectID of newly created user
 */
-function addUser(user) {
+function addUser(user, callback) {
 	var User = require('../schemas/user.js');
 	User.find({ username: user.username }, function(err, users) {
 
@@ -42,7 +43,7 @@ function addUser(user) {
 			});
 
 			newUser.save(function(err, user) {
-				return user.id;
+				callback(user._id);
 			});
 		}
 	});
@@ -51,10 +52,11 @@ function addUser(user) {
 /* Add challenge
 INPUT:
 - challenge: object with challenge properties
+- callback: callback function
 RETURNS:
 - String: Mongo ObjectID of newly created challenge
 */
-function addChallenge(challenge) {
+function addChallenge(challenge, callback) {
 
 	var Challenge = require('../schemas/challenge.js');
 
@@ -70,7 +72,37 @@ function addChallenge(challenge) {
 	});
 
 	c.save(function(err, c) {
-		return c.id;
+		callback(c._id);
+	});
+
+}
+
+/* Add challenges to organization
+INPUT:
+- orgID: objectID of organization
+- challenges: array of objects, each with challenge properties
+- callback: callback function
+RETURNS:
+- String: Array of Mongo ObjectIDs of newly added challenges
+*/
+function addChallengesToOrg(orgID, challenges, callback) {
+
+	var Organization = require('../schemas/organization.js');
+
+	Organization.findById(orgID, function (err, org) {
+
+	  	var ids = [];
+
+		for (var i = 0; i < challenges.length; i++) {
+			addChallenge(challenges[i], function(id) {
+				org.challenges.push(id);
+				org.save();
+				ids.push(id);
+			});
+		}
+
+		callback(ids);
+
 	});
 
 }
@@ -78,10 +110,11 @@ function addChallenge(challenge) {
 /* Add organization
 INPUT:
 - org: object with organization properties
+- callback: callback function
 RETURNS:
 - String: Mongo ObjectID of newly created organization
 */
-function addOrganization(org) {
+function addOrganization(org, callback) {
 
 	var Organization = require('../schemas/organization.js');
 	
@@ -93,13 +126,6 @@ function addOrganization(org) {
 
 		if (orgs.length == 0) {
 
-			var challenges = org.challenges;
-			var challengeIDs = [];
-
-			for (var i = 0; i < challenges.length; i++) {
-				challengeIDs.push(addChallenge(challenges[i]));
-			}
-
 			var newOrg = new Organization({
 				name: org.name,
 				email: org.email,
@@ -107,11 +133,12 @@ function addOrganization(org) {
 				location_zipcode: org.location_zipcode,
 				profile_pic_url: org.profile_pic_url,
 				description: org.description,
-				challenges: challengeIDs
+				challenges: []
 			});
 
-			newOrg.save(function(err, org) {
-				return org.id;
+			newOrg.save(function(err, o) {
+				addChallengesToOrg(o._id, org.challenges, function (ids){} );
+				callback(o._id);
 			});
 		}
 	});
@@ -145,14 +172,16 @@ router.post('/register', function(req, res, next) {
 
 	/* User Registration */
 	if (req.body.mode == "user") {
-		addUser(req.body);
-		res.redirect('/');
+		addUser(req.body, function(id) {
+			res.redirect('/');
+		});
 	}
 
 	/* Organization Registration */
 	else if (req.body.mode == "organization") {
-		addOrganization(req.body);
-		res.redirect('/');
+		addOrganization(req.body, function(id) {
+			res.redirect('/');
+		});
 	}
 
 	else {
