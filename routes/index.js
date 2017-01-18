@@ -1,8 +1,11 @@
 var express = require('express');
 var router = express.Router();
 
+//get the User model
 var User = require('../schemas/user');
+//get the Challenge model
 var Challenge = require('../schemas/challenge');
+//get the Organization model
 var Organization = require('../schemas/organization');
 
 /* Add user
@@ -102,9 +105,7 @@ function addChallengesToOrg(orgID, challenges, callback) {
 		}
 
 		callback(ids);
-
 	});
-
 }
 
 /* Add organization
@@ -139,16 +140,52 @@ function addOrganization(org, callback) {
 			newOrg.save(function(err, o) {
 				addChallengesToOrg(o._id, org.challenges, function (ids){} );
 				callback(o._id);
-			});
-		}
-	});
-
+		    });
+        }
+    });
 }
-
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index');
+});
+//Organization Dashboard Code
+/*
+Parts of the page:
+- Profile
+- List of Challenges
+*/
+/*Pseudocode/Features of Challenge List
+1. Grab all challenges under organization name
+2. Sort challenges into current and complete
+3. Button/bar for "adding a new challenge"
+*/
+/*var orgSchema = new mongoose.Schema({
+    name: {type: String, required: true},
+    email: {type: String, required: true},
+    location_name: String,
+    location_zipcode: Number,
+    profile_pic_url: {type: String, required: true},
+    description: String,
+    profile_pic_url: {type: String, required: true},
+    friends: [String],
+    challenges: [String]
+});
+*/
+
+
+/*GET organization dashboard*/
+router.get('/dashboard', function(req, res, next) {
+    var Organization = require('../schemas/organization');
+    Organization.find({}, function(err, organizations) {
+        if (organizations.length > 0) {
+            var challenges = organizations[0].challenges;
+            res.send(challenges);
+        }
+        else {
+            res.render('Your organization has no challenges');
+        }
+    });
 });
 
 /* GET dashboard. */
@@ -169,6 +206,7 @@ router.get('/register', function(req, res, next) {
 
 /* POST to register. */
 router.post('/register', function(req, res, next) {
+    console.log(req.body["mode"]);
 
 	/* User Registration */
 	if (req.body.mode == "user") {
