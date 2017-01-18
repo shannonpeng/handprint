@@ -83,8 +83,6 @@ RETURNS:
 */
 function addOrganization(org) {
 
-	org = JSON.parse(org);
-
 	var Organization = require('../schemas/organization.js');
 	
 	Organization.find({ email: org.email }, function(err, orgs) {
@@ -98,13 +96,11 @@ function addOrganization(org) {
 			var challenges = org.challenges;
 			var challengeIDs = [];
 
-			console.log(org);
-
 			for (var i = 0; i < challenges.length; i++) {
-				challengeIDs.append(addChallenge(challenges[i]));
+				challengeIDs.push(addChallenge(challenges[i]));
 			}
 
-			var newOrg = new Org({
+			var newOrg = new Organization({
 				name: org.name,
 				email: org.email,
 				location_name: org.location_name,

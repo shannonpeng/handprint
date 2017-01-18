@@ -5,16 +5,18 @@ $(document).ready(function() {
 	$.ajax({
 		url: '/register',
 		type: 'POST',
-		data: {
-			mode: 'user',
-			username: 'tim',
-			name: 'Tim Beaver',
-			email: 'tim@mit.edu',
-			bio: 'I am Tim Beaver',
-			location_name: 'Cambridge, MA',
-			location_zipcode: '02139',
-			profile_pic_url: 'http://web.mit.edu/graphicidentity/images/examples/tim-the-beaver-2.png',
-		},
+		contentType: 'application/json; charset=utf-8',
+		datatype: 'json',
+		data: JSON.stringify({
+			'mode': 'user',
+			'username': 'tim',
+			'name': 'Tim Beaver',
+			'email': 'tim@mit.edu',
+			'bio': 'I am Tim Beaver',
+			'location_name': 'Cambridge, MA',
+			'location_zipcode': '02139',
+			'profile_pic_url': 'http://web.mit.edu/graphicidentity/images/examples/tim-the-beaver-2.png',
+		}),
 		success: function(data) {
 			console.log(data);
 		},
@@ -26,7 +28,9 @@ $(document).ready(function() {
 	$.ajax({
 		url: '/register',
 		type: 'POST',
-		data: {
+		contentType: 'application/json; charset=utf-8',
+		datatype: 'json',
+		data: JSON.stringify({
 			mode: 'organization',
 			name: 'Boston Children\'s Hospital',
 			email: 'boston@childrenshospital.org',
@@ -34,7 +38,7 @@ $(document).ready(function() {
 			location_zipcode: '02115',
 			description: 'Children\'s hospital in Boston, MA.',
 			profile_pic_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/89/Boston_Children\'s_Hospital_logo.svg/1280px-Boston_Children\'s_Hospital_logo.svg.png',
-			challenges: [{
+			challenges: [new Object({
 				title: 'Paint a room',
 				start_date: 1484283600000,
 				end_date: 1484974800000,
@@ -42,8 +46,8 @@ $(document).ready(function() {
 				location_name: 'Boston Children\'s Hospital',
 				location_zipcode: '02115',
 				points: 140,
-				category_tags: ['art', 'kids'],
-			}, {
+				category_tags: ['art', 'kids']
+			}), new Object({
 				title: 'Read a book to kids',
 				start_date: 1484197200000,
 				end_date: 1485579600000,
@@ -51,9 +55,9 @@ $(document).ready(function() {
 				location_name: 'Boston Children\'s Hospital',
 				location_zipcode: '02115',
 				points: 80,
-				category_tags: ['books', 'reading', 'kids'],
-			}]
-		},
+				category_tags: ['books', 'reading', 'kids']
+			})]
+		}),
 		success: function(data) {
 			console.log(data);
 		},
