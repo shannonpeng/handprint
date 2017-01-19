@@ -171,10 +171,26 @@ Parts of the page:
     friends: [String],
     challenges: [String]
 });
+var challengeSchema = new mongoose.Schema({
+    title: {type: String, required: true},
+    start_date: {type: Number, required: true},
+    end_date: {type: Number, required: true},
+    description: {type: String, required: true},
+    location_name: {type: String, required: true},
+    location_zipcode: {type: String, required: true},
+    points: {type: Number, required: true},
+    category_tags: [String]
+});
 */
 
 
 /*GET organization dashboard*/
+/*
+function checkChallengeDate(challengeDate) {
+    var currentTime = Date.now();
+    if currentTime > challengeDate
+}
+*/
 router.get('/dashboard', function(req, res, next) {
     var Organization = require('../schemas/organization');
     var Challenge = require('../schemas/challenge');
@@ -182,14 +198,30 @@ router.get('/dashboard', function(req, res, next) {
         if (organizations.length > 0) {
             var challengeIds = organizations[0].challenges;
             var challengeNames = [];
+            var ongoingChallenges = [];
+            var pastChallenges = [];
                 Challenge.find({}, function(err, challenges) {
-                    console.log(challenges);
                     for (var i = 0; i < challenges.length; i++) {
+                        // push all challenges
                         if (challengeIds.indexOf(challenges[i]._id) > -1) {
                             challengeNames.push(challenges[i].title);
+                            // check dates of challenges
+                            if (challenges[i].end_date > Date.now()) {
+                                //check for ongoing challenges
+                                console.log('IN ONGOING CHALLENGES IF STATEMENT');
+                                /* I think this is correct, but if not flip with the 
+                                 * else if statement
+                                 */
+                                ongoingChallenges.push(challenges[i].title);
+                            }
+                            else if (challenges[i].end_date < Date.now()) {
+                                //check for past challenges
+                                pastChallenges.push(challenges[i].title);
+                            }
                         }
                     }
-                    res.send(challengeNames);
+                    res.send('ALL CHALLENGES: ' + challengeNames + ' ONGOING CHALLENGES: ' + 
+                        ongoingChallenges + ' PAST CHALLENGES ' + pastChallenges);
                 });
         }
         else {
