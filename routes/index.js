@@ -1,5 +1,9 @@
 var express = require('express');
 var router = express.Router();
+var bodyParser = require('body-parser');
+var session = require('express-session');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 
 //get the User model
 var User = require('../schemas/user');
@@ -7,6 +11,20 @@ var User = require('../schemas/user');
 var Challenge = require('../schemas/challenge');
 //get the Organization model
 var Organization = require('../schemas/organization');
+
+/* Maybe move below passport lines to the top later */
+//Oauth stuff isn't working I need we need to create constructors for functions?
+/*
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({extended:false}));
+router.use(session({ secret: 'my super secret secret', resave: 'false', 
+    saveUninitialized: 'true'}));
+router.use(passport.initialize());
+router.use(passport.session());
+*/
 
 /* Add user
 INPUT:
@@ -30,6 +48,8 @@ function addUser(user, callback) {
 
 			var newUser = new User({
 				username: user.username,
+                //need hashing funciton for passwords
+                password: user.password,
 				name: user.name,
 				email: user.email,
 				bio: user.bio,
@@ -129,6 +149,8 @@ function addOrganization(org, callback) {
 
 			var newOrg = new Organization({
 				name: org.name,
+                // below line was added
+                password: org.password,
 				email: org.email,
 				location_name: org.location_name,
 				location_zipcode: org.location_zipcode,
@@ -145,10 +167,7 @@ function addOrganization(org, callback) {
     });
 }
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index');
-});
+
 //Organization Dashboard Code
 /*
 Parts of the page:
@@ -160,58 +179,24 @@ Parts of the page:
 2. Sort challenges into current and complete
 3. Button/bar for "adding a new challenge"
 */
-/*var orgSchema = new mongoose.Schema({
-    name: {type: String, required: true},
-    email: {type: String, required: true},
-    location_name: String,
-    location_zipcode: Number,
-    profile_pic_url: {type: String, required: true},
-    description: String,
-    profile_pic_url: {type: String, required: true},
-    friends: [String],
-    challenges: [String]
-});
-var challengeSchema = new mongoose.Schema({
-    title: {type: String, required: true},
-    start_date: {type: Number, required: true},
-    end_date: {type: Number, required: true},
-    description: {type: String, required: true},
-    location_name: {type: String, required: true},
-    location_zipcode: {type: String, required: true},
-    points: {type: Number, required: true},
-    category_tags: [String]
-});
-*/
-
 
 /*GET organization dashboard*/
-/*
-function checkChallengeDate(challengeDate) {
-    var currentTime = Date.now();
-    if currentTime > challengeDate
-}
-*/
+
 router.get('/dashboard', function(req, res, next) {
     var Organization = require('../schemas/organization');
     var Challenge = require('../schemas/challenge');
+    var reqFields = [];
     Organization.find({}, function(err, organizations) {
         if (organizations.length > 0) {
             var challengeIds = organizations[0].challenges;
-            var challengeNames = [];
             var ongoingChallenges = [];
             var pastChallenges = [];
                 Challenge.find({}, function(err, challenges) {
                     for (var i = 0; i < challenges.length; i++) {
                         // push all challenges
                         if (challengeIds.indexOf(challenges[i]._id) > -1) {
-                            challengeNames.push(challenges[i].title);
                             // check dates of challenges
                             if (challenges[i].end_date > Date.now()) {
-                                //check for ongoing challenges
-                                console.log('IN ONGOING CHALLENGES IF STATEMENT');
-                                /* I think this is correct, but if not flip with the 
-                                 * else if statement
-                                 */
                                 ongoingChallenges.push(challenges[i].title);
                             }
                             else if (challenges[i].end_date < Date.now()) {
@@ -220,19 +205,20 @@ router.get('/dashboard', function(req, res, next) {
                             }
                         }
                     }
-                    res.send('ALL CHALLENGES: ' + challengeNames + ' ONGOING CHALLENGES: ' + 
-                        ongoingChallenges + ' PAST CHALLENGES ' + pastChallenges);
+                    if (pastChallenges.length < 0) {
+                        pastChallenges = 'There are no past challenges';
+                    }
+                    if (ongoingChallenges.length < 0) {
+                        ongoingChallenges = 'There are no ongoing challenges'; 
+                    }
+                    res.send(' ONGOING CHALLENGES: ' + 
+                        ongoingChallenges + ' PAST CHALLENGES: ' + pastChallenges);
                 });
         }
         else {
             res.render('Your organization has no challenges');
         }
     });
-});
-
-/* GET dashboard. */
-router.get('/dashboard', function(req, res, next) {
-  res.render('dashboard');
 });
 
 /* GET profile page. */
@@ -245,29 +231,77 @@ router.get('/register', function(req, res, next) {
   res.render('register');
 });
 
-
 /* POST to register. */
 router.post('/register', function(req, res, next) {
     console.log(req.body["mode"]);
 
-	/* User Registration */
-	if (req.body.mode == "user") {
-		addUser(req.body, function(id) {
-			res.redirect('/');
-		});
-	}
+    // User Registration
+    if (req.body.mode == "user") {
+        addUser(req.body, function(id) {
+            res.redirect('/');
+            //res.send('added User');
+        });
+    }
 
-	/* Organization Registration */
-	else if (req.body.mode == "organization") {
-		addOrganization(req.body, function(id) {
-			res.redirect('/');
-		});
-	}
+    // Organization Registration
+    else if (req.body.mode == "organization") {
+        addOrganization(req.body, function(id) {
+            res.redirect('/');
+            //res.send('added Organization');
+        });
+    }
 
-	else {
-		res.send("Invalid registration mode");
-	}	
+    else {
+        res.send("Invalid registration mode");
+    }   
 
 });
+
+/*
+router.get('/login', function(req, res, next) {
+    res.send('<form action="/login" method="post"> <div>' + 
+            '<label>Username:</label> <input type="text"'+ 
+            'name="username"/> </div> <div> <label>Password:</label>'+ 
+            '<input type="password" name="password"/> </div>' +
+            '<div> <input type="submit" value="Log In"/> </div></form>');
+    //res.render('login');
+});
+*/
+
+/*
+router.post('/login', passport.authenticate('local-login', {
+    successRedirect: '/',
+    failureRedirect: '/login',
+    //should create failureFlash message telling users wrong password/username
+    //combo or someting
+    failureFlash: true
+}));
+*/
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+    /*
+    if (req.isAuthenticated()) {
+        res.send("Super secret text!");
+    }
+    else {
+        res.redirect('/login');
+    }
+    */
+});
+
+/*authentication stuff*/
+//COMMENTED THE BELOW STUFF OUT BECAUSE MAKE MIT DOESN'T USE IT
+/*
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({extended:false}));
+//router.use(session({ secret: ''}))
+*/
+
+
 
 module.exports = router;
