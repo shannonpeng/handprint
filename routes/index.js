@@ -280,6 +280,7 @@ router.post('/login', passport.authenticate('local-login', {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+    res.render('index');
     /*
     if (req.isAuthenticated()) {
         res.send("Super secret text!");
