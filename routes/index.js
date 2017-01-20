@@ -49,6 +49,28 @@ function addUser(user, callback) {
 	});
 }
 
+/* Edit user
+ARGUMENTS:
+- user: object with user properties
+- callback: callback function
+RETURNS:
+- String: Mongo ObjectID of modified user
+*/
+function editUser(user, callback) {
+
+}
+
+/* Delete user
+ARGUMENTS:
+- user: object with user properties
+- callback: callback function
+RETURNS:
+- String: Mongo ObjectID of deleted user
+*/
+function deleteUser(user, callback) {
+
+}
+
 /* Add challenge
 ARGUMENTS:
 - challenge: object with challenge properties
@@ -74,6 +96,28 @@ function addChallenge(challenge, callback) {
 	c.save(function(err, c) {
 		callback(c._id);
 	});
+
+}
+
+/* Edit challenge
+ARGUMENTS:
+- challenge: object with challenge properties
+- callback: callback function
+RETURNS:
+- String: Mongo ObjectID of modified challenge
+*/
+function editChallenge(challenge, callback) {
+
+}
+
+/* Delete challenge
+ARGUMENTS:
+- challenge: object with challenge properties
+- callback: callback function
+RETURNS:
+- String: Mongo ObjectID of deleted challenge
+*/
+function deleteChallenge(challenge, callback) {
 
 }
 
@@ -145,6 +189,28 @@ function addOrganization(org, callback) {
 
 }
 
+/* Edit organization
+ARGUMENTS:
+- org: object with organization properties
+- callback: callback function
+RETURNS:
+- String: Mongo ObjectID of modified organization
+*/
+function editOrganization(org, callback) {
+
+}
+
+/* Delete organization
+ARGUMENTS:
+- org: object with organization properties
+- callback: callback function
+RETURNS:
+- String: Mongo ObjectID of deleted organization
+*/
+function deleteOrganization(org, callback) {
+
+}
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -159,6 +225,7 @@ router.get('/dashboard', function(req, res, next) {
 /* GET profile page. */
 router.get('/profile', function(req, res, next) {
 
+	/* TODO: Figure out the ID of the user that's logged in */
 	var userID = '587ef7a49d54a618585ca895';
 
 	var User = require('../schemas/user.js');
