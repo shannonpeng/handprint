@@ -6,7 +6,7 @@ var Challenge = require('../schemas/challenge');
 var Organization = require('../schemas/organization');
 
 /* Add user
-INPUT:
+ARGUMENTS:
 - user: object with user properties
 - callback: callback function
 RETURNS:
@@ -50,7 +50,7 @@ function addUser(user, callback) {
 }
 
 /* Add challenge
-INPUT:
+ARGUMENTS:
 - challenge: object with challenge properties
 - callback: callback function
 RETURNS:
@@ -78,7 +78,7 @@ function addChallenge(challenge, callback) {
 }
 
 /* Add challenges to organization
-INPUT:
+ARGUMENTS:
 - orgID: objectID of organization
 - challenges: array of objects, each with challenge properties
 - callback: callback function
@@ -108,7 +108,7 @@ function addChallengesToOrg(orgID, challenges, callback) {
 }
 
 /* Add organization
-INPUT:
+ARGUMENTS:
 - org: object with organization properties
 - callback: callback function
 RETURNS:
@@ -148,22 +148,56 @@ function addOrganization(org, callback) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index');
+ 	res.render('index');
 });
 
 /* GET dashboard. */
 router.get('/dashboard', function(req, res, next) {
-  res.render('dashboard');
+ 	res.render('dashboard');
 });
 
 /* GET profile page. */
 router.get('/profile', function(req, res, next) {
-  res.render('profile');
+
+	var userID = '587ef7a49d54a618585ca895';
+
+	var User = require('../schemas/user.js');
+	var Challenge = require('../schemas/challenge.js');
+
+	User.findOne({ _id : userID }, function(err, user) {
+
+		var challenges = [];
+
+		for (var i = 0; i < user.challenges.length; i++) {
+			Challenge.findOne({ _id: user.challenges[i] }, function(err, challenge) {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					challenges.push(challenge);
+				}
+			})
+		}
+
+		res.render('profile', {
+			user: user,
+			challenges: challenges
+	 	});
+	});
+});
+
+/* POST profile page. */
+router.post('/edit-profile', function(req, res, next) {
+
+	
+ 	res.render('profile', {
+
+  });
 });
 
 /* GET register page. */
 router.get('/register', function(req, res, next) {
-  res.render('register');
+ 	res.render('register');
 });
 
 

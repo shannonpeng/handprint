@@ -8,14 +8,15 @@ $(document).ready(function() {
 		contentType: 'application/json; charset=utf-8',
 		datatype: 'json',
 		data: JSON.stringify({
-			'mode': 'user',
-			'username': 'tim',
-			'name': 'Tim Beaver',
-			'email': 'tim@mit.edu',
-			'bio': 'I am Tim Beaver',
-			'location_name': 'Cambridge, MA',
-			'location_zipcode': '02139',
-			'profile_pic_url': 'http://web.mit.edu/graphicidentity/images/examples/tim-the-beaver-2.png',
+			mode: 'user',
+			username: 'tim',
+			password: 'wowthisissosecure',
+			name: 'Tim Beaver',
+			email: 'tim@mit.edu',
+			bio: 'I am Tim Beaver',
+			location_name: 'Cambridge, MA',
+			location_zipcode: '02139',
+			profile_pic_url: 'http://web.mit.edu/graphicidentity/images/examples/tim-the-beaver-2.png'
 		}),
 		success: function(data) {
 			console.log(data);
@@ -34,6 +35,7 @@ $(document).ready(function() {
 			mode: 'organization',
 			name: 'Boston Children\'s Hospital',
 			email: 'boston@childrenshospital.org',
+			password: 'wowthisissosecure',
 			location_name: 'Boston, MA',
 			location_zipcode: '02115',
 			description: 'Children\'s hospital in Boston, MA.',
