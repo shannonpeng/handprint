@@ -17,6 +17,11 @@ var Organization = require('../schemas/organization');
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+passport.use(Organization.createStrategy());
+passport.serializeUser(Organization.serializeUser());
+passport.deserializeUser(Organization.deserializeUser());
+
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended:false}));
 router.use(session({ secret: 'my super secret secret', resave: 'false', 
@@ -47,7 +52,6 @@ function addUser(user, callback) {
 
 			var newUser = new User({
 				username: user.username,
-                //need hashing funciton for passwords
                 //password: user.password,
 				name: user.name,
 				email: user.email,
@@ -151,7 +155,7 @@ function addOrganization(org, callback) {
 			var newOrg = new Organization({
 				name: org.name,
                 // below line was added
-                password: org.password,
+                //password: org.password,
 				email: org.email,
 				location_name: org.location_name,
 				location_zipcode: org.location_zipcode,
@@ -160,10 +164,17 @@ function addOrganization(org, callback) {
 				challenges: []
 			});
 
-			newOrg.save(function(err, o) {
+            Organization.register(newOrg, org.password, function(err) {
+                console.log(err);
+                //addChallengesToOrg(o._id, org.challenges, function(ids){});
+                callback();
+            });
+            /*
+            newOrg.save(function(err, o) {
 				addChallengesToOrg(o._id, org.challenges, function (ids){} );
 				callback(o._id);
 		    });
+            */
         }
     });
 }
@@ -240,6 +251,9 @@ router.post('/userreg', function(req, res, next) {
         //res.send('added User');
         });
     }
+    else {
+        res.send("Invalid registration mode");
+    }
 });
 
 /* GET organization registration page */
@@ -253,48 +267,13 @@ router.post('/orgreg', function(req, res, next) {
             res.redirect('/');
         });
     }
-
-});
-
-//OLD GET REGISTRATION PAGE
-/* GET register page. */
-/*
-router.get('/register', function(req, res, next) {
-  res.render('register');
-});
-*/
-
-//OLD POST REGISTRATION PAGE
-/* POST to register. */
-/*
-router.post('/register', function(req, res, next) {
-    console.log(req.body["mode"]);
-
-    // User Registration
-    if (req.body.mode == "user") {
-        addUser(req.body, function(id) {
-            res.redirect('/');
-            //res.send('added User');
-        });
-    }
-
-    // Organization Registration
-    else if (req.body.mode == "organization") {
-        addOrganization(req.body, function(id) {
-            res.redirect('/');
-            //res.send('added Organization');
-        });
-    }
-
     else {
         res.send("Invalid registration mode");
-    }   
+    }
 
 });
-*/
 
-
-router.get('/login', function(req, res, next) {
+router.get('/userlogin', function(req, res, next) {
     res.send('<form action="/login" method="post"> <div>' + 
             '<label>Username:</label> <input type="text"'+ 
             'name="username"/> </div> <div> <label>Password:</label>'+ 
@@ -305,7 +284,7 @@ router.get('/login', function(req, res, next) {
 
 
 
-router.post('/login', passport.authenticate('local', {
+router.post('/userlogin', passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/login'
     //should create failureFlash message telling users wrong password/username
