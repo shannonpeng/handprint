@@ -14,7 +14,6 @@ var Organization = require('../schemas/organization');
 
 /* Maybe move below passport lines to the top later */
 //Oauth stuff isn't working I need we need to create constructors for functions?
-/*
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -24,7 +23,7 @@ router.use(session({ secret: 'my super secret secret', resave: 'false',
     saveUninitialized: 'true'}));
 router.use(passport.initialize());
 router.use(passport.session());
-*/
+
 
 /* Add user
 INPUT:
@@ -49,7 +48,7 @@ function addUser(user, callback) {
 			var newUser = new User({
 				username: user.username,
                 //need hashing funciton for passwords
-                password: user.password,
+                //password: user.password,
 				name: user.name,
 				email: user.email,
 				bio: user.bio,
@@ -65,8 +64,10 @@ function addUser(user, callback) {
 				level: 1
 			});
 
-			newUser.save(function(err, user) {
-				callback(user._id);
+            User.register(newUser, user.password, function(err) {
+                console.log(err);
+                //ask Shannon what this callback was being used for
+				callback();
 			});
 		}
 	});
@@ -257,7 +258,7 @@ router.post('/register', function(req, res, next) {
 
 });
 
-/*
+
 router.get('/login', function(req, res, next) {
     res.send('<form action="/login" method="post"> <div>' + 
             '<label>Username:</label> <input type="text"'+ 
@@ -266,29 +267,29 @@ router.get('/login', function(req, res, next) {
             '<div> <input type="submit" value="Log In"/> </div></form>');
     //res.render('login');
 });
-*/
 
-/*
-router.post('/login', passport.authenticate('local-login', {
+
+
+router.post('/login', passport.authenticate('local', {
     successRedirect: '/',
-    failureRedirect: '/login',
+    failureRedirect: '/login'
     //should create failureFlash message telling users wrong password/username
     //combo or someting
-    failureFlash: true
 }));
-*/
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.render('index');
-    /*
+    console.log('here');
+    //res.render('index');
     if (req.isAuthenticated()) {
-        res.send("Super secret text!");
+        console.log(req.user);
+        //res.send("Super secret text!");
+        res.render('index');
     }
     else {
         res.redirect('/login');
     }
-    */
 });
 
 /*authentication stuff*/

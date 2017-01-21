@@ -9,7 +9,8 @@ $(document).ready(function() {
 		datatype: 'json',
 		data: JSON.stringify({
 			'mode': 'user',
-			'username': 'tim',
+			'username': 'ramya',
+			'password': 'blah',
 			'name': 'Tim Beaver',
 			'email': 'tim@mit.edu',
 			'bio': 'I am Tim Beaver',
@@ -33,6 +34,7 @@ $(document).ready(function() {
 		data: JSON.stringify({
 			mode: 'organization',
 			name: 'Boston Children\'s Hospital',
+			password: 'hospitalPassword',
 			email: 'boston@childrenshospital.org',
 			location_name: 'Boston, MA',
 			location_zipcode: '02115',
@@ -65,5 +67,7 @@ $(document).ready(function() {
 			console.log(error);
 		}
 	});
+	
+	//need to finish hardcoding login ajax call
 
 });
