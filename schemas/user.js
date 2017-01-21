@@ -10,6 +10,7 @@ var userSchema = new mongoose.Schema({
 	location_name: String,
 	location_zipcode: String,
 	profile_pic_url: {type: String, required: true},
+	cover_pic_url: {type: String, required: true},
 	friends: [String],
 	challenges: {
 		ongoing: [String],

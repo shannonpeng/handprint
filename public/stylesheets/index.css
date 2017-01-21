@@ -1,9 +1,8 @@
 .activityList li {
     list-style-type: none;
     display: inline;
-    font-family: 'Avenir Heavy';
+    font-family: 'Avenir Book';
     padding-top: 20px;
-    
 }
 
 .boxed li{

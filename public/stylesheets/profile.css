@@ -1,0 +1,186 @@
+#profile {
+	width: 100%;
+	margin: auto;
+}
+
+#profile h1, #profile h2, #profile h3, #profile p {
+	margin: auto;
+	line-height: auto;
+}
+
+#profile .profile-header {
+	width: 100%;
+	color: white;
+	background-position: 50% 50%;
+	background-repeat: none;
+	padding-top: 75px;
+}
+
+#profile .profile-header .container {
+	width: 60%;
+	padding: 50px;
+	margin: auto;
+}
+
+#profile .profile-header .container > * {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#profile .profile-header h1 {
+	font-size: 3em;
+}
+
+#profile .profile-header .user-bio {
+	margin-top: 10px;
+}
+
+#profile .profile-header .info {
+	width: 400px;
+	margin-left: 50px;
+	text-align: left;
+}
+
+#profile .profile-header .stats {
+	text-transform: uppercase;
+	margin: 25px;
+	font-size: 80%;
+	text-align: center;
+	letter-spacing: 4px;
+}
+
+#profile .profile-header .stats .user-level {
+	background: rgba(255, 255, 255, 0.2);
+	border: 5px solid white;
+}
+
+#profile .profile-header .stats > * {
+	padding: 10px 15px;
+	vertical-align: middle;
+}
+
+#profile .profile-header .container > * {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#profile .profile-picture {
+	width: 200px;
+	height: 200px;
+	border-radius: 50% 50%;
+	background-position: 0 0;
+	background-size: cover;
+	border: 5px solid rgba(255, 255, 255, 0.5);
+	padding: 5px;
+}
+
+#profile .challenges, #profile .friends {
+	vertical-align: top;
+	display: inline-block;
+	margin: 15px;
+	padding: 10px 15px;
+}
+
+#profile .challenges {
+	width: 55%;
+}
+
+#profile .friends {
+	width: 30%;
+}
+
+#profile .challenges > h3, #profile .friends > h3 {
+	padding: 15px 0px;
+}
+
+#profile .challenges h2, #profile .friends h2 {
+	color: rgb(16, 102, 213);
+	padding: 15px 0px;
+}
+
+#profile .content {
+	width: 65%;
+	margin: auto;
+	padding-top: 25px;
+}
+
+#profile .friend {
+	width: 100px;
+	height: 100px;
+	background-position: 50% 50%;
+	background-size: cover;
+	display: inline-block;
+	position: relative;
+}
+
+#profile .friend p {
+	color: white;
+	position: absolute;
+	bottom: 0;
+	padding: 10px;
+}
+
+#profile .challenge {
+	padding: 10px 0px;
+}
+
+#profile .challenge p {
+	padding: 0px;
+}
+
+#profile .challenge div {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#profile .challenge .challenge-points {
+	width: 80px;
+	text-align: center;
+}
+
+#profile .ongoing-challenge .challenge-points {
+	color: #e9a622;
+}
+
+#profile .past-challenge .challenge-points {
+	color: #8ae967;
+}
+
+#profile .challenge .challenge-info {
+	max-width: 70%;
+	margin-left: 20px;
+}
+
+#profile .challenge .challenge-tags {
+	margin: 5px 0px;
+}
+
+#profile .challenge .challenge-tags div {
+	padding: 5px;
+	margin: 5px;
+	margin-left: 0px;
+	border-radius: 1px;
+	background: #efefef;
+	color: #808080;
+}
+
+@media screen and (max-width: 1200px) {
+
+	#profile .content, #profile .challenges, #profile .friends, #profile .challenge .challenge-info {
+		width: 100%;
+		padding: 0;
+	}
+
+	#profile .profile-header .container > *, #profile .profile-picture {
+		display: block;
+		margin: auto;
+		margin: 15px;
+		text-align: center;
+	}
+
+	#profile .profile-header .info {
+		width: 100%;
+		margin: auto;
+	}
+
+}
