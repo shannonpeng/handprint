@@ -12,10 +12,7 @@ var userSchema = new mongoose.Schema({
 	profile_pic_url: {type: String, required: true},
 	cover_pic_url: {type: String, required: true},
 	friends: [String],
-	challenges: {
-		ongoing: [String],
-		past: [String]
-	},
+	challenges: [String],
 	points: {type: Number, required: true},
 	level: {type: Number, required: true}
 });

@@ -55,10 +55,7 @@ function addUser(user, callback) {
 				profile_pic_url: user.profile_pic_url,
 				cover_pic_url: user.cover_pic_url,
 				friends: friends,
-				challenges: {
-					ongoing: [],
-					past: []
-				},
+				challenges: [],
 				points: 0,
 				level: 1
 			});
@@ -295,40 +292,24 @@ router.get('/dashboard', function(req, res, next) {
 /* GET profile page. */
 router.get('/users/:id', function(req, res, next) {
 
-	var username = req.params.id;
-	console.log(username);
-
 	var User = require('../schemas/user.js');
 	var Challenge = require('../schemas/challenge.js');
 
-	User.findOne({ username : username }, function(err, user) {
+	User.findOne({ username : req.params.id }, function(err, user) {
 
 		if (err) {
 			console.log(err);
 		}
 
-		var challenges = {};
-		challenges.ongoing = [];
-		challenges.past = [];
+		var challenges = [];
 
-		for (var i = 0; i < user.challenges.ongoing.length; i++) {
-			Challenge.findOne({ _id: user.challenges.ongoing[i] }, function(err, challenge) {
+		for (var i = 0; i < user.challenges.length; i++) {
+			Challenge.findOne({ _id: user.challenges[i] }, function(err, challenge) {
 				if (err) {
 					console.log(err);
 				}
 				else {
-					challenges.ongoing.push(challenge);
-				}
-			})
-		}
-
-		for (var i = 0; i < user.challenges.past.length; i++) {
-			Challenge.findOne({ _id: user.challenges.past[i] }, function(err, challenge) {
-				if (err) {
-					console.log(err);
-				}
-				else {
-					challenges.past.push(challenge);
+					challenges.push(challenge);
 				}
 			})
 		}
@@ -336,20 +317,23 @@ router.get('/users/:id', function(req, res, next) {
 		/* HARD CODE FRIENDS AND CHALLENGES FOR NOW */
 		friends = [{
 			name: 'Shannon Peng',
+			username: 'shannon',
 			profile_pic_url: '/images/shannon.jpg'
 		},
 		{
 			name: 'Ramya Nagarajan',
+			username: 'ramya',
 			profile_pic_url: '/images/ramya.jpg'
 		
 		},
 		{
 			name: 'Jennifer Zou',
+			username: 'jennifer',
 			profile_pic_url: '/images/jennifer.jpg'
 		}
 		];
 
-		challenges.ongoing = [
+		challenges = [
 			{
 				title: 'Paint a room',
 				start_date: 1484283600000,
@@ -368,28 +352,6 @@ router.get('/users/:id', function(req, res, next) {
 				location_zipcode: '02115',
 				points: 80,
 				category_tags: ['books', 'reading', 'kids']
-			}
-		];
-
-		challenges.past = [
-			{
-				title: 'Plant a tree',
-				start_date: 1484283600000,
-				end_date: 1484974800000,
-				description: 'Plant a tree in the public park.',
-				location_name: 'Boston Public Park',
-				location_zipcode: '02115',
-				points: 140,
-				category_tags: ['nature', 'outdoors']
-			}, {
-				title: 'Distribute a meal.',
-				start_date: 1484197200000,
-				end_date: 1485579600000,
-				description: 'Help your local community kitchen serve soup dinner.',
-				location_name: 'Boston Community Kitchen',
-				location_zipcode: '02115',
-				points: 80,
-				category_tags: ['food', 'cooking']
 			}
 		];
 
@@ -513,7 +475,7 @@ router.post('/orglogin', passport.authenticate('org', {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    console.log('here');
+    /*console.log('here');
     //res.render('index');
     if (req.isAuthenticated()) {
         console.log(req.user);
@@ -522,8 +484,10 @@ router.get('/', function(req, res, next) {
     }
     else {
         //res.redirect('/login');
-        res.send('rip');
+        res.render('error', { message: 'r1p y0u br0k3 0ur w3bs1te :('});
     }
+    */
+    res.render('index');
 });
 
 module.exports = router;
