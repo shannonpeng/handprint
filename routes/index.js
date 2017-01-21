@@ -12,11 +12,12 @@ var Challenge = require('../schemas/challenge');
 //get the Organization model
 var Organization = require('../schemas/organization');
 
-/* Maybe move below passport lines to the top later */
-//Oauth stuff isn't working I need we need to create constructors for functions?
-passport.use(User.createStrategy());
+passport.use('user', User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+passport.use('org', Organization.createStrategy());
+passport.serializeUser(Organization.serializeUser());
+passport.deserializeUser(Organization.deserializeUser());
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended:false}));
 router.use(session({ secret: 'my super secret secret', resave: 'false', 
@@ -24,9 +25,8 @@ router.use(session({ secret: 'my super secret secret', resave: 'false',
 router.use(passport.initialize());
 router.use(passport.session());
 
-
 /* Add user
-INPUT:
+ARGUMENTS:
 - user: object with user properties
 - callback: callback function
 RETURNS:
@@ -48,33 +48,52 @@ function addUser(user, callback) {
 			var newUser = new User({
 				username: user.username,
                 //need hashing funciton for passwords
-                //password: user.password,
 				name: user.name,
 				email: user.email,
 				bio: user.bio,
 				location_name: user.location_name,
 				location_zipcode: user.location_zipcode,
 				profile_pic_url: user.profile_pic_url,
+				cover_pic_url: user.cover_pic_url,
 				friends: friends,
-				challenges: {
-					ongoing: [],
-					past: []
-				},
+				challenges: [],
 				points: 0,
 				level: 1
 			});
-
-            User.register(newUser, user.password, function(err) {
-                console.log(err);
-                //ask Shannon what this callback was being used for
-				callback();
+			User.register(newUser, user.password, function(err) {
+				if (err) {
+					console.log(err);
+				}
+				callback(newUser._id);
 			});
 		}
 	});
 }
 
+/* Edit user
+ARGUMENTS:
+- user: object with user properties
+- callback: callback function
+RETURNS:
+- String: Mongo ObjectID of modified user
+*/
+function editUser(user, callback) {
+
+}
+
+/* Delete user
+ARGUMENTS:
+- user: object with user properties
+- callback: callback function
+RETURNS:
+- String: Mongo ObjectID of deleted user
+*/
+function deleteUser(user, callback) {
+
+}
+
 /* Add challenge
-INPUT:
+ARGUMENTS:
 - challenge: object with challenge properties
 - callback: callback function
 RETURNS:
@@ -96,13 +115,38 @@ function addChallenge(challenge, callback) {
 	});
 
 	c.save(function(err, c) {
+		if (err) {
+			console.log(err);
+		}
 		callback(c._id);
 	});
 
 }
 
+/* Edit challenge
+ARGUMENTS:
+- challenge: object with challenge properties
+- callback: callback function
+RETURNS:
+- String: Mongo ObjectID of modified challenge
+*/
+function editChallenge(challenge, callback) {
+
+}
+
+/* Delete challenge
+ARGUMENTS:
+- challenge: object with challenge properties
+- callback: callback function
+RETURNS:
+- String: Mongo ObjectID of deleted challenge
+*/
+function deleteChallenge(challenge, callback) {
+
+}
+
 /* Add challenges to organization
-INPUT:
+ARGUMENTS:
 - orgID: objectID of organization
 - challenges: array of objects, each with challenge properties
 - callback: callback function
@@ -114,6 +158,10 @@ function addChallengesToOrg(orgID, challenges, callback) {
 	var Organization = require('../schemas/organization.js');
 
 	Organization.findById(orgID, function (err, org) {
+
+		if (err) {
+			console.log(err);
+		}
 
 	  	var ids = [];
 
@@ -130,7 +178,7 @@ function addChallengesToOrg(orgID, challenges, callback) {
 }
 
 /* Add organization
-INPUT:
+ARGUMENTS:
 - org: object with organization properties
 - callback: callback function
 RETURNS:
@@ -156,18 +204,24 @@ function addOrganization(org, callback) {
 				location_name: org.location_name,
 				location_zipcode: org.location_zipcode,
 				profile_pic_url: org.profile_pic_url,
+				cover_pic_url: org.cover_pic_url,
 				description: org.description,
 				challenges: []
 			});
 
-			newOrg.save(function(err, o) {
-				addChallengesToOrg(o._id, org.challenges, function (ids){} );
-				callback(o._id);
-		    });
-        }
-    });
-}
+			Organization.register(newOrg, org.password, function(err) {
+				if (err) {
+					console.log(err);
+				}
+				addChallengesToOrg(newOrg._id, org.challenges, function (ids){
+					console.log(ids);
+				} );
+				callback(newOrg._id);
+			});
+		}
+	});
 
+}
 
 //Organization Dashboard Code
 /*
@@ -181,12 +235,42 @@ Parts of the page:
 3. Button/bar for "adding a new challenge"
 */
 
-/*GET organization dashboard*/
+/* Edit organization
+ARGUMENTS:
+- org: object with organization properties
+- callback: callback function
+RETURNS:
+- String: Mongo ObjectID of modified organization
+*/
+function editOrganization(org, callback) {
+
+}
+
+
+
+/* Delete organization
+ARGUMENTS:
+- org: object with organization properties
+- callback: callback function
+RETURNS:
+- String: Mongo ObjectID of deleted organization
+*/
+function deleteOrganization(org, callback) {
+
+}
+
 
 router.get('/dashboard', function(req, res, next) {
     var Organization = require('../schemas/organization');
     var Challenge = require('../schemas/challenge');
     var reqFields = [];
+
+	/* TODO: determine if organization or user */
+
+ 	var Organization = require('../schemas/organization');
+    var Challenge = require('../schemas/challenge');
+    var reqFields = [];
+
     Organization.find({}, function(err, organizations) {
         if (organizations.length > 0) {
             var challengeIds = organizations[0].challenges;
@@ -223,62 +307,120 @@ router.get('/dashboard', function(req, res, next) {
 });
 
 /* GET profile page. */
-router.get('/profile', function(req, res, next) {
-  res.render('profile');
+router.get('/users/:id', function(req, res, next) {
+
+	var User = require('../schemas/user.js');
+	var Challenge = require('../schemas/challenge.js');
+
+	User.findOne({ username : req.params.id }, function(err, user) {
+
+		if (err) {
+			console.log(err);
+		}
+
+		var challenges = [];
+
+		for (var i = 0; i < user.challenges.length; i++) {
+			Challenge.findOne({ _id: user.challenges[i] }, function(err, challenge) {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					challenges.push(challenge);
+				}
+			})
+		}
+
+		/* HARD CODE FRIENDS AND CHALLENGES FOR NOW */
+		friends = [{
+			name: 'Shannon Peng',
+			username: 'shannon',
+			profile_pic_url: '/images/shannon.jpg'
+		},
+		{
+			name: 'Ramya Nagarajan',
+			username: 'ramya',
+			profile_pic_url: '/images/ramya.jpg'
+		
+		},
+		{
+			name: 'Jennifer Zou',
+			username: 'jennifer',
+			profile_pic_url: '/images/jennifer.jpg'
+		}
+		];
+
+		challenges = [
+			{
+				title: 'Paint a room',
+				start_date: 1484283600000,
+				end_date: 1484974800000,
+				description: 'Decorate a child\'s room at the Boston Children\'s Hospital.',
+				location_name: 'Boston Children\'s Hospital',
+				location_zipcode: '02115',
+				points: 140,
+				category_tags: ['art', 'kids']
+			}, {
+				title: 'Read a book to kids',
+				start_date: 1484197200000,
+				end_date: 1485579600000,
+				description: 'Read stories to kids at the Boston Children\'s Hospital.',
+				location_name: 'Boston Children\'s Hospital',
+				location_zipcode: '02115',
+				points: 80,
+				category_tags: ['books', 'reading', 'kids']
+			}
+		];
+
+		res.render('profile', {
+			user: user,
+			challenges: challenges,
+			friends: friends
+	 	});
+	});
 });
 
-/* GET register page. */
-router.get('/register', function(req, res, next) {
-  res.render('register');
+/* POST to edit profile. */
+router.post('/edit-profile', function(req, res, next) {
+
+ 	res.render('profile', {
+
+  	});
 });
+
+/* GET register page.
+router.get('/register', function(req, res, next) {
+    res.render('register');
+});
+*/
+
 
 /* POST to register. */
-router.post('/register', function(req, res, next) {
-    console.log(req.body["mode"]);
+router.post('/register/:mode', function(req, res, next) {
 
-    // User Registration
-    if (req.body.mode == "user") {
-        addUser(req.body, function(id) {
-            res.redirect('/');
-            //res.send('added User');
-        });
-    }
+	/* User Registration */
+	if (req.params.mode == "user") {
+		addUser(req.body, function(id) {
+			res.redirect('/');
+		});
+	}
 
-    // Organization Registration
-    else if (req.body.mode == "organization") {
-        addOrganization(req.body, function(id) {
-            res.redirect('/');
-            //res.send('added Organization');
-        });
-    }
+	/* Organization Registration */
+	else if (req.params.mode == "organization") {
+		addOrganization(req.body, function(id) {
+			res.redirect('/');
+		});
+	}
 
     else {
         res.send("Invalid registration mode");
-    }   
-
+    }
 });
-
-
-router.get('/login', function(req, res, next) {
-    res.send('<form action="/login" method="post"> <div>' + 
-            '<label>Username:</label> <input type="text"'+ 
-            'name="username"/> </div> <div> <label>Password:</label>'+ 
-            '<input type="password" name="password"/> </div>' +
-            '<div> <input type="submit" value="Log In"/> </div></form>');
-    //res.render('login');
-});
-
-
-
-router.post('/login', passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login'
-    //should create failureFlash message telling users wrong password/username
-    //combo or someting
-}));
 
 
 /* GET home page. */
+//THIS CODE ISN'T IN SHANNON'S VERSION; ADDED DURING MERGE CONFLICT
+/*
 router.get('/', function(req, res, next) {
     console.log('here');
     //res.render('index');
@@ -291,19 +433,95 @@ router.get('/', function(req, res, next) {
         res.redirect('/login');
     }
 });
-
-/*authentication stuff*/
-//COMMENTED THE BELOW STUFF OUT BECAUSE MAKE MIT DOESN'T USE IT
-/*
-passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({extended:false}));
-//router.use(session({ secret: ''}))
 */
 
+/* GET user registration page
+router.get('/userreg', function(req, res, next) {
+    res.render('userreg');
+});
 
+/* POST to user registration page
+router.post('/userreg', function(req, res, next) {
+    if (req.body.mode == 'user') {
+        addUser(req.body, function(id) {
+            res.redirect('/');
+        //res.send('added User');
+        });
+    }
+    else {
+        res.send("Invalid registration mode");
+    }
+});
+
+/* GET organization registration page
+router.get('/orgreg', function(req, res, next) {
+    res.render('orgreg');
+});
+
+router.post('/orgreg', function(req, res, next) {
+    if (req.body.mode == 'organization') {
+        addOrganization(req.body, function(id) {
+            res.redirect('/');
+        });
+    }
+    else {
+        res.send("Invalid registration mode");
+    }
+
+});
+
+/* GET user login page
+router.get('/userlogin', function(req, res, next) {
+    res.send('<form action="/userlogin" method="post"> <div>' + 
+            '<label>Username:</label> <input type="text"'+ 
+            'name="username"/> </div> <div> <label>Password:</label>'+ 
+            '<input type="password" name="password"/> </div>' +
+            '<div> <input type="submit" value="Log In"/> </div></form>');
+    //res.render('login');
+});
+
+/* POST user login
+router.post('/userlogin', passport.authenticate('user', {
+    successRedirect: '/',
+    failureRedirect: '/userlogin'
+    //should create failureFlash message telling users wrong password/username
+    //combo or someting
+}));
+
+/* GET organization login page
+router.get('/orglogin', function(req, res, next) {
+    res.send('<form action="/orglogin" method="post"> <div>' + 
+            '<label>email:</label> <input type="text"'+ 
+            'name="email"/> </div> <div> <label>Password:</label>'+ 
+            '<input type="password" name="password"/> </div>' +
+            '<div> <input type="submit" value="Log In"/> </div></form>');
+});
+
+/* POST organization login page
+router.post('/orglogin', passport.authenticate('org', {
+    successRedirect: '/',
+    failureRedirect: '/orglogin'
+    //should create failureFlash message telling users wrong password/username
+    //combo or someting
+}));
+
+*/
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+    /*console.log('here');
+    //res.render('index');
+    if (req.isAuthenticated()) {
+        console.log(req.user);
+        //res.send("Super secret text!");
+        res.render('index');
+    }
+    else {
+        //res.redirect('/login');
+        res.render('error', { message: 'r1p y0u br0k3 0ur w3bs1te :('});
+    }
+    */
+    res.render('index');
+});
 
 module.exports = router;
