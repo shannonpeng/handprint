@@ -227,12 +227,46 @@ router.get('/profile', function(req, res, next) {
   res.render('profile');
 });
 
+/* GET user registration page */ 
+router.get('/userreg', function(req, res, next) {
+    res.render('userreg');
+});
+
+/* POST to user registration page */
+router.post('/userreg', function(req, res, next) {
+    if (req.body.mode == 'user') {
+        addUser(req.body, function(id) {
+            res.redirect('/');
+        //res.send('added User');
+        });
+    }
+});
+
+/* GET organization registration page */
+router.get('/orgreg', function(req, res, next) {
+    res.render('orgreg');
+});
+
+router.post('/orgreg', function(req, res, next) {
+    if (req.body.mode == 'organization') {
+        addOrganization(req.body, function(id) {
+            res.redirect('/');
+        });
+    }
+
+});
+
+//OLD GET REGISTRATION PAGE
 /* GET register page. */
+/*
 router.get('/register', function(req, res, next) {
   res.render('register');
 });
+*/
 
+//OLD POST REGISTRATION PAGE
 /* POST to register. */
+/*
 router.post('/register', function(req, res, next) {
     console.log(req.body["mode"]);
 
@@ -257,6 +291,7 @@ router.post('/register', function(req, res, next) {
     }   
 
 });
+*/
 
 
 router.get('/login', function(req, res, next) {
@@ -291,19 +326,5 @@ router.get('/', function(req, res, next) {
         res.redirect('/login');
     }
 });
-
-/*authentication stuff*/
-//COMMENTED THE BELOW STUFF OUT BECAUSE MAKE MIT DOESN'T USE IT
-/*
-passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({extended:false}));
-//router.use(session({ secret: ''}))
-*/
-
-
 
 module.exports = router;

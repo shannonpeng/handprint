@@ -3,7 +3,7 @@ $(document).ready(function() {
 	/* Hardcode adding user for testing purposes */
 
 	$.ajax({
-		url: '/register',
+		url: '/userreg',
 		type: 'POST',
 		contentType: 'application/json; charset=utf-8',
 		datatype: 'json',
@@ -27,7 +27,7 @@ $(document).ready(function() {
 	});
 
 	$.ajax({
-		url: '/register',
+		url: '/orgreg',
 		type: 'POST',
 		contentType: 'application/json; charset=utf-8',
 		datatype: 'json',
