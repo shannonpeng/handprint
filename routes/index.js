@@ -1,9 +1,29 @@
 var express = require('express');
 var router = express.Router();
+var bodyParser = require('body-parser');
+var session = require('express-session');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 
+//get the User model
 var User = require('../schemas/user');
+//get the Challenge model
 var Challenge = require('../schemas/challenge');
+//get the Organization model
 var Organization = require('../schemas/organization');
+
+passport.use('user', User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+passport.use('org', Organization.createStrategy());
+passport.serializeUser(Organization.serializeUser());
+passport.deserializeUser(Organization.deserializeUser());
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({extended:false}));
+router.use(session({ secret: 'my super secret secret', resave: 'false', 
+    saveUninitialized: 'true'}));
+router.use(passport.initialize());
+router.use(passport.session());
 
 /* Add user
 ARGUMENTS:
@@ -33,6 +53,7 @@ function addUser(user, callback) {
 				location_name: user.location_name,
 				location_zipcode: user.location_zipcode,
 				profile_pic_url: user.profile_pic_url,
+				cover_pic_url: user.cover_pic_url,
 				friends: friends,
 				challenges: {
 					ongoing: [],
@@ -42,8 +63,11 @@ function addUser(user, callback) {
 				level: 1
 			});
 
-			newUser.save(function(err, user) {
-				callback(user._id);
+			User.register(newUser, user.password, function(err) {
+				if (err) {
+					console.log(err);
+				}
+				callback(newUser._id);
 			});
 		}
 	});
@@ -94,6 +118,9 @@ function addChallenge(challenge, callback) {
 	});
 
 	c.save(function(err, c) {
+		if (err) {
+			console.log(err);
+		}
 		callback(c._id);
 	});
 
@@ -134,6 +161,10 @@ function addChallengesToOrg(orgID, challenges, callback) {
 	var Organization = require('../schemas/organization.js');
 
 	Organization.findById(orgID, function (err, org) {
+
+		if (err) {
+			console.log(err);
+		}
 
 	  	var ids = [];
 
@@ -176,13 +207,19 @@ function addOrganization(org, callback) {
 				location_name: org.location_name,
 				location_zipcode: org.location_zipcode,
 				profile_pic_url: org.profile_pic_url,
+				cover_pic_url: org.cover_pic_url,
 				description: org.description,
 				challenges: []
 			});
 
-			newOrg.save(function(err, o) {
-				addChallengesToOrg(o._id, org.challenges, function (ids){} );
-				callback(o._id);
+			Organization.register(newOrg, org.password, function(err) {
+				if (err) {
+					console.log(err);
+				}
+				addChallengesToOrg(newOrg._id, org.challenges, function (ids){
+					console.log(ids);
+				} );
+				callback(newOrg._id);
 			});
 		}
 	});
@@ -211,75 +248,186 @@ function deleteOrganization(org, callback) {
 
 }
 
-
-/* GET home page. */
-router.get('/', function(req, res, next) {
- 	res.render('index');
-});
-
 /* GET dashboard. */
 router.get('/dashboard', function(req, res, next) {
- 	res.render('dashboard');
+
+	/* TODO: determine if organization or user */
+
+ 	var Organization = require('../schemas/organization');
+    var Challenge = require('../schemas/challenge');
+    var reqFields = [];
+
+    Organization.find({}, function(err, organizations) {
+        if (organizations.length > 0) {
+            var challengeIds = organizations[0].challenges;
+            var ongoingChallenges = [];
+            var pastChallenges = [];
+                Challenge.find({}, function(err, challenges) {
+                    for (var i = 0; i < challenges.length; i++) {
+                        // push all challenges
+                        if (challengeIds.indexOf(challenges[i]._id) > -1) {
+                            // check dates of challenges
+                            if (challenges[i].end_date > Date.now()) {
+                                ongoingChallenges.push(challenges[i].title);
+                            }
+                            else if (challenges[i].end_date < Date.now()) {
+                                //check for past challenges
+                                pastChallenges.push(challenges[i].title);
+                            }
+                        }
+                    }
+                    if (pastChallenges.length < 0) {
+                        pastChallenges = 'There are no past challenges';
+                    }
+                    if (ongoingChallenges.length < 0) {
+                        ongoingChallenges = 'There are no ongoing challenges'; 
+                    }
+                    res.send(' ONGOING CHALLENGES: ' + 
+                        ongoingChallenges + ' PAST CHALLENGES: ' + pastChallenges);
+                });
+        }
+        else {
+            res.render('Your organization has no challenges');
+        }
+    });
 });
 
 /* GET profile page. */
-router.get('/profile', function(req, res, next) {
+router.get('/users/:id', function(req, res, next) {
 
-	/* TODO: Figure out the ID of the user that's logged in */
-	var userID = '587ef7a49d54a618585ca895';
+	var username = req.params.id;
+	console.log(username);
 
 	var User = require('../schemas/user.js');
 	var Challenge = require('../schemas/challenge.js');
 
-	User.findOne({ _id : userID }, function(err, user) {
+	User.findOne({ username : username }, function(err, user) {
 
-		var challenges = [];
+		if (err) {
+			console.log(err);
+		}
 
-		for (var i = 0; i < user.challenges.length; i++) {
-			Challenge.findOne({ _id: user.challenges[i] }, function(err, challenge) {
+		var challenges = {};
+		challenges.ongoing = [];
+		challenges.past = [];
+
+		for (var i = 0; i < user.challenges.ongoing.length; i++) {
+			Challenge.findOne({ _id: user.challenges.ongoing[i] }, function(err, challenge) {
 				if (err) {
 					console.log(err);
 				}
 				else {
-					challenges.push(challenge);
+					challenges.ongoing.push(challenge);
 				}
 			})
 		}
 
+		for (var i = 0; i < user.challenges.past.length; i++) {
+			Challenge.findOne({ _id: user.challenges.past[i] }, function(err, challenge) {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					challenges.past.push(challenge);
+				}
+			})
+		}
+
+		/* HARD CODE FRIENDS AND CHALLENGES FOR NOW */
+		friends = [{
+			name: 'Shannon Peng',
+			profile_pic_url: '/images/shannon.jpg'
+		},
+		{
+			name: 'Ramya Nagarajan',
+			profile_pic_url: '/images/ramya.jpg'
+		
+		},
+		{
+			name: 'Jennifer Zou',
+			profile_pic_url: '/images/jennifer.jpg'
+		}
+		];
+
+		challenges.ongoing = [
+			{
+				title: 'Paint a room',
+				start_date: 1484283600000,
+				end_date: 1484974800000,
+				description: 'Decorate a child\'s room at the Boston Children\'s Hospital.',
+				location_name: 'Boston Children\'s Hospital',
+				location_zipcode: '02115',
+				points: 140,
+				category_tags: ['art', 'kids']
+			}, {
+				title: 'Read a book to kids',
+				start_date: 1484197200000,
+				end_date: 1485579600000,
+				description: 'Read stories to kids at the Boston Children\'s Hospital.',
+				location_name: 'Boston Children\'s Hospital',
+				location_zipcode: '02115',
+				points: 80,
+				category_tags: ['books', 'reading', 'kids']
+			}
+		];
+
+		challenges.past = [
+			{
+				title: 'Plant a tree',
+				start_date: 1484283600000,
+				end_date: 1484974800000,
+				description: 'Plant a tree in the public park.',
+				location_name: 'Boston Public Park',
+				location_zipcode: '02115',
+				points: 140,
+				category_tags: ['nature', 'outdoors']
+			}, {
+				title: 'Distribute a meal.',
+				start_date: 1484197200000,
+				end_date: 1485579600000,
+				description: 'Help your local community kitchen serve soup dinner.',
+				location_name: 'Boston Community Kitchen',
+				location_zipcode: '02115',
+				points: 80,
+				category_tags: ['food', 'cooking']
+			}
+		];
+
 		res.render('profile', {
 			user: user,
-			challenges: challenges
+			challenges: challenges,
+			friends: friends
 	 	});
 	});
 });
 
-/* POST profile page. */
+/* POST to edit profile. */
 router.post('/edit-profile', function(req, res, next) {
 
-	
  	res.render('profile', {
 
-  });
+  	});
 });
 
-/* GET register page. */
+
+/* GET register page.
 router.get('/register', function(req, res, next) {
  	res.render('register');
 });
-
+*/
 
 /* POST to register. */
-router.post('/register', function(req, res, next) {
+router.post('/register/:mode', function(req, res, next) {
 
 	/* User Registration */
-	if (req.body.mode == "user") {
+	if (req.params.mode == "user") {
 		addUser(req.body, function(id) {
 			res.redirect('/');
 		});
 	}
 
 	/* Organization Registration */
-	else if (req.body.mode == "organization") {
+	else if (req.params.mode == "organization") {
 		addOrganization(req.body, function(id) {
 			res.redirect('/');
 		});
@@ -289,6 +437,93 @@ router.post('/register', function(req, res, next) {
 		res.send("Invalid registration mode");
 	}	
 
+});
+
+/* GET user registration page
+router.get('/userreg', function(req, res, next) {
+    res.render('userreg');
+});
+
+/* POST to user registration page
+router.post('/userreg', function(req, res, next) {
+    if (req.body.mode == 'user') {
+        addUser(req.body, function(id) {
+            res.redirect('/');
+        //res.send('added User');
+        });
+    }
+    else {
+        res.send("Invalid registration mode");
+    }
+});
+
+/* GET organization registration page
+router.get('/orgreg', function(req, res, next) {
+    res.render('orgreg');
+});
+
+router.post('/orgreg', function(req, res, next) {
+    if (req.body.mode == 'organization') {
+        addOrganization(req.body, function(id) {
+            res.redirect('/');
+        });
+    }
+    else {
+        res.send("Invalid registration mode");
+    }
+
+});
+
+/* GET user login page
+router.get('/userlogin', function(req, res, next) {
+    res.send('<form action="/userlogin" method="post"> <div>' + 
+            '<label>Username:</label> <input type="text"'+ 
+            'name="username"/> </div> <div> <label>Password:</label>'+ 
+            '<input type="password" name="password"/> </div>' +
+            '<div> <input type="submit" value="Log In"/> </div></form>');
+    //res.render('login');
+});
+
+/* POST user login
+router.post('/userlogin', passport.authenticate('user', {
+    successRedirect: '/',
+    failureRedirect: '/userlogin'
+    //should create failureFlash message telling users wrong password/username
+    //combo or someting
+}));
+
+/* GET organization login page
+router.get('/orglogin', function(req, res, next) {
+    res.send('<form action="/orglogin" method="post"> <div>' + 
+            '<label>email:</label> <input type="text"'+ 
+            'name="email"/> </div> <div> <label>Password:</label>'+ 
+            '<input type="password" name="password"/> </div>' +
+            '<div> <input type="submit" value="Log In"/> </div></form>');
+});
+
+/* POST organization login page
+router.post('/orglogin', passport.authenticate('org', {
+    successRedirect: '/',
+    failureRedirect: '/orglogin'
+    //should create failureFlash message telling users wrong password/username
+    //combo or someting
+}));
+
+*/
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+    console.log('here');
+    //res.render('index');
+    if (req.isAuthenticated()) {
+        console.log(req.user);
+        //res.send("Super secret text!");
+        res.render('index');
+    }
+    else {
+        //res.redirect('/login');
+        res.send('rip');
+    }
 });
 
 module.exports = router;

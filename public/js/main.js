@@ -16,7 +16,8 @@ $(document).ready(function() {
 			bio: 'I am Tim Beaver',
 			location_name: 'Cambridge, MA',
 			location_zipcode: '02139',
-			profile_pic_url: 'http://web.mit.edu/graphicidentity/images/examples/tim-the-beaver-2.png'
+			profile_pic_url: '/images/tim.jpg',
+			cover_pic_url: '/images/killian.jpg'
 		}),
 		success: function(data) {
 			console.log(data);
@@ -40,6 +41,7 @@ $(document).ready(function() {
 			location_zipcode: '02115',
 			description: 'Children\'s hospital in Boston, MA.',
 			profile_pic_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/89/Boston_Children\'s_Hospital_logo.svg/1280px-Boston_Children\'s_Hospital_logo.svg.png',
+			cover_pic_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/89/Boston_Children\'s_Hospital_logo.svg/1280px-Boston_Children\'s_Hospital_logo.svg.png',
 			challenges: [{
 				title: 'Paint a room',
 				start_date: 1484283600000,
