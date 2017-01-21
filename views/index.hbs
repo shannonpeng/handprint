@@ -21,21 +21,50 @@
 	        <!--need to make /about in index.js-->
 	        <div><a href>About</a></div>
 	        <!--the following a hrefs should link to sign up page-->
-	        <div><a href="/organizations">Become an Organization</a></div>
+	        <div><a href="/register">Become an Organization</a></div>
 	        <div><a href="/register">Sign Up</a></div>
 	        <div><a href="/login">Login</a></div>
 	      </div>
       </nav>
 
-    <div class=boxed>
-        <ul class="activityList">
-            <li> Plant trees </li>
-            <li> Distribute meals </li>
-            <li> Build a home </li>
-            <li> Clean the beach </li>
-        </ul>
+    <div id="carousel">
+      <div class="content">
+        <h1>Become a Handprint <b>volunteer.</b></h1>
+        <h3>Join your friends in helping your community.</h3>
+        <a href="/register"><div class="button">Start Your Journey</div></a>
+      </div>
     </div>
-    <div id="activityBoxes"></div>
+
+    <div class="container">
+
+      <div class="activities">
+        <ul>
+          <li> Plant trees </li>
+          <li> Distribute meals </li>
+          <li> Build a home </li>
+          <li> Clean the beach </li>
+        </ul>
+      </div>
+
+      <div class="blurb">
+        <h3>Earn points, level up, and challenge your friends &mdash; and at the same time, give back to your local communities.</h3>
+      </div>
+
+      <div class="organizations">
+        <h2>Connect to volunteer organizations</h2>
+        {{#each organizations}}
+            <a href="/organizations/{{orgname}}">
+              <div class="organization">
+              <div class="organization-pic" style="background-image:url('{{ profile_pic_url}}')"></div>
+              <b><p>{{ name }}</p></b>
+              <p>{{ location_name }}</p>
+              </div>
+            </a>
+        {{/each}}
+          </div>
+      </div>
+
+    </div>
   
   </body>
 </html>

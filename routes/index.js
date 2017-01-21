@@ -25,6 +25,66 @@ router.use(session({ secret: 'my super secret secret', resave: 'false',
 router.use(passport.initialize());
 router.use(passport.session());
 
+/* Get organizations list */
+
+function getOrganizations(callback) {
+	var Organization = require('../schemas/organization.js');
+	var orgs_list = [];
+	Organization.find({}, function(err, orgs) {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			for (var i = 0; i < orgs.length; i++) {
+				var org = {};
+				org.orgname = orgs[i].orgname;
+				org.name = orgs[i].name;
+				org.profile_pic_url = orgs[i].profile_pic_url;
+				org.location_name = orgs[i].location_name;
+				orgs_list.push(org);
+			}
+			callback(orgs_list);
+		}
+	});
+}
+
+router.get('/organizations-list', function(req, res, next) {
+	getOrganizations(function(data) {
+		res.send(data);
+	})
+});
+
+/* Get users list */
+
+function getUsers(callback) {
+	var User = require('../schemas/user.js');
+	var users_list = [];
+	Organization.find({}, function(err, users) {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			for (var i = 0; i < users.length; i++) {
+				var user = {};
+				user.name = users[i].name;
+				user.username = users[i].username;
+				user.bio = users[i].bio;
+				user.profile_pic_url = users[i].profile_pic_url;
+				user.location_name = users[i].location_name;
+				user.points = users[i].points;
+				user.level = users[i].level;
+				users_list.push(org);
+			}
+			callback(users_list);
+		}
+	});
+}
+router.get('/users-list', function(req, res, next) {
+	getUsers(function(data) {
+		res.send(data);
+	})
+}) 
+
 /* Add user
 ARGUMENTS:
 - user: object with user properties
@@ -200,6 +260,7 @@ function addOrganization(org, callback) {
 
 			var newOrg = new Organization({
 				name: org.name,
+				orgname: org.orgname,
 				email: org.email,
 				location_name: org.location_name,
 				location_zipcode: org.location_zipcode,
@@ -487,7 +548,13 @@ router.get('/', function(req, res, next) {
         res.render('error', { message: 'r1p y0u br0k3 0ur w3bs1te :('});
     }
     */
-    res.render('index');
+
+    getOrganizations(function(data) {
+    	res.render('index', {
+    	organizations: data
+    	});
+    });
+
 });
 
 module.exports = router;

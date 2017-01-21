@@ -136,13 +136,6 @@
 #profile .challenge .challenge-points {
 	width: 80px;
 	text-align: center;
-}
-
-#profile .ongoing-challenge .challenge-points {
-	color: #e9a622;
-}
-
-#profile .past-challenge .challenge-points {
 	color: #8ae967;
 }
 

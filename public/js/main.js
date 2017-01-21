@@ -35,13 +35,14 @@ $(document).ready(function() {
 		data: JSON.stringify({
 			mode: 'organization',
 			name: 'Boston Children\'s Hospital',
+			orgname: 'bch',
 			email: 'boston@childrenshospital.org',
 			password: 'wowthisissosecure',
 			location_name: 'Boston, MA',
 			location_zipcode: '02115',
 			description: 'Children\'s hospital in Boston, MA.',
-			profile_pic_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/89/Boston_Children\'s_Hospital_logo.svg/1280px-Boston_Children\'s_Hospital_logo.svg.png',
-			cover_pic_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/89/Boston_Children\'s_Hospital_logo.svg/1280px-Boston_Children\'s_Hospital_logo.svg.png',
+			profile_pic_url: '/images/bch.jpg',
+			cover_pic_url: '/images/bch.jpg',
 			challenges: [{
 				title: 'Paint a room',
 				start_date: 1484283600000,
@@ -67,6 +68,18 @@ $(document).ready(function() {
 		},
 		error: function(error) {
 			console.log(error);
+		}
+	});
+
+	$(window).scroll(function() {
+		var top  = window.pageYOffset || document.documentElement.scrollTop;
+		if (top >= 200) {
+			$("nav").addClass("scrolled")
+			$("nav .logo img").attr("src", "/images/logo-blue.png");
+		}
+		else {
+			$("nav").removeClass("scrolled");
+			$("nav .logo img").attr("src", "/images/logo-white.png");
 		}
 	});
 
