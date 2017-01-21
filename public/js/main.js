@@ -2,6 +2,7 @@ $(document).ready(function() {
 
 	/* Hardcode adding user for testing purposes */
 
+	
 	$.ajax({
 		url: '/register',
 		type: 'POST',
@@ -16,7 +17,33 @@ $(document).ready(function() {
 			bio: 'I am Tim Beaver',
 			location_name: 'Cambridge, MA',
 			location_zipcode: '02139',
-			profile_pic_url: 'http://web.mit.edu/graphicidentity/images/examples/tim-the-beaver-2.png'
+			profile_pic_url: 'http://web.mit.edu/graphicidentity/images/examples/tim-the-beaver-2.png',
+			friends: ['']
+		}),
+		success: function(data) {
+			console.log(data);
+		},
+		error: function(error) {
+			console.log(error);
+		}
+	});
+	
+	$.ajax({
+		url: '/register',
+		type: 'POST',
+		contentType: 'application/json; charset=utf-8',
+		datatype: 'json',
+		data: JSON.stringify({
+			mode: 'user',
+			username: 'ramya',
+			password: 'friend!',
+			name: 'Ramya Nagarajan',
+			email: 'ramya@mit.edu',
+			bio: 'I am Ramya, hear me roar',
+			location_name: 'Cambridge, MA',
+			location_zipcode: '02139',
+			profile_pic_url: 'images/ramya.jpg',
+			friends: ['5882c6dc92693e136f7e7768']
 		}),
 		success: function(data) {
 			console.log(data);

@@ -23,17 +23,18 @@ function addUser(user, callback) {
 		if (users.length == 0) {
 
 			/* TODO: Fetch friends from Facebook */
-			var friends = [];
+			//var friends = [];
 
 			var newUser = new User({
 				username: user.username,
+				password: user.password,
 				name: user.name,
 				email: user.email,
 				bio: user.bio,
 				location_name: user.location_name,
 				location_zipcode: user.location_zipcode,
 				profile_pic_url: user.profile_pic_url,
-				friends: friends,
+				friends: [],
 				challenges: {
 					ongoing: [],
 					past: []
@@ -42,11 +43,40 @@ function addUser(user, callback) {
 				level: 1
 			});
 
-			newUser.save(function(err, user) {
-				callback(user._id);
+			newUser.save(function(err, u) {
+				addFriendsToUser(u._id, user.friends, function (ids){} );
+				callback(u._id);
 			});
 		}
 	});
+}
+
+/* Add friends to user
+ARGUMENTS:
+- userID: objectID of user
+- friends: array of objects, each with user properties
+- callback: callback function
+RETURNS:
+- String: Array of Mongo ObjectIDs of newly added challenges
+*/
+function addFriendsToUser(userID, friends, callback) {
+
+	var User = require('../schemas/user.js');
+
+	User.findById(userID, function (err, user) {
+
+	  	var ids = [];
+
+		for (var i = 0; i < friends.length; i++) {
+				user.friends.push(friends[i]);
+				user.save();
+				ids.push(friends[i]);
+			};
+
+		callback(ids);
+
+	});
+
 }
 
 /* Edit user
@@ -219,14 +249,44 @@ router.get('/', function(req, res, next) {
 
 /* GET dashboard. */
 router.get('/dashboard', function(req, res, next) {
- 	res.render('dashboard');
+ 	
+	/* TODO: get identity of user from oauth */
+ 	var orgID = '';
+ 	var userID = '5882c6dc92693e136f7e7768';
+
+ 	var User = require('../schemas/user.js');
+	var Challenge = require('../schemas/challenge.js');
+
+	User.findOne({ _id: userID}, function(err, user) {
+
+		var challenges = [];
+
+		for (var i = 0; i < user.challenges.length; i++) {
+			Challenge.findOne({ _id: user.challenges[i] }, function(err, challenge) {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					challenges.push(challenge);
+				}
+			})
+		}
+
+		res.render('dashboard', {
+			user: user,
+			challenges: challenges,
+			friends: user.friends
+		})
+	})
+
+ 	//res.render('dashboard');
 });
 
 /* GET profile page. */
 router.get('/profile', function(req, res, next) {
 
 	/* TODO: Figure out the ID of the user that's logged in */
-	var userID = '587ef7a49d54a618585ca895';
+	var userID = '5882c6dc92693e136f7e7768';
 
 	var User = require('../schemas/user.js');
 	var Challenge = require('../schemas/challenge.js');
@@ -273,6 +333,7 @@ router.post('/register', function(req, res, next) {
 
 	/* User Registration */
 	if (req.body.mode == "user") {
+		console.log(req.body.friends);
 		addUser(req.body, function(id) {
 			res.redirect('/');
 		});
