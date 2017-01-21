@@ -14,11 +14,11 @@ var Organization = require('../schemas/organization');
 
 /* Maybe move below passport lines to the top later */
 //Oauth stuff isn't working I need we need to create constructors for functions?
-passport.use(User.createStrategy());
+passport.use('user', User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-passport.use(Organization.createStrategy());
+passport.use('org', Organization.createStrategy());
 passport.serializeUser(Organization.serializeUser());
 passport.deserializeUser(Organization.deserializeUser());
 
@@ -167,6 +167,7 @@ function addOrganization(org, callback) {
             Organization.register(newOrg, org.password, function(err) {
                 console.log(err);
                 //addChallengesToOrg(o._id, org.challenges, function(ids){});
+                /* how do we deal with adding challenges directly in this case ???*/
                 callback();
             });
             /*
@@ -273,8 +274,9 @@ router.post('/orgreg', function(req, res, next) {
 
 });
 
+/* GET user login page */
 router.get('/userlogin', function(req, res, next) {
-    res.send('<form action="/login" method="post"> <div>' + 
+    res.send('<form action="/userlogin" method="post"> <div>' + 
             '<label>Username:</label> <input type="text"'+ 
             'name="username"/> </div> <div> <label>Password:</label>'+ 
             '<input type="password" name="password"/> </div>' +
@@ -283,13 +285,30 @@ router.get('/userlogin', function(req, res, next) {
 });
 
 
-
-router.post('/userlogin', passport.authenticate('local', {
+/* POST user login */
+router.post('/userlogin', passport.authenticate('user', {
     successRedirect: '/',
-    failureRedirect: '/login'
+    failureRedirect: '/userlogin'
     //should create failureFlash message telling users wrong password/username
     //combo or someting
 }));
+
+/* GET org login page */
+router.get('/orglogin', function(req, res, next) {
+    res.send('<form action="/orglogin" method="post"> <div>' + 
+            '<label>email:</label> <input type="text"'+ 
+            'name="email"/> </div> <div> <label>Password:</label>'+ 
+            '<input type="password" name="password"/> </div>' +
+            '<div> <input type="submit" value="Log In"/> </div></form>');
+});
+
+router.post('/orglogin', passport.authenticate('org', {
+    successRedirect: '/',
+    failureRedirect: '/orglojhbugin'
+    //should create failureFlash message telling users wrong password/username
+    //combo or someting
+}));
+
 
 
 /* GET home page. */
@@ -302,7 +321,8 @@ router.get('/', function(req, res, next) {
         res.render('index');
     }
     else {
-        res.redirect('/login');
+        //res.redirect('/login');
+        res.send('rip');
     }
 });
 

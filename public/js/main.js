@@ -34,8 +34,8 @@ $(document).ready(function() {
 		data: JSON.stringify({
 			mode: 'organization',
 			name: 'Boston Children\'s Hospital',
-			password: 'hospitalPassword',
-			email: 'boston@childrenshospital.org',
+			password: 'blah',
+			email: 'boston@ch.org',
 			location_name: 'Boston, MA',
 			location_zipcode: '02115',
 			description: 'Children\'s hospital in Boston, MA.',
