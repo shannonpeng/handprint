@@ -1,0 +1,40 @@
+@font-face {
+    font-family: 'Avenir Book';
+    src: url('../fonts/Avenir-Book.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Avenir Heavy';
+    src: url('../fonts/Avenir-Heavy.ttf') format('truetype');
+}
+
+html, body {
+    width: 100%;
+    margin: 0;
+    font-family: 'Avenir Book';
+    color: #303030;
+}
+
+nav .logo {
+    height: 40px;
+    vertical-align: middle;
+}
+
+nav .logo img {
+    height: 100%;
+    padding: 10px;
+    vertical-align: middle;
+}
+
+nav .links {
+    float: right;
+    color: #000000;
+}
+
+nav div {
+    display: inline-block;
+    margin: 0px 10px;
+    vertical-align: middle;
+    padding-right: 20px;
+    padding-top: 10px;
+}
