@@ -187,7 +187,7 @@ function editUser(u, callback) {
 			if (err) {
 				console.log(err);
 			}
-			console.log("user updated!");
+			console.log("user " + u.username + " updated!");
 			callback(data);
 		});
 
@@ -197,12 +197,28 @@ function editUser(u, callback) {
 
 /* Delete user
 ARGUMENTS:
-- user: object with user properties
+- u: object with user properties
 - callback: callback function
 RETURNS:
 - String: Mongo ObjectID of deleted user
 */
-function deleteUser(user, callback) {
+function deleteUser(u, callback) {
+
+	User.findOne({ username: u.username }, function(err, user) {
+
+		if (err) {
+			console.log(err);
+		}
+
+		user.remove(function(err, data) {
+			if (err) {
+				console.log(err);
+			}
+			console.log("user " + u.username + "deleted!");
+			callback(data);
+		});
+
+	});
 
 }
 
@@ -357,7 +373,7 @@ function editOrganization(o, callback) {
 			if (err) {
 				console.log(err);
 			}
-			console.log("org updated!");
+			console.log("org " + o.orgname + " updated!");
 			callback(data);
 		});
 
@@ -366,12 +382,28 @@ function editOrganization(o, callback) {
 
 /* Delete organization
 ARGUMENTS:
-- org: object with organization properties
+- o: object with organization properties
 - callback: callback function
 RETURNS:
 - String: Mongo ObjectID of deleted organization
 */
-function deleteOrganization(org, callback) {
+function deleteOrganization(o, callback) {
+
+	Organization.findOne({ orgname: o.orgname }, function(err, org) {
+
+		if (err) {
+			console.log(err);
+		}
+
+		org.remove(function(err, data) {
+			if (err) {
+				console.log(err);
+			}
+			console.log("org " + o.orgname + "deleted!");
+			callback(data);
+		});
+
+	});
 
 }
 
