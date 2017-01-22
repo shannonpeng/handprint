@@ -274,9 +274,7 @@ function addOrganization(org, callback) {
 				if (err) {
 					console.log(err);
 				}
-				addChallengesToOrg(newOrg._id, org.challenges, function (ids){
-					console.log(ids);
-				} );
+				addChallengesToOrg(newOrg._id, org.challenges, function (ids) {});
 				callback(newOrg._id);
 			});
 		}
@@ -424,6 +422,38 @@ router.get('/users/:id', function(req, res, next) {
 	});
 });
 
+/* GET org profile page. */
+router.get('/organizations/:id', function(req, res, next) {
+
+	var Organization = require('../schemas/organization.js');
+	var Challenge = require('../schemas/challenge.js');
+
+	Organization.findOne({ orgname : req.params.id }, function(err, org) {
+
+		if (err) {
+			console.log(err);
+		}
+
+		var challenges = [];
+
+		for (var i = 0; i < org.challenges.length; i++) {
+			Challenge.findOne({ _id: org.challenges[i] }, function(err, challenge) {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					challenges.push(challenge);
+				}
+			})
+		}
+
+		res.render('org-profile', {
+			org: org,
+			challenges: challenges
+	 	});
+	});
+});
+
 /* POST to edit profile. */
 router.post('/edit-profile', function(req, res, next) {
 
@@ -458,7 +488,7 @@ router.post('/register/:mode', function(req, res, next) {
 
 	else {
 		res.send("Invalid registration mode");
-	}	
+	}
 
 });
 

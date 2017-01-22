@@ -29,9 +29,11 @@
 
 #profile .profile-header h1 {
 	font-size: 3em;
+	line-height: 1em;
+	margin: 15px 0px;
 }
 
-#profile .profile-header .user-bio {
+#profile .profile-header .user-bio, #profile .profile-header .org-description {
 	margin-top: 10px;
 }
 
