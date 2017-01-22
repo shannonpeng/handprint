@@ -2,9 +2,8 @@ $(document).ready(function() {
 
 	/* Hardcode adding user for testing purposes */
 
-	
 	$.ajax({
-		url: '/register',
+		url: '/register/user',
 		type: 'POST',
 		contentType: 'application/json; charset=utf-8',
 		datatype: 'json',
@@ -17,33 +16,8 @@ $(document).ready(function() {
 			bio: 'I am Tim Beaver',
 			location_name: 'Cambridge, MA',
 			location_zipcode: '02139',
-			profile_pic_url: 'http://web.mit.edu/graphicidentity/images/examples/tim-the-beaver-2.png',
-			friends: ['']
-		}),
-		success: function(data) {
-			console.log(data);
-		},
-		error: function(error) {
-			console.log(error);
-		}
-	});
-	
-	$.ajax({
-		url: '/register',
-		type: 'POST',
-		contentType: 'application/json; charset=utf-8',
-		datatype: 'json',
-		data: JSON.stringify({
-			mode: 'user',
-			username: 'ramya',
-			password: 'friend!',
-			name: 'Ramya Nagarajan',
-			email: 'ramya@mit.edu',
-			bio: 'I am Ramya, hear me roar',
-			location_name: 'Cambridge, MA',
-			location_zipcode: '02139',
-			profile_pic_url: 'images/ramya.jpg',
-			friends: ['5882c6dc92693e136f7e7768']
+			profile_pic_url: '/images/tim.jpg',
+			cover_pic_url: '/images/killian.jpg'
 		}),
 		success: function(data) {
 			console.log(data);
@@ -54,7 +28,7 @@ $(document).ready(function() {
 	});
 
 	$.ajax({
-		url: '/register',
+		url: '/register/organization',
 		type: 'POST',
 		contentType: 'application/json; charset=utf-8',
 		datatype: 'json',
@@ -67,6 +41,7 @@ $(document).ready(function() {
 			location_zipcode: '02115',
 			description: 'Children\'s hospital in Boston, MA.',
 			profile_pic_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/89/Boston_Children\'s_Hospital_logo.svg/1280px-Boston_Children\'s_Hospital_logo.svg.png',
+			cover_pic_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/89/Boston_Children\'s_Hospital_logo.svg/1280px-Boston_Children\'s_Hospital_logo.svg.png',
 			challenges: [{
 				title: 'Paint a room',
 				start_date: 1484283600000,
