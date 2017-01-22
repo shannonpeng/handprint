@@ -95,6 +95,7 @@ function getChallenges(callback) {
 		else {
 			for (var i = 0; i < challenges.length; i++) {
 				var challenge = {};
+				challenge._id = challenges[i]._id;
 				challenge.title = challenges[i].title;
 				challenge.start_date = challenges[i].start_date;
 				challenge.end_date = challenges[i].end_date;
@@ -175,6 +176,10 @@ function editUser(u, callback) {
 			console.log(err);
 		}
 
+		if (user == null) {
+			console.log("err: No user found with username " + u.username);
+		}
+
 		user.name = u.name;
 		user.email = u.email;
 		user.bio = u.bio;
@@ -208,6 +213,10 @@ function deleteUser(u, callback) {
 
 		if (err) {
 			console.log(err);
+		}
+
+		if (user == null) {
+			console.log("err: No user found with username " + u.username);
 		}
 
 		user.remove(function(err, data) {
@@ -253,23 +262,72 @@ function addChallenge(challenge, callback) {
 
 /* Edit challenge
 ARGUMENTS:
-- challenge: object with challenge properties
+- c: object with challenge properties
 - callback: callback function
 RETURNS:
 - String: Mongo ObjectID of modified challenge
 */
-function editChallenge(challenge, callback) {
+function editChallenge(c, callback) {
+
+	Challenge.findOne({ _id: c._id }, function(err, challenge) {
+
+		if (err) {
+			console.log(err);
+		}
+
+		if (challenge == null) {
+			console.log("err: No challenge found with id " + c._id);
+		}
+
+		challenge.title = c.title;
+		challenge.start_date = c.start_date;
+		challenge.end_date = c.end_date;
+		challenge.description = c.description;
+		challenge.location_name = c.location_name;
+		challenge.location_zipcode = c.location_zipcode;
+		challenge.points = c.points;
+		challenge.category_tags = c.category_tags;
+
+		challenge.save(function(err, data) {
+			if (err) {
+				console.log(err);
+			}
+			console.log("challenge " + c._id + " updated!");
+			callback(data);
+		});
+
+	});
 
 }
 
 /* Delete challenge
 ARGUMENTS:
-- challenge: object with challenge properties
+- c: object with challenge properties
 - callback: callback function
 RETURNS:
 - String: Mongo ObjectID of deleted challenge
 */
-function deleteChallenge(challenge, callback) {
+function deleteChallenge(c, callback) {
+
+	Challenge.findOne({ _id: c._id }, function(err, challenge) {
+
+		if (err) {
+			console.log(err);
+		}
+
+		if (challenge == null) {
+			console.log("err: No challenge found with id " + c._id);
+		}
+
+		challenge.remove(function(err, data) {
+			if (err) {
+				console.log(err);
+			}
+			console.log("challenge " + c._id + "deleted!");
+			callback(data);
+		});
+
+	});
 
 }
 
@@ -287,6 +345,10 @@ function addChallengesToOrg(orgID, challenges, callback) {
 
 		if (err) {
 			console.log(err);
+		}
+
+		if (org == null) {
+			console.log("err: No org found with org._id " + orgID);
 		}
 
 	  	var ids = [];
@@ -361,6 +423,10 @@ function editOrganization(o, callback) {
 			console.log(err);
 		}
 
+		if (org == null) {
+			console.log("err: No org found with orgname " + o.orgname);
+		}
+
 		org.name = o.name;
 		org.email = o.email;
 		org.description = o.description;
@@ -393,6 +459,10 @@ function deleteOrganization(o, callback) {
 
 		if (err) {
 			console.log(err);
+		}
+
+		if (org == null) {
+			console.log("err: No org found with orgname " + o.orgname);
 		}
 
 		org.remove(function(err, data) {
