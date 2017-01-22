@@ -26,6 +26,24 @@ router.use(session({ secret: 'my super secret secret', resave: 'false',
 router.use(passport.initialize());
 router.use(passport.session());
 
+/* Convert dates in Challenge object */
+
+function formatChallenge(c) {
+
+	var challenge = new Object();
+	challenge._id = c._id;
+	challenge.title = c.title;
+	challenge.start_date = (new Date(parseInt(c.start_date))).toDateString();
+	challenge.end_date = (new Date(parseInt(c.end_date))).toDateString();
+	challenge.description = c.description;
+	challenge.location_name = c.location_name;
+	challenge.location_zipcode = c.location_zipcode;
+	challenge.points = c.points;
+	challenge.category_tags = c.category_tags;
+	return challenge;
+
+}
+
 /* Get organizations list */
 
 function getOrganizations(callback) {
@@ -94,16 +112,7 @@ function getChallenges(callback) {
 		}
 		else {
 			for (var i = 0; i < challenges.length; i++) {
-				var challenge = {};
-				challenge._id = challenges[i]._id;
-				challenge.title = challenges[i].title;
-				challenge.start_date = (new Date(parseInt(challenges[i].start_date))).toDateString();
-				challenge.end_date = (new Date(parseInt(challenges[i].end_date))).toDateString();
-				challenge.description = challenges[i].description;
-				challenge.location_name = challenges[i].location_name;
-				challenge.location_zipcode = challenges[i].location_zipcode;
-				challenge.points = challenges[i].points;
-				challenge.category_tags = challenges[i].category_tags;
+				var challenge = formatChallenge(challenges[i]);
 				challenges_list.push(challenge);
 			}
 			callback(challenges_list);
@@ -559,9 +568,7 @@ router.get('/users/:id', function(req, res, next) {
 					console.log(err);
 				}
 				else {
-					var c = challenge;
-					c.start_date = (new Date(parseInt(challenge.start_date))).toDateString();
-					c.end_date = (new Date(parseInt(challenge.end_date))).toDateString();
+					var c = formatChallenge(challenge);
 					challenges.push(c);
 				}
 			})
@@ -638,10 +645,8 @@ router.get('/organizations/:id', function(req, res, next) {
 					console.log(err);
 				}
 				else {
-					var c = challenge;
-					c.start_date = (new Date(parseInt(challenge.start_date))).toDateString()
-					c.end_date = (new Date(parseInt(challenge_end_date))).toDateString()
-					challenges.push(challenge);
+					var c = formatChallenge(challenge);
+					challenges.push(c);
 				}
 			})
 		}

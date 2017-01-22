@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>{{ org.orgname }} | Handprint</title>
+    <title>{{ org.name }} | Handprint</title>
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
     <link rel="stylesheet" href="/stylesheets/base.css" />
     <link rel="stylesheet" href="/stylesheets/profile.css" />
@@ -61,8 +61,10 @@
 		  					<h1>+ {{ points }}</h1>
 		  				</div>
 		  				<div class="challenge-info">
-		  					<b><p>{{ title }}</p></b>
+		  					<b><p class="challenge-title">{{ title }}</p></b>
 		  					<p>{{ description }}</p>
+		  					<p class="challenge-location">{{ location_name }}</p>
+		  					<p class="challenge-date">{{ start_date }} &mdash; {{ end_date }}</p>
 		  					<div class="challenge-tags">
 		  						{{#each category_tags}}
 		  						<div><p># {{ this }}</p></div>
