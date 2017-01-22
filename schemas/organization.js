@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 
 var orgSchema = new mongoose.Schema({
 	name: {type: String, required: true},
-    //password: {type: String, required: true},
+    username: {type: String, required: true},
 	email: {type: String, required: true},
 	location_name: String,
 	location_zipcode: String,
@@ -14,7 +14,8 @@ var orgSchema = new mongoose.Schema({
 	challenges: [String]
 });
 
-orgSchema.plugin(passportLocalMongoose, {usernameField:'email'});
+//orgSchema.plugin(passportLocalMongoose, {usernameField:'email'});
+orgSchema.plugin(passportLocalMongoose);
 
 var Organization = mongoose.model('Organization', orgSchema);
 
