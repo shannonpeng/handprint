@@ -360,6 +360,11 @@ router.get('/users/:id', function(req, res, next) {
 			console.log(err);
 		}
 
+		if (user == null) {
+			res.redirect('/organizations/' + req.params.id);
+			return;
+		}
+
 		var challenges = [];
 
 		for (var i = 0; i < user.challenges.length; i++) {
@@ -432,6 +437,11 @@ router.get('/organizations/:id', function(req, res, next) {
 
 		if (err) {
 			console.log(err);
+		}
+
+		if (org == null) {
+			res.redirect('/users/' + req.params.id);
+			return;
 		}
 
 		var challenges = [];
