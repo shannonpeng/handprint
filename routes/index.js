@@ -97,8 +97,8 @@ function getChallenges(callback) {
 				var challenge = {};
 				challenge._id = challenges[i]._id;
 				challenge.title = challenges[i].title;
-				challenge.start_date = challenges[i].start_date;
-				challenge.end_date = challenges[i].end_date;
+				challenge.start_date = (new Date(parseInt(challenges[i].start_date))).toDateString();
+				challenge.end_date = (new Date(parseInt(challenges[i].end_date))).toDateString();
 				challenge.description = challenges[i].description;
 				challenge.location_name = challenges[i].location_name;
 				challenge.location_zipcode = challenges[i].location_zipcode;
@@ -482,7 +482,7 @@ router.get('/dashboard', function(req, res, next) {
 
 	/* TODO: determine if organization or user */
 
-    var reqFields = [];
+    /*var reqFields = [];
 
     Organization.find({}, function(err, organizations) {
         if (organizations.length > 0) {
@@ -516,7 +516,25 @@ router.get('/dashboard', function(req, res, next) {
         else {
             res.render('Your organization has no challenges');
         }
-    });
+    });*/
+
+    var username = "tim";
+
+    var challenges = [];
+
+
+    User.findOne({ username : username },
+	    function(err, user) {
+	    	getChallenges(function(c) {
+		    	challenges = c;
+		    	res.render('dashboard', {
+			    	user: user,
+			    	challenges: challenges
+			    });
+		    });
+		}    	
+	);
+    
 });
 
 /* GET profile page. */
@@ -541,7 +559,10 @@ router.get('/users/:id', function(req, res, next) {
 					console.log(err);
 				}
 				else {
-					challenges.push(challenge);
+					var c = challenge;
+					c.start_date = (new Date(parseInt(challenge.start_date))).toDateString();
+					c.end_date = (new Date(parseInt(challenge.end_date))).toDateString();
+					challenges.push(c);
 				}
 			})
 		}
@@ -568,8 +589,8 @@ router.get('/users/:id', function(req, res, next) {
 		challenges = [
 			{
 				title: 'Paint a room',
-				start_date: 1484283600000,
-				end_date: 1484974800000,
+				start_date: (new Date(parseInt(1484283600000))).toDateString(),
+				end_date: (new Date(parseInt(1484974800000))).toDateString(),
 				description: 'Decorate a child\'s room at the Boston Children\'s Hospital.',
 				location_name: 'Boston Children\'s Hospital',
 				location_zipcode: '02115',
@@ -577,8 +598,8 @@ router.get('/users/:id', function(req, res, next) {
 				category_tags: ['art', 'kids']
 			}, {
 				title: 'Read a book to kids',
-				start_date: 1484197200000,
-				end_date: 1485579600000,
+				start_date: (new Date(parseInt(1484197200000))).toDateString(),
+				end_date: (new Date(parseInt(1485579600000))).toDateString(),
 				description: 'Read stories to kids at the Boston Children\'s Hospital.',
 				location_name: 'Boston Children\'s Hospital',
 				location_zipcode: '02115',
@@ -617,6 +638,9 @@ router.get('/organizations/:id', function(req, res, next) {
 					console.log(err);
 				}
 				else {
+					var c = challenge;
+					c.start_date = (new Date(parseInt(challenge.start_date))).toDateString()
+					c.end_date = (new Date(parseInt(challenge_end_date))).toDateString()
 					challenges.push(challenge);
 				}
 			})

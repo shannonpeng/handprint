@@ -4,6 +4,7 @@ html, body {
 	margin: 0;
 	font-family: 'Source Sans Pro', sans-serif;
 	color: #303030;
+	overflow-x: hidden;
 }
 
 *, *:hover {
@@ -106,14 +107,26 @@ nav div {
 	vertical-align: middle;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1200px) {
 
 	nav {
-		display: none;
+		position: relative;
+		padding: 5px;
+		background: #252525;
+		font-size: 0.8em;
 	}
 
-	nav .search {
-		display: none;
+	nav .links {
+		float: none;
+	}
+
+	nav div {
+		margin: 0px 8px;
+	}
+
+	nav .profile-picture {
+		width: 20px;
+		height: 20px;
 	}
 
 }

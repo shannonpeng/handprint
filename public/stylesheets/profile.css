@@ -13,7 +13,7 @@
 	color: white;
 	background-position: 50% 50%;
 	background-repeat: none;
-	padding-top: 75px;
+	padding-top: 50px;
 }
 
 #profile .profile-header .container {
@@ -38,14 +38,14 @@
 }
 
 #profile .profile-header .info {
-	width: 400px;
+	max-width: 400px;
 	margin-left: 50px;
 	text-align: left;
 }
 
 #profile .profile-header .stats {
 	text-transform: uppercase;
-	margin: 25px;
+	margin-left: 50px;
 	font-size: 80%;
 	text-align: center;
 	letter-spacing: 4px;
@@ -128,11 +128,12 @@
 
 #profile .challenge p {
 	padding: 0px;
+	margin: 0px;
 }
 
 #profile .challenge div {
 	display: inline-block;
-	vertical-align: middle;
+	vertical-align: top;
 }
 
 #profile .challenge .challenge-points {
@@ -146,8 +147,30 @@
 	margin-left: 20px;
 }
 
+#profile .challenge .challenge-info > * {
+	margin: 5px 0px;
+}
+
+#profile .challenge .challenge-title {
+	font-size: 1.25em;
+}
+
+#profile .challenge .challenge-location {
+	color: rgb(16, 102, 213);
+	margin-top: 5px;
+}
+
+#profile .challenge .challenge-date {
+	color: #808080;
+}
+
+#profile .challenge .challenge-location, #profile .challenge .challenge-date {
+	font-size: 0.8em;
+}
+	
 #profile .challenge .challenge-tags {
 	margin: 5px 0px;
+	font-size: 0.8em;
 }
 
 #profile .challenge .challenge-tags div {
@@ -168,14 +191,17 @@
 
 	#profile .profile-header .container > *, #profile .profile-picture {
 		display: block;
-		margin: auto;
-		margin: 15px;
+		margin: 15px auto;
 		text-align: center;
 	}
 
 	#profile .profile-header .info {
 		width: 100%;
 		margin: auto;
+	}
+
+	#profile .stats .user-level {
+		max-width: 150px;
 	}
 
 }

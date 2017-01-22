@@ -59,15 +59,17 @@
 	  		<div class="content">
 
 			  	<div class="challenges">
-		  			<h2>Challenges</h2>
+		  			<h2>Completed Challenges</h2>
 		  			{{#each challenges}}
 		  			<div class="challenge">
 		  				<div class="challenge-points">
 		  					<h1>+ {{ points }}</h1>
 		  				</div>
 		  				<div class="challenge-info">
-		  					<b><p>{{ title }}</p></b>
+		  					<b><p class="challenge-title">{{ title }}</p></b>
 		  					<p>{{ description }}</p>
+		  					<p class="challenge-location">{{ location_name }}</p>
+		  					<p class="challenge-date">{{ start_date }} &mdash; {{ end_date }}</p>
 		  					<div class="challenge-tags">
 		  						{{#each category_tags}}
 		  						<div><p># {{ this }}</p></div>
