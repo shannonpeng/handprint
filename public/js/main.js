@@ -71,6 +71,7 @@ $(document).ready(function() {
 		}
 	});
 
+	/* NAV BAR TRANSITION
 	$(window).scroll(function() {
 		var top  = window.pageYOffset || document.documentElement.scrollTop;
 		if (top >= 200) {
@@ -82,5 +83,6 @@ $(document).ready(function() {
 			$("nav .logo img").attr("src", "/images/logo-white.png");
 		}
 	});
+	*/
 
 });
