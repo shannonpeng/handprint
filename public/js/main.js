@@ -74,7 +74,7 @@ $(document).ready(function() {
 	$(window).scroll(function() {
 		var top  = window.pageYOffset || document.documentElement.scrollTop;
 		if (top >= 200) {
-			$("nav").addClass("scrolled")
+			$("nav").addClass("scrolled");
 			$("nav .logo img").attr("src", "/images/logo-blue.png");
 		}
 		else {
