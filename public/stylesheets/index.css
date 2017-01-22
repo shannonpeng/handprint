@@ -1,21 +1,95 @@
-.activityList li {
+#carousel {
+    width: 100%;
+    color: white;
+    background: linear-gradient(45deg, rgba(61, 158, 223, 0.6), rgba(16, 102, 213, 0.4)), url('/images/trees.jpg');
+    background-size: cover;
+    background-position: 50% 50%;
+    background-repeat: none;
+    padding: 50px;
+    padding-top: 250px;
+}
+
+#carousel .content {
+    width: 60%;
+    margin: auto;
+    font-size: 1.5em;
+}
+#carousel .content > * {
+    margin: 10px auto;
+}
+#carousel .content h1 {
+    font-size: 3em;
+    line-height: 1em;
+}
+#carousel .content .button {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 5px solid white;
+    padding: 15px;
+    display: inline-block;
+    margin: 15px auto;
+}
+#carousel .content .button:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.container {
+    width: 60%;
+    margin: auto;
+}
+
+.activities {
+    padding: 25px;
+    margin: auto;
+    text-align: center;
+}
+.activities ul {
     list-style-type: none;
-    display: inline;
-    font-family: 'Avenir Book';
-    padding-top: 20px;
+    padding-left: 0;
+}
+.activities li {
+    display: inline-block;
+    background: #efefef;
+    padding: 10px;
+    margin: 10px;
 }
 
-.boxed li{
-    border: 0px solid;
-    /*need to eventually add padding at the top*/
-    padding: 20px;
-    /*
-    padding-top: 20px;
-    padding-right: 20px;
-    padding-left: 20px;
-    padding-bottom: 20px;
-    */
-    margin-right: 20px;
-    background-color: #EAEAEC;
+.blurb {
+    max-width: 600px;
+    text-align: center;
+    margin: 15px auto;
 }
 
+.organizations {
+    margin: 50px auto;
+}
+
+.organization {
+    width: 150px;
+    color: #303030;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.organization-pic {
+    width: 150px;
+    height: 150px;
+    background-size:cover;
+    background-position: 50% 50%;
+}
+
+@media screen and (max-width: 1000px) {
+
+    #carousel {
+        font-size: 1em;
+        padding-top: 100px;
+    }
+
+    #carousel .content {
+        width: 100%;
+    }
+
+    .container {
+        width: 90%;
+    }
+
+}

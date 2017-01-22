@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 
 var orgSchema = new mongoose.Schema({
 	name: {type: String, required: true},
-    username: {type: String, required: true},
+	orgname: {type: String, required: true},
 	email: {type: String, required: true},
 	location_name: String,
 	location_zipcode: String,

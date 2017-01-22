@@ -12,6 +12,7 @@ var Challenge = require('../schemas/challenge');
 //get the Organization model
 var Organization = require('../schemas/organization');
 
+/* Passport */
 passport.use('user', User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -25,6 +26,106 @@ router.use(session({ secret: 'my super secret secret', resave: 'false',
 router.use(passport.initialize());
 router.use(passport.session());
 
+/* Convert dates in Challenge object */
+
+function formatChallenge(c) {
+
+	var challenge = new Object();
+	challenge._id = c._id;
+	challenge.title = c.title;
+	challenge.start_date = (new Date(parseInt(c.start_date))).toDateString();
+	challenge.end_date = (new Date(parseInt(c.end_date))).toDateString();
+	challenge.description = c.description;
+	challenge.location_name = c.location_name;
+	challenge.location_zipcode = c.location_zipcode;
+	challenge.points = c.points;
+	challenge.category_tags = c.category_tags;
+	return challenge;
+
+}
+
+/* Get organizations list */
+
+function getOrganizations(callback) {
+	var orgs_list = [];
+	Organization.find({}, function(err, orgs) {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			for (var i = 0; i < orgs.length; i++) {
+				var org = {};
+				org.orgname = orgs[i].orgname;
+				org.name = orgs[i].name;
+				org.profile_pic_url = orgs[i].profile_pic_url;
+				org.location_name = orgs[i].location_name;
+				orgs_list.push(org);
+			}
+			callback(orgs_list);
+		}
+	});
+}
+
+router.get('/organizations-list', function(req, res, next) {
+	getOrganizations(function(data) {
+		res.send(data);
+	})
+});
+
+/* Get users list */
+
+function getUsers(callback) {
+	var users_list = [];
+	User.find({}, function(err, users) {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			for (var i = 0; i < users.length; i++) {
+				var user = {};
+				user.name = users[i].name;
+				user.username = users[i].username;
+				user.bio = users[i].bio;
+				user.profile_pic_url = users[i].profile_pic_url;
+				user.location_name = users[i].location_name;
+				user.points = users[i].points;
+				user.level = users[i].level;
+				users_list.push(user);
+			}
+			callback(users_list);
+		}
+	});
+}
+router.get('/users-list', function(req, res, next) {
+	getUsers(function(data) {
+		res.send(data);
+	})
+}) 
+
+/* Get challenges list */
+
+function getChallenges(callback) {
+	var challenges_list = [];
+	Challenge.find({}, function(err, challenges) {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			for (var i = 0; i < challenges.length; i++) {
+				var challenge = formatChallenge(challenges[i]);
+				challenges_list.push(challenge);
+			}
+			callback(challenges_list);
+		}
+	});
+}
+router.get('/challenges-list', function(req, res, next) {
+	getChallenges(function(data) {
+		res.send(data);
+	})
+}) 
+
+
 /* Add user
 ARGUMENTS:
 - user: object with user properties
@@ -33,7 +134,6 @@ RETURNS:
 - String: Mongo ObjectID of newly created user
 */
 function addUser(user, callback) {
-	var User = require('../schemas/user.js');
 	User.find({ username: user.username }, function(err, users) {
 
 		if (err) {
@@ -72,23 +172,71 @@ function addUser(user, callback) {
 
 /* Edit user
 ARGUMENTS:
-- user: object with user properties
+- u: object with user properties
 - callback: callback function
 RETURNS:
 - String: Mongo ObjectID of modified user
 */
-function editUser(user, callback) {
+function editUser(u, callback) {
+
+	User.findOne({ username: u.username }, function(err, user) {
+
+		if (err) {
+			console.log(err);
+		}
+
+		if (user == null) {
+			console.log("err: No user found with username " + u.username);
+		}
+
+		user.name = u.name;
+		user.email = u.email;
+		user.bio = u.bio;
+		user.location_name = u.location_name;
+		user.location_zipcode = u.location_zipcode;
+		user.profile_pic_url = u.profile_pic_url;
+		user.cover_pic_url = u.cover_pic_url;
+
+		user.save(function(err, data) {
+			if (err) {
+				console.log(err);
+			}
+			console.log("user " + u.username + " updated!");
+			callback(data);
+		});
+
+	});
 
 }
 
 /* Delete user
 ARGUMENTS:
-- user: object with user properties
+- u: object with user properties
 - callback: callback function
 RETURNS:
 - String: Mongo ObjectID of deleted user
 */
-function deleteUser(user, callback) {
+function deleteUser(u, callback) {
+
+	User.findOne({ username: u.username }, function(err, user) {
+
+		if (err) {
+			console.log(err);
+		}
+
+		if (user == null) {
+			console.log("err: No user found with username " + u.username);
+		}
+
+		user.remove(function(err, data) {
+			if (err) {
+				console.log(err);
+			}
+			console.log("user " + u.username + "deleted!");
+			callback(data);
+		});
+
+	});
 
 }
 
@@ -100,8 +248,6 @@ RETURNS:
 - String: Mongo ObjectID of newly created challenge
 */
 function addChallenge(challenge, callback) {
-
-	var Challenge = require('../schemas/challenge.js');
 
 	var c = new Challenge({
 		title: challenge.title,
@@ -125,23 +271,72 @@ function addChallenge(challenge, callback) {
 
 /* Edit challenge
 ARGUMENTS:
-- challenge: object with challenge properties
+- c: object with challenge properties
 - callback: callback function
 RETURNS:
 - String: Mongo ObjectID of modified challenge
 */
-function editChallenge(challenge, callback) {
+function editChallenge(c, callback) {
+
+	Challenge.findOne({ _id: c._id }, function(err, challenge) {
+
+		if (err) {
+			console.log(err);
+		}
+
+		if (challenge == null) {
+			console.log("err: No challenge found with id " + c._id);
+		}
+
+		challenge.title = c.title;
+		challenge.start_date = c.start_date;
+		challenge.end_date = c.end_date;
+		challenge.description = c.description;
+		challenge.location_name = c.location_name;
+		challenge.location_zipcode = c.location_zipcode;
+		challenge.points = c.points;
+		challenge.category_tags = c.category_tags;
+
+		challenge.save(function(err, data) {
+			if (err) {
+				console.log(err);
+			}
+			console.log("challenge " + c._id + " updated!");
+			callback(data);
+		});
+
+	});
 
 }
 
 /* Delete challenge
 ARGUMENTS:
-- challenge: object with challenge properties
+- c: object with challenge properties
 - callback: callback function
 RETURNS:
 - String: Mongo ObjectID of deleted challenge
 */
-function deleteChallenge(challenge, callback) {
+function deleteChallenge(c, callback) {
+
+	Challenge.findOne({ _id: c._id }, function(err, challenge) {
+
+		if (err) {
+			console.log(err);
+		}
+
+		if (challenge == null) {
+			console.log("err: No challenge found with id " + c._id);
+		}
+
+		challenge.remove(function(err, data) {
+			if (err) {
+				console.log(err);
+			}
+			console.log("challenge " + c._id + "deleted!");
+			callback(data);
+		});
+
+	});
 
 }
 
@@ -155,12 +350,14 @@ RETURNS:
 */
 function addChallengesToOrg(orgID, challenges, callback) {
 
-	var Organization = require('../schemas/organization.js');
-
 	Organization.findById(orgID, function (err, org) {
 
 		if (err) {
 			console.log(err);
+		}
+
+		if (org == null) {
+			console.log("err: No org found with org._id " + orgID);
 		}
 
 	  	var ids = [];
@@ -185,8 +382,6 @@ RETURNS:
 - String: Mongo ObjectID of newly created organization
 */
 function addOrganization(org, callback) {
-
-	var Organization = require('../schemas/organization.js');
 	
 	Organization.find({ email: org.email }, function(err, orgs) {
 
@@ -198,8 +393,7 @@ function addOrganization(org, callback) {
 
 			var newOrg = new Organization({
 				name: org.name,
-                // below line was added
-                //password: org.password,
+				orgname: org.orgname,
 				email: org.email,
 				location_name: org.location_name,
 				location_zipcode: org.location_zipcode,
@@ -213,9 +407,7 @@ function addOrganization(org, callback) {
 				if (err) {
 					console.log(err);
 				}
-				addChallengesToOrg(newOrg._id, org.challenges, function (ids){
-					console.log(ids);
-				} );
+				addChallengesToOrg(newOrg._id, org.challenges, function (ids) {});
 				callback(newOrg._id);
 			});
 		}
@@ -237,25 +429,72 @@ Parts of the page:
 
 /* Edit organization
 ARGUMENTS:
-- org: object with organization properties
+- o: object with organization properties
 - callback: callback function
 RETURNS:
 - String: Mongo ObjectID of modified organization
 */
-function editOrganization(org, callback) {
+function editOrganization(o, callback) {
 
+	Organization.findOne({ orgname: o.orgname }, function(err, org) {
+
+		if (err) {
+			console.log(err);
+		}
+
+		if (org == null) {
+			console.log("err: No org found with orgname " + o.orgname);
+		}
+
+		org.name = o.name;
+		org.email = o.email;
+		org.description = o.description;
+		org.location_name = o.location_name;
+		org.location_zipcode = o.location_zipcode;
+		org.profile_pic_url = o.profile_pic_url;
+		org.cover_pic_url = o.cover_pic_url;
+
+		org.save(function(err, data) {
+			if (err) {
+				console.log(err);
+			}
+			console.log("org " + o.orgname + " updated!");
+			callback(data);
+		});
+
+	});
 }
 
 
 
 /* Delete organization
 ARGUMENTS:
-- org: object with organization properties
+- o: object with organization properties
 - callback: callback function
 RETURNS:
 - String: Mongo ObjectID of deleted organization
 */
-function deleteOrganization(org, callback) {
+function deleteOrganization(o, callback) {
+
+	Organization.findOne({ orgname: o.orgname }, function(err, org) {
+
+		if (err) {
+			console.log(err);
+		}
+
+		if (org == null) {
+			console.log("err: No org found with orgname " + o.orgname);
+		}
+
+		org.remove(function(err, data) {
+			if (err) {
+				console.log(err);
+			}
+			console.log("org " + o.orgname + "deleted!");
+			callback(data);
+		});
+
+	});
 
 }
 
@@ -264,9 +503,7 @@ router.get('/dashboard', function(req, res, next) {
 
 	/* TODO: determine if organization or user */
 
- 	var Organization = require('../schemas/organization');
-    var Challenge = require('../schemas/challenge');
-    var reqFields = [];
+    /*var reqFields = [];
 
     Organization.find({}, function(err, organizations) {
         if (organizations.length > 0) {
@@ -300,19 +537,39 @@ router.get('/dashboard', function(req, res, next) {
         else {
             res.render('Your organization has no challenges');
         }
-    });
+    });*/
+
+    var username = "tim";
+
+    var challenges = [];
+
+
+    User.findOne({ username : username },
+	    function(err, user) {
+	    	getChallenges(function(c) {
+		    	challenges = c;
+		    	res.render('dashboard', {
+			    	user: user,
+			    	challenges: challenges
+			    });
+		    });
+		}    	
+	);
+    
 });
 
 /* GET profile page. */
 router.get('/users/:id', function(req, res, next) {
 
-	var User = require('../schemas/user.js');
-	var Challenge = require('../schemas/challenge.js');
-
 	User.findOne({ username : req.params.id }, function(err, user) {
 
 		if (err) {
 			console.log(err);
+		}
+
+		if (user == null) {
+			res.redirect('/organizations/' + req.params.id);
+			return;
 		}
 
 		var challenges = [];
@@ -323,7 +580,8 @@ router.get('/users/:id', function(req, res, next) {
 					console.log(err);
 				}
 				else {
-					challenges.push(challenge);
+					var c = formatChallenge(challenge);
+					challenges.push(c);
 				}
 			})
 		}
@@ -350,8 +608,8 @@ router.get('/users/:id', function(req, res, next) {
 		challenges = [
 			{
 				title: 'Paint a room',
-				start_date: 1484283600000,
-				end_date: 1484974800000,
+				start_date: (new Date(parseInt(1484283600000))).toDateString(),
+				end_date: (new Date(parseInt(1484974800000))).toDateString(),
 				description: 'Decorate a child\'s room at the Boston Children\'s Hospital.',
 				location_name: 'Boston Children\'s Hospital',
 				location_zipcode: '02115',
@@ -359,8 +617,8 @@ router.get('/users/:id', function(req, res, next) {
 				category_tags: ['art', 'kids']
 			}, {
 				title: 'Read a book to kids',
-				start_date: 1484197200000,
-				end_date: 1485579600000,
+				start_date: (new Date(parseInt(1484197200000))).toDateString(),
+				end_date: (new Date(parseInt(1485579600000))).toDateString(),
 				description: 'Read stories to kids at the Boston Children\'s Hospital.',
 				location_name: 'Boston Children\'s Hospital',
 				location_zipcode: '02115',
@@ -377,54 +635,65 @@ router.get('/users/:id', function(req, res, next) {
 	});
 });
 
+/* GET org profile page. */
+router.get('/organizations/:id', function(req, res, next) {
 
-/* GET user registration page */ 
-/*
-router.get('/userreg', function(req, res, next) {
-    res.render('userreg');
+	Organization.findOne({ orgname : req.params.id }, function(err, org) {
+
+		if (err) {
+			console.log(err);
+		}
+
+		if (org == null) {
+			res.redirect('/users/' + req.params.id);
+			return;
+		}
+
+		var challenges = [];
+
+		for (var i = 0; i < org.challenges.length; i++) {
+			Challenge.findOne({ _id: org.challenges[i] }, function(err, challenge) {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					var c = formatChallenge(challenge);
+					challenges.push(c);
+				}
+			})
+		}
+
+		res.render('org-profile', {
+			org: org,
+			challenges: challenges
+	 	});
+	});
 });
-*/
-
-/* POST to user registration page */
-/*
-router.post('/userreg', function(req, res, next) {
-    if (req.body.mode == 'user') {
-        addUser(req.body, function(id) {
-            res.redirect('/');
-        //res.send('added User');
-        });
-    }
-    else {
-        res.send("Invalid registration mode");
-    }
-});
-*/
-
-/* GET organization registration page */
-/*
-router.get('/orgreg', function(req, res, next) {
-    res.render('orgreg');
-});
-*/
-
-/*
-router.post('/orgreg', function(req, res, next) {
-    if (req.body.mode == 'organization') {
-        addOrganization(req.body, function(id) {
-            res.redirect('/');
-        });
-    }
-    else {
-        res.send("Invalid registration mode");
-    }
-*/
+>>>>>>> 91a9af77fd697d9200bb82436fe99a60007e3c4f
 
 /* POST to edit profile. */
 router.post('/edit-profile', function(req, res, next) {
 
- 	res.render('profile', {
+	if (req.body.mode == "user") {
 
-  	});
+		editUser(req.body, function(data) {
+			res.render('profile', {
+				user: user
+  			});
+		});
+
+	}
+
+	else if (req.body.mode == "organization") {
+
+		editOrganization(req.body, function(data) {
+			res.render('org-profile', {
+				org: org
+  			});
+		});
+		
+	}
+ 	
 });
 
 /* GET user login page */
@@ -492,104 +761,10 @@ router.post('/register/:mode', function(req, res, next) {
 			res.redirect('/');
 		});
 	}
-
     else {
         res.send("Invalid registration mode");
     }
 });
-
-
-/* GET home page. */
-//THIS CODE ISN'T IN SHANNON'S VERSION; ADDED DURING MERGE CONFLICT
-/*
-router.get('/', function(req, res, next) {
-    console.log('here');
-    //res.render('index');
-    if (req.isAuthenticated()) {
-        console.log(req.user);
-        //res.send("Super secret text!");
-        res.render('index');
-    }
-    else {
-        //res.redirect('/login');
-        res.send('rip');
-    }
-});
-<<<<<<< HEAD
-=======
-*/
-
-/* GET user registration page
-router.get('/userreg', function(req, res, next) {
-    res.render('userreg');
-});
-
-/* POST to user registration page
-router.post('/userreg', function(req, res, next) {
-    if (req.body.mode == 'user') {
-        addUser(req.body, function(id) {
-            res.redirect('/');
-        //res.send('added User');
-        });
-    }
-    else {
-        res.send("Invalid registration mode");
-    }
-});
-
-/* GET organization registration page
-router.get('/orgreg', function(req, res, next) {
-    res.render('orgreg');
-});
-
-router.post('/orgreg', function(req, res, next) {
-    if (req.body.mode == 'organization') {
-        addOrganization(req.body, function(id) {
-            res.redirect('/');
-        });
-    }
-    else {
-        res.send("Invalid registration mode");
-    }
-
-});
-
-/* GET user login page
-router.get('/userlogin', function(req, res, next) {
-    res.send('<form action="/userlogin" method="post"> <div>' + 
-            '<label>Username:</label> <input type="text"'+ 
-            'name="username"/> </div> <div> <label>Password:</label>'+ 
-            '<input type="password" name="password"/> </div>' +
-            '<div> <input type="submit" value="Log In"/> </div></form>');
-    //res.render('login');
-});
-
-/* POST user login
-router.post('/userlogin', passport.authenticate('user', {
-    successRedirect: '/',
-    failureRedirect: '/userlogin'
-    //should create failureFlash message telling users wrong password/username
-    //combo or someting
-}));
-
-/* GET organization login page
-router.get('/orglogin', function(req, res, next) {
-    res.send('<form action="/orglogin" method="post"> <div>' + 
-            '<label>email:</label> <input type="text"'+ 
-            'name="email"/> </div> <div> <label>Password:</label>'+ 
-            '<input type="password" name="password"/> </div>' +
-            '<div> <input type="submit" value="Log In"/> </div></form>');
-});
-
-/* POST organization login page
-router.post('/orglogin', passport.authenticate('org', {
-    successRedirect: '/',
-    failureRedirect: '/orglogin'
-    //should create failureFlash message telling users wrong password/username
-    //combo or someting
-}));
-
-*/
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -605,7 +780,13 @@ router.get('/', function(req, res, next) {
         res.render('error', { message: 'r1p y0u br0k3 0ur w3bs1te :('});
     }
     */
-    res.render('index');
+
+    getOrganizations(function(data) {
+    	res.render('index', {
+    	organizations: data
+    	});
+    });
+
 });
 
 module.exports = router;

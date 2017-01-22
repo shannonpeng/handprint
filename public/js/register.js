@@ -1,4 +1,3 @@
-
 function openForm(evt, regTypeName) {
     // Declare all variables
     var i, tabcontent, tablinks;

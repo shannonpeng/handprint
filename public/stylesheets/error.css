@@ -7,7 +7,7 @@ html, body {
     color: yellow;
     text-align: center;
     padding: 100px 0px;
-    animation: strobe 0.4s infinite;
+    animation: strobe 2s infinite;
 }
 
 @keyframes strobe {

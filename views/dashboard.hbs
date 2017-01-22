@@ -10,7 +10,71 @@
     <script src="/js/main.js"></script>
   </head>
   <body>
-  
-    
+
+    <nav>
+
+      <!-- Logo -->
+      <div class="logo">
+        <a href="/"><img src="/images/logo-white.png"></a>
+        <a style="display:none" href="/"><img src="/images/logo-blue.png"></a>
+      </div>
+
+      <!-- Search -->
+      <!--<div class="search">
+        <img src="/images/search-white.png">
+        <input placeholder="Search for a challenge">
+      </div>-->
+
+      <!-- Links -->
+      <div class="links">
+        <div><a href="/dashboard">dashboard</a></div>
+        <a href="/users/{{ user.username}}"><div class="account">
+          <div><h3>{{ user.name }}</h3></div>
+          <div class="profile-picture" style="background-image:url('{{ user.profile_pic_url}}')">
+          </div>
+      </div></a>
+      </div>  
+
+    </nav>
+
+    <div id="feed">
+
+      <div class="container">
+
+          <div class="header">
+            <h1>Welcome {{ user.name }}</h1>
+          </div>
+
+          <div class="content">
+            <div class="challenges">
+              {{#each challenges}}
+              <div class="challenge">
+                <div class="challenge-points">
+                  <h1>{{ points }}</h1>
+                </div>
+                <div class="challenge-info">
+                  <b><p class="challenge-title">{{ title }}</p></b>
+                  <p>{{ description }}</p>
+                  <p class="challenge-location">{{ location_name }}</p>
+                  <p class="challenge-date">{{ start_date }} &mdash; {{ end_date }}</p>
+                  <div class="challenge-tags">
+                    {{#each category_tags}}
+                    <div><p># {{ this }}</p></div>
+                    {{/each}}
+                  </div>
+                </div>
+                <a name="{{ _id }}">
+                  <div class="challenge-complete">
+                      <p>complete</p>
+                  </div>
+                </a>
+              </div>
+              {{/each}}
+            </div>
+
+          </div>
+      </div>
+        
+    </div>
   </body>
 </html>

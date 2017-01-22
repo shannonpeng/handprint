@@ -2,8 +2,9 @@ html, body {
 	width: 100%;
 	height: 100%;
 	margin: 0;
-	font-family: 'Source Sans Pro';
+	font-family: 'Source Sans Pro', sans-serif;
 	color: #303030;
+	overflow-x: hidden;
 }
 
 *, *:hover {
@@ -19,8 +20,10 @@ a {
 nav {
 	width: 100%;
 	position: fixed;
-	top: 10px;
+	top: 0;
 	padding: 5px;
+	padding-top: 15px;
+	padding-bottom: 10px;
 	color: white;
 	background: transparent;
 }
@@ -40,7 +43,6 @@ nav .logo {
 
 nav .logo img {
 	height: 100%;
-	padding: 10px;
 	vertical-align: middle;
 }
 
@@ -93,20 +95,38 @@ nav .links {
 	float: right;
 }
 
+nav.scrolled {
+	background: white;
+	color: #303030;
+	border-bottom": 1px solid rgba(0, 0, 0, 0.5);
+}
+
 nav div {
 	display: inline-block;
-	margin: 0px 10px;
+	margin: 0px 15px;
 	vertical-align: middle;
 }
 
 @media screen and (max-width: 1200px) {
 
 	nav {
-		display: none;
+		position: relative;
+		padding: 5px;
+		background: #252525;
+		font-size: 0.8em;
 	}
 
-	nav .search {
-		display: none;
+	nav .links {
+		float: none;
+	}
+
+	nav div {
+		margin: 0px 8px;
+	}
+
+	nav .profile-picture {
+		width: 20px;
+		height: 20px;
 	}
 
 }

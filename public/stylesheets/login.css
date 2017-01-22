@@ -1,5 +1,6 @@
 /* Style the list */
-#navTab{
+
+#navTab {
     text-align: center;
 }
 
@@ -30,8 +31,8 @@ ul.tab li a {
     font-size: 17px;
 }
 
-#userusername #userfirstname #userlastname
-#useremail #userpassword {
+#userusername, #userfirstname, #userlastname,
+#useremail, #userpassword {
     padding: 30px 15px;
 }
 
