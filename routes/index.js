@@ -28,7 +28,6 @@ router.use(passport.session());
 /* Get organizations list */
 
 function getOrganizations(callback) {
-	var Organization = require('../schemas/organization.js');
 	var orgs_list = [];
 	Organization.find({}, function(err, orgs) {
 		if (err) {
@@ -57,9 +56,8 @@ router.get('/organizations-list', function(req, res, next) {
 /* Get users list */
 
 function getUsers(callback) {
-	var User = require('../schemas/user.js');
 	var users_list = [];
-	Organization.find({}, function(err, users) {
+	User.find({}, function(err, users) {
 		if (err) {
 			console.log(err);
 		}
@@ -73,7 +71,7 @@ function getUsers(callback) {
 				user.location_name = users[i].location_name;
 				user.points = users[i].points;
 				user.level = users[i].level;
-				users_list.push(org);
+				users_list.push(user);
 			}
 			callback(users_list);
 		}
@@ -85,6 +83,38 @@ router.get('/users-list', function(req, res, next) {
 	})
 }) 
 
+/* Get challenges list */
+
+function getChallenges(callback) {
+	var challenges_list = [];
+	Challenge.find({}, function(err, challenges) {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			for (var i = 0; i < challenges.length; i++) {
+				var challenge = {};
+				challenge.title = challenges[i].title;
+				challenge.start_date = challenges[i].start_date;
+				challenge.end_date = challenges[i].end_date;
+				challenge.description = challenges[i].description;
+				challenge.location_name = challenges[i].location_name;
+				challenge.location_zipcode = challenges[i].location_zipcode;
+				challenge.points = challenges[i].points;
+				challenge.category_tags = challenges[i].category_tags;
+				challenges_list.push(challenge);
+			}
+			callback(challenges_list);
+		}
+	});
+}
+router.get('/challenges-list', function(req, res, next) {
+	getChallenges(function(data) {
+		res.send(data);
+	})
+}) 
+
+
 /* Add user
 ARGUMENTS:
 - user: object with user properties
@@ -93,7 +123,6 @@ RETURNS:
 - String: Mongo ObjectID of newly created user
 */
 function addUser(user, callback) {
-	var User = require('../schemas/user.js');
 	User.find({ username: user.username }, function(err, users) {
 
 		if (err) {
@@ -161,8 +190,6 @@ RETURNS:
 */
 function addChallenge(challenge, callback) {
 
-	var Challenge = require('../schemas/challenge.js');
-
 	var c = new Challenge({
 		title: challenge.title,
 		start_date: challenge.start_date,
@@ -215,8 +242,6 @@ RETURNS:
 */
 function addChallengesToOrg(orgID, challenges, callback) {
 
-	var Organization = require('../schemas/organization.js');
-
 	Organization.findById(orgID, function (err, org) {
 
 		if (err) {
@@ -247,8 +272,6 @@ RETURNS:
 - String: Mongo ObjectID of newly created organization
 */
 function addOrganization(org, callback) {
-
-	var Organization = require('../schemas/organization.js');
 	
 	Organization.find({ email: org.email }, function(err, orgs) {
 
@@ -309,8 +332,6 @@ router.get('/dashboard', function(req, res, next) {
 
 	/* TODO: determine if organization or user */
 
- 	var Organization = require('../schemas/organization');
-    var Challenge = require('../schemas/challenge');
     var reqFields = [];
 
     Organization.find({}, function(err, organizations) {
@@ -350,9 +371,6 @@ router.get('/dashboard', function(req, res, next) {
 
 /* GET profile page. */
 router.get('/users/:id', function(req, res, next) {
-
-	var User = require('../schemas/user.js');
-	var Challenge = require('../schemas/challenge.js');
 
 	User.findOne({ username : req.params.id }, function(err, user) {
 
@@ -429,9 +447,6 @@ router.get('/users/:id', function(req, res, next) {
 
 /* GET org profile page. */
 router.get('/organizations/:id', function(req, res, next) {
-
-	var Organization = require('../schemas/organization.js');
-	var Challenge = require('../schemas/challenge.js');
 
 	Organization.findOne({ orgname : req.params.id }, function(err, org) {
 
