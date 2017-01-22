@@ -12,6 +12,7 @@ var Challenge = require('../schemas/challenge');
 //get the Organization model
 var Organization = require('../schemas/organization');
 
+/* Passport */
 passport.use('user', User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -161,12 +162,36 @@ function addUser(user, callback) {
 
 /* Edit user
 ARGUMENTS:
-- user: object with user properties
+- u: object with user properties
 - callback: callback function
 RETURNS:
 - String: Mongo ObjectID of modified user
 */
-function editUser(user, callback) {
+function editUser(u, callback) {
+
+	User.findOne({ username: u.username }, function(err, user) {
+
+		if (err) {
+			console.log(err);
+		}
+
+		user.name = u.name;
+		user.email = u.email;
+		user.bio = u.bio;
+		user.location_name = u.location_name;
+		user.location_zipcode = u.location_zipcode;
+		user.profile_pic_url = u.profile_pic_url;
+		user.cover_pic_url = u.cover_pic_url;
+
+		user.save(function(err, data) {
+			if (err) {
+				console.log(err);
+			}
+			console.log("user updated!");
+			callback(data);
+		});
+
+	});
 
 }
 
@@ -307,13 +332,36 @@ function addOrganization(org, callback) {
 
 /* Edit organization
 ARGUMENTS:
-- org: object with organization properties
+- o: object with organization properties
 - callback: callback function
 RETURNS:
 - String: Mongo ObjectID of modified organization
 */
-function editOrganization(org, callback) {
+function editOrganization(o, callback) {
 
+	Organization.findOne({ orgname: o.orgname }, function(err, org) {
+
+		if (err) {
+			console.log(err);
+		}
+
+		org.name = o.name;
+		org.email = o.email;
+		org.description = o.description;
+		org.location_name = o.location_name;
+		org.location_zipcode = o.location_zipcode;
+		org.profile_pic_url = o.profile_pic_url;
+		org.cover_pic_url = o.cover_pic_url;
+
+		org.save(function(err, data) {
+			if (err) {
+				console.log(err);
+			}
+			console.log("org updated!");
+			callback(data);
+		});
+
+	});
 }
 
 /* Delete organization
@@ -482,9 +530,26 @@ router.get('/organizations/:id', function(req, res, next) {
 /* POST to edit profile. */
 router.post('/edit-profile', function(req, res, next) {
 
- 	res.render('profile', {
+	if (req.body.mode == "user") {
 
-  	});
+		editUser(req.body, function(data) {
+			res.render('profile', {
+				user: user
+  			});
+		});
+
+	}
+
+	else if (req.body.mode == "organization") {
+
+		editOrganization(req.body, function(data) {
+			res.render('org-profile', {
+				org: org
+  			});
+		});
+		
+	}
+ 	
 });
 
 
