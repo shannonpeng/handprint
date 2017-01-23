@@ -527,7 +527,7 @@ router.get('/dashboard', function(req, res, next) {
         }
     });*/
 
-    var username = "tim";
+    /*var username = "tim";
 
     var challenges = [];
 
@@ -539,6 +539,21 @@ router.get('/dashboard', function(req, res, next) {
 		    	res.render('dashboard', {
 			    	user: user,
 			    	challenges: challenges
+			    });
+		    });
+		}    	
+	);*/
+
+	var orgname = "bch";
+
+    var challenges = [];
+
+    Organization.findOne({ orgname : orgname },
+	    function(err, org) {
+	    	getChallenges(function(c) {
+		    	res.render('org-dashboard', {
+			    	org: org,
+			    	challenges: c
 			    });
 		    });
 		}    	
@@ -684,11 +699,23 @@ router.post('/edit-profile', function(req, res, next) {
 });
 
 
-/* GET register page.
+/* GET register page. */
 router.get('/register', function(req, res, next) {
  	res.render('register');
 });
-*/
+
+/* POST to createChallenge. */
+router.post('/createChallenge', function(req, res, next) {
+
+	var c = [req.body.challenge];
+
+	Organization.findOne({ orgname: req.body.orgname }, function(err, org) {
+		addChallengesToOrg(org._id, c, function(data){
+			res.redirect('/dashboard');
+		});
+	});
+
+});
 
 /* POST to register. */
 router.post('/register/:mode', function(req, res, next) {

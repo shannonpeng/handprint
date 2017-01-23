@@ -2,6 +2,7 @@ $(document).ready(function() {
 
 	/* Hardcode adding user for testing purposes */
 
+	/*
 	$.ajax({
 		url: '/register/user',
 		type: 'POST',
@@ -70,28 +71,17 @@ $(document).ready(function() {
 			console.log(error);
 		}
 	});
+	*/
 
-	/* NAV BAR TRANSITION
 	$(window).scroll(function() {
 		var top  = window.pageYOffset || document.documentElement.scrollTop;
+		console.log(top);
 		if (top >= 200) {
 			$("nav").addClass("scrolled");
-			$("nav .logo img").attr("src", "/images/logo-blue.png");
 		}
 		else {
 			$("nav").removeClass("scrolled");
-			$("nav .logo img").attr("src", "/images/logo-white.png");
 		}
 	});
-	*/
-
-	$('.challenge-complete').click(function(event){
-		if ($(this).hasClass("completed")) {
-			$(this).removeClass("completed");
-		}
-		else {
-			$(this).addClass("completed");
-		}
-	})
 
 });
