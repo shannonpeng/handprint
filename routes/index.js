@@ -346,7 +346,8 @@ ARGUMENTS:
 - challenges: array of objects, each with challenge properties
 - callback: callback function
 RETURNS:
-- String: Array of Mongo ObjectIDs of newly added challenges
+- String[]: Array of Mongo ObjectIDs of newly added challenges
+- Object: updated Organization object
 */
 function addChallengesToOrg(orgID, challenges, callback) {
 
@@ -370,7 +371,7 @@ function addChallengesToOrg(orgID, challenges, callback) {
 			});
 		}
 
-		callback(ids);
+		callback(ids, org);
 
 	});
 
@@ -527,10 +528,9 @@ router.get('/dashboard', function(req, res, next) {
         }
     });*/
 
-    var username = "tim";
+    /*var username = "tim";
 
     var challenges = [];
-
 
     User.findOne({ username : username },
 	    function(err, user) {
@@ -543,8 +543,7 @@ router.get('/dashboard', function(req, res, next) {
 		    });
 		}    	
 	);
-
-	/*
+	*/
 
 	var orgname = "bch";
 
@@ -561,7 +560,7 @@ router.get('/dashboard', function(req, res, next) {
 		}    	
 	);
 
-	*/
+	
     
 });
 
@@ -575,70 +574,58 @@ router.get('/users/:id', function(req, res, next) {
 		}
 
 		if (user == null) {
-			res.redirect('/organizations/' + req.params.id);
-			return;
-		}
-
-		var challenges = [];
-
-		for (var i = 0; i < user.challenges.length; i++) {
-			Challenge.findOne({ _id: user.challenges[i] }, function(err, challenge) {
-				if (err) {
-					console.log(err);
+			Organization.findOne({ orgname: req.params.id }, function(err, org) {
+				if (org != null) {
+					res.redirect('/organizations/' + req.params.id);
 				}
 				else {
-					var c = formatChallenge(challenge);
-					challenges.push(c);
+					res.render('error', { message: 'Not Found'});
 				}
-			})
+				return;
+			});
 		}
 
-		/* HARD CODE FRIENDS AND CHALLENGES FOR NOW */
-		friends = [{
-			name: 'Shannon Peng',
-			username: 'shannon',
-			profile_pic_url: '/images/shannon.jpg'
-		},
-		{
-			name: 'Ramya Nagarajan',
-			username: 'ramya',
-			profile_pic_url: '/images/ramya.jpg'
-		
-		},
-		{
-			name: 'Jennifer Zou',
-			username: 'jennifer',
-			profile_pic_url: '/images/jennifer.jpg'
-		}
-		];
+		else {
+			var challenges = [];
 
-		challenges = [
-			{
-				title: 'Paint a room',
-				start_date: (new Date(parseInt(1484283600000))).toDateString(),
-				end_date: (new Date(parseInt(1484974800000))).toDateString(),
-				description: 'Decorate a child\'s room at the Boston Children\'s Hospital.',
-				location_name: 'Boston Children\'s Hospital',
-				location_zipcode: '02115',
-				points: 140,
-				category_tags: ['art', 'kids']
-			}, {
-				title: 'Read a book to kids',
-				start_date: (new Date(parseInt(1484197200000))).toDateString(),
-				end_date: (new Date(parseInt(1485579600000))).toDateString(),
-				description: 'Read stories to kids at the Boston Children\'s Hospital.',
-				location_name: 'Boston Children\'s Hospital',
-				location_zipcode: '02115',
-				points: 80,
-				category_tags: ['books', 'reading', 'kids']
+			for (var i = 0; i < user.challenges.length; i++) {
+				Challenge.findOne({ _id: user.challenges[i] }, function(err, challenge) {
+					if (err) {
+						console.log(err);
+					}
+					else {
+						var c = formatChallenge(challenge);
+						challenges.push(c);
+					}
+				})
 			}
-		];
 
-		res.render('profile', {
-			user: user,
-			challenges: challenges,
-			friends: friends
-	 	});
+			/* HARD CODE FRIENDS FOR NOW */
+			friends = [{
+				name: 'Shannon Peng',
+				username: 'shannon',
+				profile_pic_url: '/images/shannon.jpg'
+			},
+			{
+				name: 'Ramya Nagarajan',
+				username: 'ramya',
+				profile_pic_url: '/images/ramya.jpg'
+			
+			},
+			{
+				name: 'Jennifer Zou',
+				username: 'jennifer',
+				profile_pic_url: '/images/jennifer.jpg'
+			}
+			];
+
+			res.render('profile', {
+				user: user,
+				challenges: challenges,
+				friends: friends
+		 	});
+		}
+		
 	});
 });
 
@@ -652,28 +639,39 @@ router.get('/organizations/:id', function(req, res, next) {
 		}
 
 		if (org == null) {
-			res.redirect('/users/' + req.params.id);
-			return;
-		}
-
-		var challenges = [];
-
-		for (var i = 0; i < org.challenges.length; i++) {
-			Challenge.findOne({ _id: org.challenges[i] }, function(err, challenge) {
-				if (err) {
-					console.log(err);
+			User.findOne({ username: req.params.id }, function(err, user) {
+				if (user != null) {
+					res.redirect('/users/' + req.params.id);
 				}
 				else {
-					var c = formatChallenge(challenge);
-					challenges.push(c);
+					res.render('error', { message: 'Not Found'});
 				}
-			})
+				return;
+			});
 		}
 
-		res.render('org-profile', {
-			org: org,
-			challenges: challenges
-	 	});
+		else {
+
+			var challenges = [];
+
+			for (var i = 0; i < org.challenges.length; i++) {
+				Challenge.findOne({ _id: org.challenges[i] }, function(err, challenge) {
+					if (err) {
+						console.log(err);
+					}
+					else if (challenge != null) {
+						var c = formatChallenge(challenge);
+						challenges.push(c);
+					}
+				})
+			}
+
+			res.render('org-profile', {
+				org: org,
+				challenges: challenges
+		 	});
+		}
+		
 	});
 });
 
@@ -714,8 +712,14 @@ router.post('/createChallenge', function(req, res, next) {
 	var c = [req.body.challenge];
 
 	Organization.findOne({ orgname: req.body.orgname }, function(err, org) {
-		addChallengesToOrg(org._id, c, function(data){
-			res.redirect('/dashboard');
+		addChallengesToOrg(org._id, c, function(ids, org) {
+	    	getChallenges(function(c) {
+		    	res.render('org-dashboard', {
+			    	org: org,
+			    	challenges: c
+			    });
+		    });
+	    	
 		});
 	});
 

@@ -38,7 +38,13 @@ $(document).ready(function() {
         // TODO: WHO IS LOGGED IN???
         orgname: 'bch',
         challenge: c
-      })
+      }),
+      success: function(data) {
+        window.location.replace('/dashboard');
+      },
+      error: function(err) {
+        console.log(err);
+      }
     });
   });
 });

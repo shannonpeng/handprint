@@ -2,7 +2,7 @@ $(document).ready(function() {
 
 	/* Hardcode adding user for testing purposes */
 
-	/*
+	
 	$.ajax({
 		url: '/register/user',
 		type: 'POST',
@@ -44,7 +44,8 @@ $(document).ready(function() {
 			description: 'Children\'s hospital in Boston, MA.',
 			profile_pic_url: '/images/bch.jpg',
 			cover_pic_url: '/images/bch.jpg',
-			challenges: [{
+			challenges: []
+			/*challenges: [{
 				title: 'Paint a room',
 				start_date: 1484283600000,
 				end_date: 1484974800000,
@@ -62,7 +63,7 @@ $(document).ready(function() {
 				location_zipcode: '02115',
 				points: 80,
 				category_tags: ['books', 'reading', 'kids']
-			}]
+			}]*/
 		}),
 		success: function(data) {
 			console.log(data);
@@ -71,7 +72,7 @@ $(document).ready(function() {
 			console.log(error);
 		}
 	});
-	*/
+	
 
 	$(window).scroll(function() {
 		var top  = window.pageYOffset || document.documentElement.scrollTop;
