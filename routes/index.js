@@ -527,7 +527,7 @@ router.get('/dashboard', function(req, res, next) {
         }
     });*/
 
-    /*var username = "tim";
+    var username = "tim";
 
     var challenges = [];
 
@@ -542,7 +542,9 @@ router.get('/dashboard', function(req, res, next) {
 			    });
 		    });
 		}    	
-	);*/
+	);
+
+	/*
 
 	var orgname = "bch";
 
@@ -558,6 +560,8 @@ router.get('/dashboard', function(req, res, next) {
 		    });
 		}    	
 	);
+
+	*/
     
 });
 
@@ -742,19 +746,8 @@ router.post('/register/:mode', function(req, res, next) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    /*console.log('here');
-    //res.render('index');
-    if (req.isAuthenticated()) {
-        console.log(req.user);
-        //res.send("Super secret text!");
-        res.render('index');
-    }
-    else {
-        //res.redirect('/login');
-        res.render('error', { message: 'r1p y0u br0k3 0ur w3bs1te :('});
-    }
-    */
 
+    /* TODO: If logged in, send to /dashboard. If not logged in, load standard landing page */
     getOrganizations(function(data) {
     	res.render('index', {
     	organizations: data

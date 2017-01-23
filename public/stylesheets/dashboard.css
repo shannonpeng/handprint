@@ -210,10 +210,6 @@
 	display: inline-block;
 }
 
-#feed .challenge-form input.challenge-start-date, #feed .challenge-form input.challenge-end-date {
-
-}
-
 #feed .challenge-form .button {
 	background: rgba(16, 102, 213, 1);
 	border: 5px solid rgba(16, 102, 213, 1);
@@ -230,7 +226,7 @@
 }
 
 #feed .challenge-form .button:hover {
-	background: white;
+	background: transparent;
 	color: rgba(16, 102, 213, 1);
 	cursor: pointer;
 }
