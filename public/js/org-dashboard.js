@@ -7,7 +7,7 @@ $(document).ready(function() {
     for (var i = 0; i < d.length; i++) {
       ds.push(parseInt(d[i]));
     }
-    return Date.UTC(ds[0], ds[1], ds[2]);
+    return Date.UTC(ds[0], ds[1] - 1 , ds[2] + 1);
   }
 
   $("#feed .create-challenge").click(function(event) {
@@ -28,7 +28,7 @@ $(document).ready(function() {
     c.location_name = $("#feed .challenge-form .challenge-location").val();
     c.points = $("#feed .challenge-form .challenge-points").val();
     c.category_tags = $("#feed .challenge-form .challenge-tags").val().split(", ");
-    console.log(c);
+    //console.log(c);
     $.ajax({
       url: '/createChallenge',
       type: 'POST',

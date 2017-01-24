@@ -528,7 +528,9 @@ router.get('/dashboard', function(req, res, next) {
         }
     });*/
 
-    /*var username = "tim";
+    /*
+
+    var username = "tim";
 
     var challenges = [];
 
@@ -543,7 +545,9 @@ router.get('/dashboard', function(req, res, next) {
 		    });
 		}    	
 	);
+
 	*/
+	
 
 	var orgname = "bch";
 
@@ -559,8 +563,8 @@ router.get('/dashboard', function(req, res, next) {
 		    });
 		}    	
 	);
-
 	
+
     
 });
 
