@@ -3,6 +3,7 @@
   <head>
     <title>Handprint | Gamifying Volunteering</title>
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <link rel="stylesheet" href="/stylesheets/base.css" />
     <link rel="stylesheet" href="/stylesheets/index.css" />
     <link rel="shortcut icon" href="/favicon.png" />
@@ -60,6 +61,8 @@
               <p>{{ location_name }}</p>
               </div>
             </a>
+        {{else}}
+            <h3>No organizations are currently in the database.</h3>
         {{/each}}
           </div>
       </div>

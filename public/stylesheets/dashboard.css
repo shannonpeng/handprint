@@ -50,6 +50,7 @@
 
 #feed .challenge {
 	padding: 10px 0px;
+	padding-top: 0px;
 }
 
 #feed .challenge p {
@@ -169,8 +170,13 @@
 
 #feed .challenge-form.closed {
 	padding-top: 0;
+	padding-bottom: 0;
 	height: 0;
 	opacity: 0;
+}
+
+#feed .challenge-form.closed * {
+	display: none;
 }
 
 #feed .challenge-form input {
@@ -243,7 +249,7 @@
 
 	#feed .challenge > div {
 		display: block;
-		margin: 5px;
+		margin: 5px 0px;
 	}
 
 	#feed .challenge-complete  {
