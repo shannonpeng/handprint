@@ -63,6 +63,7 @@ $(document).ready(function() {
                 }),
                 success: function(data) {
                     console.log(data);
+                    window.location.replace('/');
                 },
                 error: function(error) {
                     console.log(error);
@@ -87,15 +88,16 @@ $(document).ready(function() {
                 data: JSON.stringify({
                     mode: 'organization',
                     name: name,
-                    username: username,
+                    orgname: username,
                     email: email,
-                    password: password,
+                    //password: password,
                     description: description,
-                    profile_pic_url: '/images/tim.jpg',
-                    cover_pic_url: '/images/killian.jpg'
+                    //profile_pic_url: '/images/tim.jpg',
+                    //cover_pic_url: '/images/killian.jpg'
                 }),
                 success: function(data) {
                     console.log(data);
+                    window.location.replace('/');
                 },
                 error: function(error) {
                     console.log(error);
@@ -104,4 +106,3 @@ $(document).ready(function() {
         }
     })
 })
-Contact GitHub API Training Shop Blog About

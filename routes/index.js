@@ -361,17 +361,21 @@ function addChallengesToOrg(orgID, challenges, callback) {
 			console.log("err: No org found with org._id " + orgID);
 		}
 
-	  	var ids = [];
+		else {
 
-		for (var i = 0; i < challenges.length; i++) {
-			addChallenge(challenges[i], function(id) {
-				org.challenges.push(id);
-				org.save();
-				ids.push(id);
-			});
+		  	var ids = [];
+
+			for (var i = 0; i < challenges.length; i++) {
+				addChallenge(challenges[i], function(id) {
+					org.challenges.push(id);
+					org.save();
+					ids.push(id);
+				});
+			}
+
+			callback(ids, org);
+
 		}
-
-		callback(ids, org);
 
 	});
 
@@ -704,12 +708,6 @@ router.post('/edit-profile', function(req, res, next) {
  	
 });
 
-
-/* GET register page. */
-router.get('/register', function(req, res, next) {
- 	res.render('register');
-});
-
 /* POST to createChallenge. */
 router.post('/createChallenge', function(req, res, next) {
 
@@ -728,6 +726,34 @@ router.post('/createChallenge', function(req, res, next) {
 	});
 
 });
+
+
+/* GET login page. */
+
+router.get('/login', function(req, res, next) {
+	res.render('login');
+})
+
+/* POST to login page. */
+
+router.post('/login/user', passport.authenticate('user', {
+	successRedirect: '/',
+	failureRedirect: '/login',
+	failureFlash: false
+}));
+
+router.post('/login/organization', passport.authenticate('org', {
+	successRedirect: '/',
+	failureRedirect: '/login',
+	failureFlash: false
+}));
+
+
+/* GET register page. */
+router.get('/register', function(req, res, next) {
+ 	res.render('register');
+});
+
 
 /* POST to register. */
 router.post('/register/:mode', function(req, res, next) {
