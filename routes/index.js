@@ -359,15 +359,17 @@ function addChallengesToOrg(orgID, challenges, callback) {
 		if (org == null) {
 			console.log("err: No org found with org._id " + orgID);
 		}
-
-	  	var ids = [];
-
-		for (var i = 0; i < challenges.length; i++) {
-			addChallenge(challenges[i], function(id) {
-				org.challenges.push(id);
-				org.save();
-				ids.push(id);
-			});
+	  	else {
+	  		var ids = [];
+	  		if (challenges) {
+				for (var i = 0; i < challenges.length; i++) {
+					addChallenge(challenges[i], function(id) {
+						org.challenges.push(id);
+						org.save();
+						ids.push(id);
+					});
+				}
+			}
 		}
 
 		callback(ids);
@@ -669,7 +671,6 @@ router.get('/organizations/:id', function(req, res, next) {
 	 	});
 	});
 });
->>>>>>> 91a9af77fd697d9200bb82436fe99a60007e3c4f
 
 /* POST to edit profile. */
 router.post('/edit-profile', function(req, res, next) {
@@ -738,11 +739,27 @@ router.post('/orglogin', passport.authenticate('org', {
 }));
 */
 
-/* GET register page.
+router.get('/login', function(req, res, next) {
+	res.render('login');
+})
+
+router.post('/login/user', passport.authenticate('user', {
+	successRedirect: '/',
+	failureRedirect: '/login',
+	failureFlash: false
+}));
+
+router.post('/login/organization', passport.authenticate('org', {
+	successRedirect: '/',
+	failureRedirect: '/login',
+	failureFlash: false
+}));
+
+/* GET register page. */
 router.get('/register', function(req, res, next) {
     res.render('register');
 });
-*/
+
 
 
 /* POST to register. */

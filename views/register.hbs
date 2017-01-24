@@ -23,19 +23,19 @@
     <div id="Volunteer" class="tabcontent">
       <form name="addVolunteer" method="post" action="/register/user">
         Username*:<br>
-        <input type="text" id="volusername" required><br>
+        <input type="text" name="username" id="volusername" required><br>
         <!-- split first and last name ? -->
         Name*:<br>
-        <input type="text" id="volname" required><br>
+        <input type="text" name="name" id="volname" required><br>
         Email*:<br>
-        <input type="text" id="volemail" required><br>
+        <input type="text" name="email" id="volemail" required><br>
         Password*:<br>
-        <input type="text" id="volpassword" required></br>
+        <input type="text" name="password" id="volpassword" required></br>
         <!-- Change bio input type to text box instead of just text field -->
         Bio:<br>
-        <input type="text" id="bio"><br>
+        <input type="text" name="bio" id="bio"><br>
         Location:<br>
-        <input type="text" id="location"><br>
+        <input type="text" name="location" id="location"><br>
         <input type="submit" class="submit">
       </form>
     </div>
@@ -43,19 +43,18 @@
     <div id="Organization" class="tabcontent">
       <form name="addorg" method="post" action="/register/organization">
         Name*:<br>
-        <input type="text" id="orgname" required></br>
+        <input type="text" name= "name" id="orgname" required></br>
         Username*:<br>
-        <input type="text" id="orgusername" required></br>
+        <input type="text" name="orgname" id="orgusername" required></br>
         Email*:<br>
-        <input type="text" id="orgemail" required></br>
+        <input type="text" name="email" id="orgemail" required></br>
         Password*:<br>
-        <input type="text" id="orgpassword" required></br>
+        <input type="text" name="password" id="orgpassword" required></br>
         Location*:<br>
-        <input type="text" id="orglocation" required></br>
+        <input type="text" name="location" id="orglocation" required></br>
         Description*:<br>
-        <input type="text" id="orgdescription"></br>
-
-        <input type="submit" value="submit">
+        <input type="text" name="description" id="orgdescription"></br>
+        <input type="submit" class="submit">
       </form>
     </div>
 
