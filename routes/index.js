@@ -12,6 +12,10 @@ var Challenge = require('../schemas/challenge');
 //get the Organization model
 var Organization = require('../schemas/organization');
 
+/* Current Account */
+var isUser = null;
+var accountName = "";
+
 /* Passport */
 passport.use('user', User.createStrategy());
 passport.serializeUser(User.serializeUser());
@@ -365,13 +369,15 @@ function addChallengesToOrg(orgID, challenges, callback) {
 
 		  	var ids = [];
 
-			for (var i = 0; i < challenges.length; i++) {
-				addChallenge(challenges[i], function(id) {
-					org.challenges.push(id);
-					org.save();
-					ids.push(id);
-				});
-			}
+		  	if (challenges) {
+		  		for (var i = 0; i < challenges.length; i++) {
+					addChallenge(challenges[i], function(id) {
+						org.challenges.push(id);
+						org.save();
+						ids.push(id);
+					});
+				}
+		  	}
 
 			callback(ids, org);
 
@@ -494,80 +500,47 @@ function deleteOrganization(o, callback) {
 /* GET dashboard. */
 router.get('/dashboard', function(req, res, next) {
 
-	/* TODO: determine if organization or user */
+	if (isUser == null) {
+		res.redirect('/');
+	}
 
-    /*var reqFields = [];
+	if (isUser) {
 
-    Organization.find({}, function(err, organizations) {
-        if (organizations.length > 0) {
-            var challengeIds = organizations[0].challenges;
-            var ongoingChallenges = [];
-            var pastChallenges = [];
-                Challenge.find({}, function(err, challenges) {
-                    for (var i = 0; i < challenges.length; i++) {
-                        // push all challenges
-                        if (challengeIds.indexOf(challenges[i]._id) > -1) {
-                            // check dates of challenges
-                            if (challenges[i].end_date > Date.now()) {
-                                ongoingChallenges.push(challenges[i].title);
-                            }
-                            else if (challenges[i].end_date < Date.now()) {
-                                //check for past challenges
-                                pastChallenges.push(challenges[i].title);
-                            }
-                        }
-                    }
-                    if (pastChallenges.length < 0) {
-                        pastChallenges = 'There are no past challenges';
-                    }
-                    if (ongoingChallenges.length < 0) {
-                        ongoingChallenges = 'There are no ongoing challenges'; 
-                    }
-                    res.send(' ONGOING CHALLENGES: ' + 
-                        ongoingChallenges + ' PAST CHALLENGES: ' + pastChallenges);
-                });
-        }
-        else {
-            res.render('Your organization has no challenges');
-        }
-    });*/
+		var username = accountName;
 
-    /*
+	    var challenges = [];
 
-    var username = "tim";
-
-    var challenges = [];
-
-    User.findOne({ username : username },
-	    function(err, user) {
-	    	getChallenges(function(c) {
-		    	challenges = c;
-		    	res.render('dashboard', {
-			    	user: user,
-			    	challenges: challenges
+	    User.findOne({ username : username },
+		    function(err, user) {
+		    	getChallenges(function(c) {
+			    	challenges = c;
+			    	res.render('dashboard', {
+				    	user: user,
+				    	challenges: challenges
+				    });
 			    });
-		    });
-		}    	
-	);
+			}    	
+		);
 
-	*/
-	
+	}
+	else {
 
-	var orgname = "bch";
+		var orgname = accountName;
 
-    var challenges = [];
+	    var challenges = [];
 
-    Organization.findOne({ orgname : orgname },
-	    function(err, org) {
-	    	getChallenges(function(c) {
-		    	res.render('org-dashboard', {
-			    	org: org,
-			    	challenges: c
+	    Organization.findOne({ orgname : orgname },
+		    function(err, org) {
+		    	getChallenges(function(c) {
+			    	res.render('org-dashboard', {
+				    	org: org,
+				    	challenges: c
+				    });
 			    });
-		    });
-		}    	
-	);
-	
+			}    	
+		);
+
+	}
 
     
 });
@@ -736,19 +709,25 @@ router.get('/login', function(req, res, next) {
 
 /* POST to login page. */
 
-router.post('/login/user', passport.authenticate('user', {
-	successRedirect: '/',
-	failureRedirect: '/login',
-	failureFlash: false
-}));
+router.post('/login/user', passport.authenticate('user'), function(req, res) {
+	isUser = true;
+	accountName = req.body.username;
+    res.redirect('/dashboard');
 
-router.post('/login/organization', passport.authenticate('org', {
-	successRedirect: '/',
-	failureRedirect: '/login',
-	failureFlash: false
-}));
+    console.log(isUser);
+	console.log(accountName);
+});
 
+router.post('/login/organization', passport.authenticate('org'), function(req, res) {
+	isUser = false;
+	accountName = req.body.email;
+    res.redirect('/dashboard');
 
+    console.log(isUser);
+	console.log(accountName);
+});
+
+	
 /* GET register page. */
 router.get('/register', function(req, res, next) {
  	res.render('register');
@@ -761,14 +740,18 @@ router.post('/register/:mode', function(req, res, next) {
 	/* User Registration */
 	if (req.params.mode == "user") {
 		addUser(req.body, function(id) {
-			res.redirect('/');
+			isUser = true;
+			accountName = req.body.username;
+			res.redirect('/dashboard');
 		});
 	}
 
 	/* Organization Registration */
 	else if (req.params.mode == "organization") {
 		addOrganization(req.body, function(id) {
-			res.redirect('/');
+			isUser = false;
+			accountName = req.body.email;
+			res.redirect('/dashboard');
 		});
 	}
 
@@ -781,12 +764,17 @@ router.post('/register/:mode', function(req, res, next) {
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
-    /* TODO: If logged in, send to /dashboard. If not logged in, load standard landing page */
-    getOrganizations(function(data) {
-    	res.render('index', {
-    	organizations: data
-    	});
-    });
+    if (isUser == null) {
+    	getOrganizations(function(data) {
+	    	res.render('index', {
+	    	organizations: data
+	    	});
+   		 });
+    }
+    else {
+    	res.redirect('/dashboard');
+    }
+    
 
 });
 

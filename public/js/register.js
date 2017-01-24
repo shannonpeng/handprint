@@ -18,21 +18,6 @@ function openForm(evt, regTypeName) {
     document.getElementById(regTypeName).style.display = "block";
     evt.currentTarget.className += " active";
 }
-/*var userSchema = new mongoose.Schema({
-    username: {type: String, required: true, index: { unique: true }},
-    name: {type: String, required: true},
-    email: {type: String, required: true},
-    bio: String,
-    location_name: String,
-    location_zipcode: String,
-    profile_pic_url: {type: String, required: true},
-    cover_pic_url: {type: String, required: true},
-    friends: [String],
-    challenges: [String],
-    points: {type: Number, required: true},
-    level: {type: Number, required: true}
-});
-*/
 
 $(document).ready(function() {
     $(".submit").click(function() {
@@ -51,12 +36,11 @@ $(document).ready(function() {
                 contentType: 'application/json; charset=utf-8',
                 datatype: 'json',
                 data: JSON.stringify({
-                    mode: 'user',
+                    //mode: 'user',
                     username: username,
                     email: email,
-                    password: password,
+                    //password: password,
                     name: name,
-                    email: email,
                     bio: bio,
                     profile_pic_url: '/images/tim.jpg',
                     cover_pic_url: '/images/killian.jpg'
@@ -79,21 +63,20 @@ $(document).ready(function() {
             // need to add location drop down before storing locaitons
             //var location = $("#orglocation").val();
             var description = $("#orgdescription").val();
-            console.log(mode, name, username, email, password);
             $.ajax({
                 url: '/register/organization',
                 type: 'POST',
                 contentType: 'application/json; charset=utf-8',
                 datatype: 'json',
                 data: JSON.stringify({
-                    mode: 'organization',
+                    //mode: 'organization',
                     name: name,
                     orgname: username,
                     email: email,
                     //password: password,
                     description: description,
-                    //profile_pic_url: '/images/tim.jpg',
-                    //cover_pic_url: '/images/killian.jpg'
+                    profile_pic_url: '/images/bch.jpg',
+                    cover_pic_url: '/images/bch.jpg'
                 }),
                 success: function(data) {
                     console.log(data);
