@@ -13,7 +13,7 @@ var Challenge = require('../schemas/challenge');
 var Organization = require('../schemas/organization');
 
 /* Current Account */
-var isUser = null;
+//var isUser = null;
 var accountName = "";
 
 /* Passport */
@@ -727,7 +727,14 @@ router.post('/login/organization', passport.authenticate('org'), function(req, r
 	console.log(accountName);
 });
 
-	
+/* GET logout */
+router.get('/logout', function(req, res) {
+	//isUser = null;
+	req.session.destroy(function(err) {
+		res.redirect('/');
+	});
+});
+
 /* GET register page. */
 router.get('/register', function(req, res, next) {
  	res.render('register');
@@ -761,9 +768,22 @@ router.post('/register/:mode', function(req, res, next) {
 
 });
 
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
+	if (req.user) {
+		res.redirect('/dashboard');
+	}
+	else {
+		getOrganizations(function(data) {
+			res.render('index', {
+				organizations:data
+			});
+		});
+	}
+
+    /*
     if (isUser == null) {
     	getOrganizations(function(data) {
 	    	res.render('index', {
@@ -774,6 +794,7 @@ router.get('/', function(req, res, next) {
     else {
     	res.redirect('/dashboard');
     }
+    */
     
 
 });
