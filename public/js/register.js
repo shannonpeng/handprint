@@ -39,7 +39,7 @@ $(document).ready(function() {
                     //mode: 'user',
                     username: username,
                     email: email,
-                    //password: password,
+                    password: password,
                     name: name,
                     bio: bio,
                     profile_pic_url: '/images/tim.jpg',
