@@ -11,7 +11,8 @@ var routes = require('./routes/index');
 var app = express();
 
 // database setup
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://handprint:ULZUyCY9IJSE2S0NUzjQeYjy33p3705aIDOppv9YWgnitkyZag1kduCWwMD9dHgRbJZUqvnPQhDWNVsLe1TSVg==@handprint.documents.azure.com:10250/?ssl=true');
+//mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://handprint:ULZUyCY9IJSE2S0NUzjQeYjy33p3705aIDOppv9YWgnitkyZag1kduCWwMD9dHgRbJZUqvnPQhDWNVsLe1TSVg==@handprint.documents.azure.com:10250/?ssl=true');
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/handprint');
 var connection = mongoose.connection;
 connection.on('error', console.error.bind(console, 'connection error:'));
 connection.on('connected', function() {
@@ -25,12 +26,13 @@ app.engine('.hbs', exphbs({extname: '.hbs'}));
 app.set('view engine', '.hbs');
 
 //connect to azure
-if (process.env.NODE_ENV == "production") {
+/*if (process.env.NODE_ENV == "production") {
   app.listen(process.env.PORT);
 }
 else {
   app.listen(80);
 }
+*/
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
 app.use(logger('dev'));

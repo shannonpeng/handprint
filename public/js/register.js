@@ -36,7 +36,6 @@ $(document).ready(function() {
                 contentType: 'application/json; charset=utf-8',
                 datatype: 'json',
                 data: JSON.stringify({
-                    //mode: 'user',
                     username: username,
                     email: email,
                     password: password,
@@ -73,7 +72,7 @@ $(document).ready(function() {
                     name: name,
                     orgname: username,
                     email: email,
-                    //password: password,
+                    password: password,
                     description: description,
                     profile_pic_url: '/images/bch.jpg',
                     cover_pic_url: '/images/bch.jpg'
