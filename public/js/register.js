@@ -75,13 +75,8 @@ $(document).ready(function() {
                     email: email,
                     //password: password,
                     description: description,
-<<<<<<< HEAD
-                    //profile_pic_url: '/images/tim.jpg',
-                    //cover_pic_url: '/images/killian.jpg'
-=======
                     profile_pic_url: '/images/bch.jpg',
                     cover_pic_url: '/images/bch.jpg'
->>>>>>> 0f32d5f3a5b5912b80d70cf0dffa45b85eb06432
                 }),
                 success: function(data) {
                     console.log(data);
