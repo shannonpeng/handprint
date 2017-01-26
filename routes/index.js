@@ -12,6 +12,10 @@ var Challenge = require('../schemas/challenge');
 //get the Organization model
 var Organization = require('../schemas/organization');
 
+/* Current Account */
+//var isUser = null;
+var accountName = "";
+
 /* Passport */
 passport.use('user', User.createStrategy());
 passport.serializeUser(User.serializeUser());
@@ -346,7 +350,8 @@ ARGUMENTS:
 - challenges: array of objects, each with challenge properties
 - callback: callback function
 RETURNS:
-- String: Array of Mongo ObjectIDs of newly added challenges
+- String[]: Array of Mongo ObjectIDs of newly added challenges
+- Object: updated Organization object
 */
 function addChallengesToOrg(orgID, challenges, callback) {
 
@@ -359,10 +364,13 @@ function addChallengesToOrg(orgID, challenges, callback) {
 		if (org == null) {
 			console.log("err: No org found with org._id " + orgID);
 		}
-	  	else {
-	  		var ids = [];
-	  		if (challenges) {
-				for (var i = 0; i < challenges.length; i++) {
+
+		else {
+
+		  	var ids = [];
+
+		  	if (challenges) {
+		  		for (var i = 0; i < challenges.length; i++) {
 					addChallenge(challenges[i], function(id) {
 						org.challenges.push(id);
 						org.save();
@@ -371,7 +379,6 @@ function addChallengesToOrg(orgID, challenges, callback) {
 				}
 			}
 		}
-
 		callback(ids);
 	});
 }
@@ -503,60 +510,48 @@ function deleteOrganization(o, callback) {
 
 router.get('/dashboard', function(req, res, next) {
 
-	/* TODO: determine if organization or user */
+	if (isUser == null) {
+		res.redirect('/');
+	}
 
-    /*var reqFields = [];
+	if (isUser) {
 
-    Organization.find({}, function(err, organizations) {
-        if (organizations.length > 0) {
-            var challengeIds = organizations[0].challenges;
-            var ongoingChallenges = [];
-            var pastChallenges = [];
-                Challenge.find({}, function(err, challenges) {
-                    for (var i = 0; i < challenges.length; i++) {
-                        // push all challenges
-                        if (challengeIds.indexOf(challenges[i]._id) > -1) {
-                            // check dates of challenges
-                            if (challenges[i].end_date > Date.now()) {
-                                ongoingChallenges.push(challenges[i].title);
-                            }
-                            else if (challenges[i].end_date < Date.now()) {
-                                //check for past challenges
-                                pastChallenges.push(challenges[i].title);
-                            }
-                        }
-                    }
-                    if (pastChallenges.length < 0) {
-                        pastChallenges = 'There are no past challenges';
-                    }
-                    if (ongoingChallenges.length < 0) {
-                        ongoingChallenges = 'There are no ongoing challenges'; 
-                    }
-                    res.send(' ONGOING CHALLENGES: ' + 
-                        ongoingChallenges + ' PAST CHALLENGES: ' + pastChallenges);
-                });
-        }
-        else {
-            res.render('Your organization has no challenges');
-        }
-    });*/
+		var username = accountName;
 
-    var username = "tim";
+	    var challenges = [];
 
-    var challenges = [];
-
-
-    User.findOne({ username : username },
-	    function(err, user) {
-	    	getChallenges(function(c) {
-		    	challenges = c;
-		    	res.render('dashboard', {
-			    	user: user,
-			    	challenges: challenges
+	    User.findOne({ username : username },
+		    function(err, user) {
+		    	getChallenges(function(c) {
+			    	challenges = c;
+			    	res.render('dashboard', {
+				    	user: user,
+				    	challenges: challenges
+				    });
 			    });
-		    });
-		}    	
-	);
+			}    	
+		);
+
+	}
+	else {
+
+		var orgname = accountName;
+
+	    var challenges = [];
+
+	    Organization.findOne({ orgname : orgname },
+		    function(err, org) {
+		    	getChallenges(function(c) {
+			    	res.render('org-dashboard', {
+				    	org: org,
+				    	challenges: c
+				    });
+			    });
+			}    	
+		);
+
+	}
+
     
 });
 
@@ -570,70 +565,58 @@ router.get('/users/:id', function(req, res, next) {
 		}
 
 		if (user == null) {
-			res.redirect('/organizations/' + req.params.id);
-			return;
-		}
-
-		var challenges = [];
-
-		for (var i = 0; i < user.challenges.length; i++) {
-			Challenge.findOne({ _id: user.challenges[i] }, function(err, challenge) {
-				if (err) {
-					console.log(err);
+			Organization.findOne({ orgname: req.params.id }, function(err, org) {
+				if (org != null) {
+					res.redirect('/organizations/' + req.params.id);
 				}
 				else {
-					var c = formatChallenge(challenge);
-					challenges.push(c);
+					res.render('error', { message: 'Not Found'});
 				}
-			})
+				return;
+			});
 		}
 
-		/* HARD CODE FRIENDS AND CHALLENGES FOR NOW */
-		friends = [{
-			name: 'Shannon Peng',
-			username: 'shannon',
-			profile_pic_url: '/images/shannon.jpg'
-		},
-		{
-			name: 'Ramya Nagarajan',
-			username: 'ramya',
-			profile_pic_url: '/images/ramya.jpg'
-		
-		},
-		{
-			name: 'Jennifer Zou',
-			username: 'jennifer',
-			profile_pic_url: '/images/jennifer.jpg'
-		}
-		];
+		else {
+			var challenges = [];
 
-		challenges = [
-			{
-				title: 'Paint a room',
-				start_date: (new Date(parseInt(1484283600000))).toDateString(),
-				end_date: (new Date(parseInt(1484974800000))).toDateString(),
-				description: 'Decorate a child\'s room at the Boston Children\'s Hospital.',
-				location_name: 'Boston Children\'s Hospital',
-				location_zipcode: '02115',
-				points: 140,
-				category_tags: ['art', 'kids']
-			}, {
-				title: 'Read a book to kids',
-				start_date: (new Date(parseInt(1484197200000))).toDateString(),
-				end_date: (new Date(parseInt(1485579600000))).toDateString(),
-				description: 'Read stories to kids at the Boston Children\'s Hospital.',
-				location_name: 'Boston Children\'s Hospital',
-				location_zipcode: '02115',
-				points: 80,
-				category_tags: ['books', 'reading', 'kids']
+			for (var i = 0; i < user.challenges.length; i++) {
+				Challenge.findOne({ _id: user.challenges[i] }, function(err, challenge) {
+					if (err) {
+						console.log(err);
+					}
+					else {
+						var c = formatChallenge(challenge);
+						challenges.push(c);
+					}
+				})
 			}
-		];
 
-		res.render('profile', {
-			user: user,
-			challenges: challenges,
-			friends: friends
-	 	});
+			/* HARD CODE FRIENDS FOR NOW */
+			friends = [{
+				name: 'Shannon Peng',
+				username: 'shannon',
+				profile_pic_url: '/images/shannon.jpg'
+			},
+			{
+				name: 'Ramya Nagarajan',
+				username: 'ramya',
+				profile_pic_url: '/images/ramya.jpg'
+			
+			},
+			{
+				name: 'Jennifer Zou',
+				username: 'jennifer',
+				profile_pic_url: '/images/jennifer.jpg'
+			}
+			];
+
+			res.render('profile', {
+				user: user,
+				challenges: challenges,
+				friends: friends
+		 	});
+		}
+		
 	});
 });
 
@@ -647,28 +630,39 @@ router.get('/organizations/:id', function(req, res, next) {
 		}
 
 		if (org == null) {
-			res.redirect('/users/' + req.params.id);
-			return;
-		}
-
-		var challenges = [];
-
-		for (var i = 0; i < org.challenges.length; i++) {
-			Challenge.findOne({ _id: org.challenges[i] }, function(err, challenge) {
-				if (err) {
-					console.log(err);
+			User.findOne({ username: req.params.id }, function(err, user) {
+				if (user != null) {
+					res.redirect('/users/' + req.params.id);
 				}
 				else {
-					var c = formatChallenge(challenge);
-					challenges.push(c);
+					res.render('error', { message: 'Not Found'});
 				}
-			})
+				return;
+			});
 		}
 
-		res.render('org-profile', {
-			org: org,
-			challenges: challenges
-	 	});
+		else {
+
+			var challenges = [];
+
+			for (var i = 0; i < org.challenges.length; i++) {
+				Challenge.findOne({ _id: org.challenges[i] }, function(err, challenge) {
+					if (err) {
+						console.log(err);
+					}
+					else if (challenge != null) {
+						var c = formatChallenge(challenge);
+						challenges.push(c);
+					}
+				})
+			}
+
+			res.render('org-profile', {
+				org: org,
+				challenges: challenges
+		 	});
+		}
+		
 	});
 });
 
@@ -727,40 +721,64 @@ router.get('/orglogin', function(req, res, next) {
             'name="email"/> </div> <div> <label>Password:</label>'+ 
             '<input type="password" name="password"/> </div>' +
             '<div> <input type="submit" value="Log In"/> </div></form>');
-});
-*/
+/* POST to createChallenge. */
+router.post('/createChallenge', function(req, res, next) {
 
-/*
-router.post('/orglogin', passport.authenticate('org', {
-    successRedirect: '/',
-    failureRedirect: '/orglojhbugin'
-    //should create failureFlash message telling users wrong password/username
-    //combo or someting
-}));
-*/
+	var c = [req.body.challenge];
+
+	Organization.findOne({ orgname: req.body.orgname }, function(err, org) {
+		addChallengesToOrg(org._id, c, function(ids, org) {
+	    	getChallenges(function(c) {
+		    	res.render('org-dashboard', {
+			    	org: org,
+			    	challenges: c
+			    });
+		    });
+	    	
+		});
+	});
+
+});
+
+
+/* GET login page. */
 
 router.get('/login', function(req, res, next) {
 	res.render('login');
 })
 
-router.post('/login/user', passport.authenticate('user', {
-	successRedirect: '/',
-	failureRedirect: '/login',
-	failureFlash: false
-}));
+/* POST to login page. */
 
-router.post('/login/organization', passport.authenticate('org', {
-	successRedirect: '/',
-	failureRedirect: '/login',
-	failureFlash: false
-}));
+router.post('/login/user', passport.authenticate('user'), function(req, res) {
+	isUser = true;
+	accountName = req.body.username;
+    res.redirect('/dashboard');
+
+    console.log(isUser);
+	console.log(accountName);
+});
+
+router.post('/login/organization', passport.authenticate('org'), function(req, res) {
+	isUser = false;
+	accountName = req.body.email;
+    res.redirect('/dashboard');
+
+    console.log(isUser);
+	console.log(accountName);
+});
+
+/* GET logout */
+router.get('/logout', function(req, res) {
+	//isUser = null;
+	req.session.destroy(function(err) {
+		res.redirect('/');
+	});
+});
 
 /* GET register page. */
 router.get('/register', function(req, res, next) {
-    res.render('register');
+ 	res.render('register');
 });
-
-
 
 /* POST to register. */
 router.post('/register/:mode', function(req, res, next) {
@@ -768,14 +786,18 @@ router.post('/register/:mode', function(req, res, next) {
 	/* User Registration */
 	if (req.params.mode == "user") {
 		addUser(req.body, function(id) {
-			res.redirect('/');
+			isUser = true;
+			accountName = req.body.username;
+			res.redirect('/dashboard');
 		});
 	}
 
 	/* Organization Registration */
 	else if (req.params.mode == "organization") {
 		addOrganization(req.body, function(id) {
-			res.redirect('/');
+			isUser = false;
+			accountName = req.body.email;
+			res.redirect('/dashboard');
 		});
 	}
     else {
@@ -783,26 +805,34 @@ router.post('/register/:mode', function(req, res, next) {
     }
 });
 
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    /*console.log('here');
-    //res.render('index');
-    if (req.isAuthenticated()) {
-        console.log(req.user);
-        //res.send("Super secret text!");
-        res.render('index');
+
+	if (req.user) {
+		res.redirect('/dashboard');
+	}
+	else {
+		getOrganizations(function(data) {
+			res.render('index', {
+				organizations:data
+			});
+		});
+	}
+
+    /*
+    if (isUser == null) {
+    	getOrganizations(function(data) {
+	    	res.render('index', {
+	    	organizations: data
+	    	});
+   		 });
     }
     else {
-        //res.redirect('/login');
-        res.render('error', { message: 'r1p y0u br0k3 0ur w3bs1te :('});
+    	res.redirect('/dashboard');
     }
     */
-
-    getOrganizations(function(data) {
-    	res.render('index', {
-    	organizations: data
-    	});
-    });
+    
 
 });
 

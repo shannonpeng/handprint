@@ -8,8 +8,8 @@ var orgSchema = new mongoose.Schema({
 	email: {type: String, required: true},
 	location_name: String,
 	location_zipcode: String,
-	//profile_pic_url: {type: String, required: true},
-	//cover_pic_url: {type: String, required: true},
+	profile_pic_url: {type: String, required: false},
+	cover_pic_url: {type: String, required: false},
 	description: String,
 	challenges: [String]
 });

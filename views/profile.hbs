@@ -3,6 +3,7 @@
   <head>
     <title>{{ user.name }} | Handprint</title>
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <link rel="stylesheet" href="/stylesheets/base.css" />
     <link rel="stylesheet" href="/stylesheets/profile.css" />
     <link rel="shortcut icon" href="/favicon.png" />
@@ -77,6 +78,8 @@
 		  					</div>
 		  				</div>
 		  			</div>
+		  			{{else}}
+		  			<h3>{{ user.name }} has not yet completed any challenges.</h3>
 		  			{{/each}}
 		  		</div>
 

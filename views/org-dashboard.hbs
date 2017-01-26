@@ -1,146 +1,147 @@
 <!DOCTYPE html>
-<html lang = 'en'>
-  	<head>
-  		<!-- <meta charset="utf-8"> 
-  		<meta name="viewport" content="width=device-width, initial-scale=1"> -->
-    	<title>Dashboard | Handprint</title>
-    	<link rel="stylesheet" href="/stylesheets/base.css" />
-    	<link rel="stylesheet" href="/stylesheets/dashboard.css" />  
-    	<link rel="shortcut icon" href="images/favicon.png" />
-    	<!-- Latest compiled and minified CSS -->
-    	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
-    	<!-- jQuery library -->
-    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    	<script src="/js/main.js"></script>
-    	<script src="/js/org-dashboard.js"></script>
-    	<!-- Latest compiled and minified JavaScript -->
-    	<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
-  	</head>
-  
-  	<body>
-  	  	<nav>
+<html>
+  <head>
+    <title>Dashboard | Handprint</title>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <link rel="stylesheet" href="/stylesheets/base.css" />
+    <link rel="stylesheet" href="/stylesheets/dashboard.css" />
+    <link rel="shortcut icon" href="/favicon.png" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/org-dashboard.js"></script>
+  </head>
+  <body>
+  	<nav>
 
-  	  		<!-- Logo -->
-  	  		<div class="logo">
-  	  			<a href="/"><img src="/images/logo-white.png"></a>
-  	  		</div>
+        <!-- Logo -->
+        <div class="logo">
+          <a href="/"><img src="/images/logo-white.png"></a>
+          <a style="display:none" href="/"><img src="/images/logo-blue.png"></a>
+        </div>
 
-  	  		<!-- Search -->
-  	  		<!--<div class="search">
-  	  			<img src="/images/search-white.png">
-  	  			<input placeholder="Search for a challenge">
-  	  		</div>-->
+        <!-- Search -->
+        <!--<div class="search">
+          <img src="/images/search-white.png">
+          <input placeholder="Search for a challenge">
+        </div>-->
 
-  	  		<!-- Links -->
-  	  		<div class="links">
-  		  		<div><a href="/dashboard">dashboard</a></div>
-  			  	<a href="/users/{{ user.username}}"><div class="account">
-  	  				<div><h3>{{ user.name }}</h3></div>
-  	  				<div class="profile-picture" style="background-image:url('{{ user.profile_pic_url}}')">
-  	  				</div>
-  				</div></a>
-  	  		</div>	
+        <!-- Links -->
+        <div class="links">
+          <div><a href="/dashboard">dashboard</a></div>
+          <a href="/users/{{ org.orgname }}"><div class="account">
+            <div><h3>{{ org.name }}</h3></div>
+            <div class="profile-picture" style="background-image:url('{{ org.profile_pic_url}}')">
+            </div>
+          <div><a href="/logout">logout</a></div>
+        </div></a>
+        </div>  
 
-  	  	</nav>
-  		<div class="container">
+    </nav>
 
-  		  		<div id="profile">
-  		  		
-  			  		<div class="profile-header" style="background: linear-gradient(45deg, rgba(61, 158, 223, 0.8), rgba(16, 102, 213, 0.8)), url('{{ user.cover_pic_url }}');background-size: cover;">
-  			  			<div class="welcome">
-  			  				<h1><span>Welcome, {{ user.name}}</span></h1>
-  			  			</div>
-  			  			<div class="container">
-  				  			
-  				  		</div>
-  			  		</div>
 
-  			  		<div class="create-challenge" style="text-align:center">
-  			  			<div class="plus-icon" style="padding-top:50px"><input type="image" src="/images/plus-icon.png" style="height:150px; width:550px" id="plus-icon"/></div>
-  			  			<div class="challenge-form" style="display:none">
-  			  				<form id="addchallenge" method='post' action='/addChallenge'>
-  			  				    Challenge Title<br>
-  			  				    <input type="text" placeholder="Title" name="title" required><br>
+    <div id="feed">
 
-  			  				    Start Date<br>
-  			  				    <input type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" placeholder="MM/DD/YYYY" name="start" required><br>
+      <div class="container">
 
-  			  				    End Date<br>
-  			  				    <input type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" placeholder="MM/DD/YYYY" name="end" required><br>
+          <div class="header">
+            <h1>Welcome, {{ org.name }}</h1>
+          </div>
 
-  			  				    Description<br>
-  			  				    <input type="text" placeholder="Description" name="description" required> <br>
+          <div class="content">
 
-  			  				    Location<br>
-  			  				    <input type="text" placeholder="City, State" name="location" required> <br>
+            <div class="create-challenge">
+              <div class="plus-button"><h1>+</h1></div>
+              <div><h1>Post a challenge</h1></div>
+            </div>
 
-  			  				    ZIP code<br>
-  			  				    <input type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="01234" name="zip" required> <br>
+            <div class="challenge-form closed">
 
-  			  				    Points<br>
-  			  				    <input type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="Points" name="points" required> <br>
+                <div class="form-element" style="display:block">
+                  <h2>Title</h2>
+                  <input type="text" class="challenge-title" placeholder="e.g. Plant a tree" required></input>
+                </div>
 
-  			  				    <button type="submit" id="submit">Submit</button>
-  			  				</form>
-  			  			</div>
-  			  		</div>
+                <div class="form-element" style="display:block">
+                <h2>Description</h2>
+                  <input type="text" class="challenge-description" placeholder="e.g. Contribute to nature." required></input>
+                </div>
 
-  			  		
-  			  		<div class="content">
-  			  		  	<div class="challenges">
-  			  		  		<div class="challenge-header">Challenges</div>
-  			  		 		{{#each challenges}}
-  			  		  		<div class="challenge">
-  			  		  			<h3>{{ title }}</h3>
-  			  		  			<p>{{ description }}</p>
-  			  		  			<p>Start Date: {{ start_date }}</p>
-  			  		  			<p>End Date: {{ end_date }}</p>
-  			  		  			<p>Location: {{ location }}</p>
-  			  		  			<p>Points: {{ points }}</p>
-  			  		  		</div>
-  			  		  		{{/each}}
-  			  		  	</div>
-  			  		</div>
-  				
-  				</div> 	
+                <div class="form-element">
+                  <h2>Start Date</h2>
+                  <input type="date" class="challenge-start-date" min="2017-01-22" required></input>
+                </div>
 
-  	<!-- <nav class="navbar navbar-default">
-  	  <div class="container-fluid">
-  	    <div class="navbar-header">
-  	      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-  	      	<span class="sr-only">Toggle navigation</span>
-  	        <span class="icon-bar"></span>
-  	        <span class="icon-bar"></span>
-  	        <span class="icon-bar"></span> 
-  	      </button>
-  	      <a href="/" class="navbar-brand"><img style="width:25px; height:25px; padding:-10px" src = "images/logo-blue.png"></a>
-  	    </div>
-  	    <div class="collapse navbar-collapse" id="myNavbar">
-  	      <ul class="nav navbar-nav navbar-right"> 
-  	      	<li><a href="/profile">Profile</a></li> 
-  	      	<li><a href="/help">Help</a></li> 
-  	      	<li><a href="/dashboard">{{ user.name }} <img style="width:25px; height:25px" class="img-circle" src="{{ user.profile_pic_url }}"></a></li> 
-  	      </ul>
-  	    </div>
-  	  </div>
-  	</nav>
-  	<div class="wide" style="background-image:url('/images/killian.jpg');">
-  	  	<div class="col-xs-5 line"><hr></div>
-  	    <div class="col-xs-2 welcome">Welcome, {{ user.name }}</div>
-  	    <div class="col-xs-5 line"><hr></div>
-  	</div>
-  	<div class="container">
-		<div class="row" id="dashboard-header">
-  			<div class="col-md-1"></div>
-  			<div class="col-md-1"> <img style="width:45px; height:45px; padding:-10px" class="img-circle" src="/images/plus-icon.png"></div>
-  			<div class="col-md-5"> <h1 style="display:inline">Create a challenge!</h1> </div>
-  		</div>
-  	</div> -->	  		
-	  		
-	  		<!-- TODO: add friends' recent history to profile --> 		
+                <div class="form-element">
+                  <h2>End Date</h2>
+                 <input type="date" class="challenge-end-date" min="2017-01-22" required></input>
+                </div>
 
-	</div>
+                <div class="form-element" style="display:block">
+                  <h2>Location</h2>
+                  <input type="text" class="challenge-location" placeholder="e.g. Boston Public Gardens" required></input>
+                </div>
+
+                <div class="form-element">
+                  <h2>Award Points</h2>
+                  <input type="number" class="challenge-points" placeholder="e.g. 100" required></input>
+                </div>
+
+                <div class="form-element">
+                  <h2>Category Tags</h2>
+                  <input type="text" class="challenge-tags" placeholder="e.g. kids, art, nature"></input>
+                </div>
+
+                    <!--Challenge Title
+                    <input type="text" placeholder="Title" name="title" required><br>
+
+                    Start Date<br>
+                    <input type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" placeholder="MM/DD/YYYY" name="start" required><br>
+
+                    End Date<br>
+                    <input type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" placeholder="MM/DD/YYYY" name="end" required><br>
+
+                    Description<br>
+                    <input type="text" placeholder="Description" name="description" required> <br>
+
+                    Location<br>
+                    <input type="text" placeholder="City, State" name="location" required> <br>
+
+                    ZIP code<br>
+                    <input type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="01234" name="zip" required> <br>
+
+                    Points<br>
+                    <input type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="Points" name="points" required> <br>-->
+
+                  <div class="button submit"><h2>post</h2></div>
+            </div>
+
+            <div class="challenges">
+              {{#each challenges}}
+              <div class="challenge">
+                <div class="challenge-points">
+                  <h1>{{ points }}</h1>
+                </div>
+                <div class="challenge-info">
+                  <b><p class="challenge-title">{{ title }}</p></b>
+                  <p>{{ description }}</p>
+                  <p class="challenge-location">{{ location_name }}</p>
+                  <p class="challenge-date">{{ start_date }} &mdash; {{ end_date }}</p>
+                  <div class="challenge-tags">
+                    {{#each category_tags}}
+                    <div><p># {{ this }}</p></div>
+                    {{/each}}
+                  </div>
+                </div>
+              </div>
+              {{else}}
+              <h3>You haven't posted any challenges yet.</h3>
+              {{/each}}
+            </div>
+
+          </div>
+      </div>
+		</div> 		
 
   </body>
 </html>
-Contact GitHub API Training Shop Blog About
