@@ -29,23 +29,28 @@ $(document).ready(function() {
     c.points = $("#feed .challenge-form .challenge-points").val();
     c.category_tags = $("#feed .challenge-form .challenge-tags").val().split(", ");
     //console.log(c);
-    $.ajax({
-      url: '/createChallenge',
-      type: 'POST',
-      contentType: 'application/json; charset=utf-8',
-      datatype: 'json',
-      data: JSON.stringify({
-        // TODO: WHO IS LOGGED IN???
-        orgname: 'bch',
-        challenge: c
-      }),
-      success: function(data) {
-        window.location.replace('/dashboard');
-      },
-      error: function(err) {
-        console.log(err);
-      }
-    });
-  });
+    if (!(c.title && c.start_date && c.end_date && c.description && c.location_name && c.points)) {
+      alert('Please fill out all required fields.');
+    }
+    else {
+      $.ajax({
+        url: '/createChallenge',
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        datatype: 'json',
+        data: JSON.stringify({
+          // TODO: WHO IS LOGGED IN???
+          orgname: 'bch',
+          challenge: c
+        }),
+        success: function(data) {
+          window.location.replace('/dashboard');
+        },
+        error: function(err) {
+          console.log(err);
+        }
+      });
+    }
+  }
 });
 

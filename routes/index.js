@@ -51,7 +51,7 @@ router.get('/dashboard', function(req, res, next) {
 
 	if (req.user) {
 
-		var username = accountName;
+		var username = req.user;
 
 	    var challenges = [];
 
@@ -71,7 +71,7 @@ router.get('/dashboard', function(req, res, next) {
 
 	else if (req.org) {
 
-		var orgname = accountName;
+		var orgname = req.org;
 
 	    var challenges = [];
 
@@ -311,7 +311,7 @@ router.post('/register/:mode', function(req, res, next) {
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
-	if (req.user) {
+	if (req.user || req.org) {
 		res.redirect('/dashboard');
 	}
 	else {

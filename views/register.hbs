@@ -3,161 +3,82 @@
   <head>
     <title>Sign Up | Handprint</title>
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
-    <link rel="stylesheet" href="/stylesheets/base.css" />
-    <link rel="stylesheet" href="/stylesheets/register.css" />
+    <link rel="stylesheet" href="/stylesheets/base.css"/>
+    <link rel="stylesheet" href="/stylesheets/register.css"/>
     <link rel="shortcut icon" href="/favicon.png" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="/js/register.js"></script>
   </head>
   <body>
-    <div id="navTab">
+
+    <nav> 
+        <!-- Logo -->
+        <div class="logo">
+          <a href="/"><img src="/images/logo-white.png"></a>
+        </div>
+        <!-- Links -->
+        <div class="links">
+          <!--need to make /about in index.js-->
+          <div><a href>About</a></div>
+          <!--the following a hrefs should link to sign up page-->
+          <div><a href="/register">Become an Organization</a></div>
+          <div><a href="/register">Sign Up</a></div>
+          <div><a href="/login">Login</a></div>
+        </div>
+      </nav>
+
+    <div class="header">
+      <div class="logo"><img src="/images/logo-white.png"></div>
+      <h1>Sign Up</h1>
+    </div>
+
+    <div id="reg-form">
+
+    <center><h2 style="font-weight:normal">I want to register as a</h2></center>
+
+    <div id="mode-tab">
       <ul class="tab">
         <!-- javascript:void(0) keeps browser on same page -->
-        <li><a href="javascript:void(0)" class="tablinks" 
-          onclick="openForm(event, 'Volunteer')">Volunteer</a></li>
-        <li><a href="javascript:void(0)" class="tablinks" 
-          onclick="openForm(event, 'Organization')">Organization</a></li>
+        <li><a href="javascript:void(0)" class="tab-links" 
+          onclick="openForm(event, 'volunteer')"><h2>Volunteer</h2></a></li>
+        <li><a href="javascript:void(0)" class="tab-links" 
+          onclick="openForm(event, 'organization')"><h2>Organization</h2></a></li>
       </ul>
     </div>
 
-    <div id="Volunteer" class="tabcontent">
-      <form name="addVolunteer" method="post" action="/register/user">
-        Username*:<br>
-        <input type="text" name="username" id="volusername" required><br>
-        <!-- split first and last name ? -->
-        Name*:<br>
-        <input type="text" name="name" id="volname" required><br>
-        Email*:<br>
-        <input type="text" name="email" id="volemail" required><br>
-        Password*:<br>
-        <input type="password" name="password" id="volpassword" required></br>
-        <!-- Change bio input type to text box instead of just text field -->
-        Bio:<br>
-        <input type="text" name="bio" id="bio"><br>
-        Location:<br>
-        <input type="text" name="location" id="location"><br>
-        <input type="submit" class="submit">
-      </form>
+    <div id="volunteer" class="tab-content">
+        <p>Username<span class="asterisk">*</span></p>
+        <input type="text" class="username" placeholder="tim" required></input>
+        <p>Name<span class="asterisk">*</span></p>
+        <input type="text" class="name" placeholder="Tim Beaver" required></input>
+        <p>Email<span class="asterisk">*</span></p>
+        <input type="text" class="email" placeholder="tim@mit.edu" required></input>
+        <p>Password<span class="asterisk">*</span></p>
+        <input type="password" class="password" placeholder="Password" required></input>
+        <p>Bio</p>
+        <input type="text" class="bio" placeholder="Hi! I am Tim Beaver."></input>
+        <p>Location</p>
+        <input type="text" class="location" placeholder="Cambridge, MA."></input>
+        <div class="button submit">Submit</div>
     </div>
 
-    <div id="Organization" class="tabcontent">
-      <form name="addorg" method="post" action="/register/organization">
-        Name*:<br>
-        <input type="text" name= "name" id="orgname" required></br>
-        Username*:<br>
-        <input type="text" name="orgname" id="orgusername" required></br>
-        Email*:<br>
-        <input type="text" name="email" id="orgemail" required></br>
-        Password*:<br>
-        <input type="password" name="password" id="orgpassword" required></br>
-        Location*:<br>
-        <input type="text" name="location" id="orglocation" required></br>
-        Description*:<br>
-        <input type="text" name="description" id="orgdescription"></br>
-        <input type="submit" class="submit">
-      </form>
+    <div id="organization" class="tab-content">
+        <p>Username<span class="asterisk">*</span></p>
+        <input type="text" class="username" placeholder="rfl" required></input>
+        <p>Name<span class="asterisk">*</span></p>
+        <input type="text" class="name" placeholder="Relay for Life" required></input>
+        <p>Email<span class="asterisk">*</span></p>
+        <input type="text" class="email" placeholder="rfl@rfl.org" required></input>
+        <p>Password<span class="asterisk">*</span></p>
+        <input type="password" class="password" placeholder="Password" required></input>
+        <p>Location<span class="asterisk">*</span></p>
+        <input type="text" class="location" placeholder="Boston, MA" required></input>
+        <p>Description</p>
+        <input type="text" class="description" placeholder="Hello!"></input>
+        <div class="button submit">Submit</div>
     </div>
-
-
-    <!--
-    <div id="bg">
-      <div class="module">
-      <ul>
-        <li class="tab activeTab"><img src="http://i.imgur.com/Fk1Urva.png" alt="" class="icon"/></li>
-        <li class="tab" ><img src="http://i.imgur.com/ZsRgIDD.png" alt="" class="icon"/></li>
-        <li class="tab" ><img src="http://i.imgur.com/34Q50wo.png" alt="" class="icon"/></li>
-        <li class="tab" ><img src="http://i.imgur.com/LCCJ06E.png" alt="" class="icon"/></li>
-      </ul>
-    
-      <form class="form">
-        <input type="text" placeholder="First Name" class="textbox" />
-        <input type="text" placeholder="Last Name" class="textbox" />
-        <input type="text" placeholder="Email Address" class="textbox" />
-        <input type="button" value="Next" class="button" />
-      </form>
+   
     </div>
-  </div>
-  <a href="http://dribbble.com/shots/1265587-Registration-Template-PSD?list=everyone" target="_blank">Design by: Asif Aleem</a>
-  -->
-  <!--
-    <div class="form">
- 
-      <ul class="tab-group">
-        <li class="tab active"><a href="#volunteer">Volunteer</a></li>
-        <li class="tab"><a href="#organization">Organization</a></li>
-      </ul>
-      
-      <div class="tab-content">
-        <div id="signup">   
-          
-          <form action="/" method="post">
-          
-          <div class="top-row">
-            <div class="field-wrap">
-              <label>
-                Username<span class="req">*</span>
-              </label>
-              <input type="text" required autocomplete="off" />
-            </div>
-          </div>
-          <div class="field-wrap">
-            <label>
-              Email Address<span class="req">*</span>
-            </label>
-            <input type="email"required autocomplete="off"/>
-          </div>
-          <div class="field-wrap">
-            <label>
-              Set A Password<span class="req">*</span>
-            </label>
-            <input type="password"required autocomplete="off"/>
-          </div>
-          <div class="field-wrap">
-            <label>
-              Bio<span class="req">*</span>
-            </label>
-            <input type="password"required autocomplete="off"/>
-          </div>
-          <div class="field-wrap">
-            <label>
-              Location<span class="req">*</span>
-            </label>
-            <input type="password"required autocomplete="off"/>
-          </div>
-          
-          <button type="submit" class="button button-block"/>Get Started</button>
-          
-          </form>
-        </div>
-        
-        <div id="login">   
-          <h1>Welcome Back!</h1>
-          
-          <form action="/" method="post">
-          
-            <div class="field-wrap">
-            <label>
-              Email Address<span class="req">*</span>
-            </label>
-            <input type="email"required autocomplete="off"/>
-          </div>
-          
-          <div class="field-wrap">
-            <label>
-              Password<span class="req">*</span>
-            </label>
-            <input type="password"required autocomplete="off"/>
-          </div>
-          
-          <p class="forgot"><a href="#">Forgot Password?</a></p>
-          
-          <button class="button button-block"/>Log In</button>
-          
-          </form>
-        </div>
-        -->
-      </div><!-- tab-content -->
-      
-    </div> <!-- /form -->
+    </div>
   </body>
 </html>

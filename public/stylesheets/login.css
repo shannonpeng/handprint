@@ -1,54 +1,117 @@
-/* Style the list */
-#navTab {
+.header {
+    width: 100%;
+    color: white;
+    background: linear-gradient(45deg, rgba(61, 158, 223, 0.6), rgba(16, 102, 213, 0.4)), url('/images/bench.jpg');
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
     text-align: center;
+    padding: 50px 0px;
+}
+
+.header h1 {
+    font-size: 4em;
+    margin: auto;
+}
+
+.header div.logo {
+    width: 150px;
+    height: 150px;
+    margin: auto;
+    padding: 25px;
+}
+
+.header div.logo img {
+    height: 100%;
+}
+
+#login-form {
+    padding-top: 25px;
+}
+
+#login-form input {
+    min-width: 300px;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    color: #808080;
+    font-size: 1.5em;
+    opacity: 0.5;
+    display: block;
+    margin: 5px 0px;
+    padding: 0;
+    background: transparent;
+}
+
+#login-form input:focus {
+    opacity: 1;
+}
+
+#login-form p {
+    font-size: 1.25em;
+}
+
+#login-form .button {
+    background: rgba(16, 102, 213, 1);
+    border: 5px solid rgba(16, 102, 213, 1);
+    color: white;
+    text-align: center;
+    text-transform: uppercase;
+    max-width: 150px;
+    padding: 10px 15px;
+    margin-top: 25px;
+}
+
+#login-form .button h2 {
+    margin: auto;
+    font-weight: bold;
+}
+
+#login-form .button:hover {
+    background: transparent;
+    color: rgba(16, 102, 213, 1);
+    cursor: pointer;
+}
+
+#login-form .asterisk {
+    color: red;
+    font-size: 0.8em;
+    margin: 0px 5px;
 }
 
 ul.tab {
     text-align: center;
     list-style-type: none;
-    margin: 0;
     padding: 0;
-    overflow: hidden;
-    border: 1px solid #ccc;
-    background-color: #f1f1f1;
+    margin: auto;
 }
 
-/* Float the list items side by side */
 ul.tab li {
-    float: left;
-    display: inline;
-}
-
-/* Style the links inside the list items */
-ul.tab li a {
     display: inline-block;
-    color: black;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    transition: 0.3s;
-    font-size: 17px;
+    margin: 0px 5px;
+}
+ul.tab li a h2 {
+    color: rgb(61, 158, 223);
+    margin: auto;
+    background: transparent;
+    border: 5px solid rgb(61, 158, 223);
+    padding: 10px 30px;
+    font-weight: normal;
 }
 
-#userusername, #userfirstname, #userlastname,
-#useremail, #userpassword {
-    padding: 30px 15px;
-}
+ul.tab li:hover a h2 {background: rgb(61, 158, 223);color:white;cursor:pointer;}
 
-#description {
-    padding: 30px 20px;
-}
+ul.tab li a.active h2 {background: rgb(61, 158, 223);color:white;}
 
-/* Change background color of links on hover */
-ul.tab li a:hover {background-color: #ddd;}
-
-/* Create an active/current tablink class */
-ul.tab li a:focus, .active {background-color: #ccc;}
-
-/* Style the tab content */
-.tabcontent {
+.tab-content {
     display: none;
-    padding: 6px 12px;
-    border: 1px solid #ccc;
-    border-top: none;
+    width: 50%;
+    max-width: 400px;
+    padding: 15px 25px;
+    margin: 25px auto;
+    background: rgb(248, 248, 248);
+}
+
+.active {
+    display: inline-block;
 }

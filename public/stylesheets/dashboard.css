@@ -216,6 +216,12 @@
 	display: inline-block;
 }
 
+#feed .challenge-form .asterisk {
+    color: red;
+    font-size: 0.8em;
+    margin: 0px 5px;
+}
+
 #feed .challenge-form .button {
 	background: rgba(16, 102, 213, 1);
 	border: 5px solid rgba(16, 102, 213, 1);
