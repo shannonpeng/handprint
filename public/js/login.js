@@ -18,3 +18,62 @@ function openForm(evt, regTypeName) {
     document.getElementById(regTypeName).style.display = "block";
     evt.currentTarget.className += " active";
 }
+
+$(document).ready(function() {
+
+    /* VOLUNTEER LOGIN */
+
+    $("#volunteer .button.submit").click(function() {
+        var username = $("#volunteer .username").val();
+        var password = $("#volunteer .password").val();
+        if (!(username && password)) {
+            alert('Please fill out all required fields.');
+        }
+        else {
+            $.ajax({
+                url: '/login/user',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                datatype: 'json',
+                data: JSON.stringify({
+                    username: username,
+                    password: password
+                }),
+                success: function(data) {
+                    console.log("successful login");
+                },
+                error: function(error) {
+                    alert(error);
+                }
+            });
+        }   
+    });
+
+    /* ORGANIZATION LOGIN */
+
+    $("#organization .button.submit").click(function() {
+        var email = $("#organization .email").val();
+        var password = $("#organization .password").val();
+        if (!(email && password)) {
+            alert('Please fill out all required fields.');
+        }
+        else {
+            $.ajax({
+                url: '/login/organization',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                datatype: 'json',
+                data: JSON.stringify({
+                    email: email,
+                    password: password
+                }),
+                success: function(data) {
+                    console.log("successful login");
+                },
+                error: function(error) {
+                    alert(error);
+                }
+            });
+        }
+    })
+});
