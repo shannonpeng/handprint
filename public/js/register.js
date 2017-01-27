@@ -50,7 +50,7 @@ $(document).ready(function() {
                     cover_pic_url: '/images/killian.jpg'
                 }),
                 success: function(data) {
-                    window.location.replace('/');
+                    console.log("Successful registration!");
                 },
                 error: function(error) {
                     alert(error);
@@ -88,7 +88,7 @@ $(document).ready(function() {
                     cover_pic_url: '/images/killian.jpg'
                 }),
                 success: function(data) {
-                    window.location.replace('/');
+                    console.log("Successful registration!");
                 },
                 error: function(error) {
                     alert(error);
