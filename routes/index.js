@@ -94,57 +94,6 @@ router.get('/dashboard', function(req, res, next) {
 			res.send('user could not be found');
 		}
 	}
-	
-	/* OLD REG STUFF; THIS IS FUCKED UP BUT I DIDN'T WANNA DELETE */
-	/*
-	if (req.local) {
-		console.log('req.user is ' + req.local);
-		console.log('req.user.username is ' + req.local.username);
-		var username = req.local.username;
-
-	    var challenges = [];
-
-	    User.findOne({ username : username },
-		    function(err, user) {
-		    	console.log('in callback function');
-		    	lib.getChallenges(function(c) {
-		    		console.log('in lib.getChallenges');
-			    	challenges = c;
-			    	res.render('dashboard', {
-				    	user: user,
-				    	challenges: challenges
-				    }, console.log('callback of res.render'));
-					//res.render('dashboard');
-			    });
-			}    	
-		);
-		
-	}
-
-	else if (req.org) {
-
-		var orgname = req.org;
-
-	    var challenges = [];
-
-	    Organization.findOne({ orgname : orgname },
-		    function(err, org) {
-		    	lib.getChallenges(function(c) {
-			    	res.render('org-dashboard', {
-				    	org: org,
-				    	challenges: c
-				    });
-			    });
-			}    	
-		);
-
-	}
-
-	else {
-		res.redirect('/');
-	}
-	*/
-
     
 });
 
@@ -316,55 +265,6 @@ router.post('/login', passport.authenticate('local', {
 	failureFlash: false
 }));
 
-/* OLD POST to login page. */
-
-/*
-router.post('/login/user', passport.authenticate('user'), function(req, res) {
-	//accountName = req.body.username;
-	console.log('from /login/user req.user is ' + req.user);
-    res.redirect('/dashboard');
-	//console.log(accountName);
-});
-*/
-
-/*
-router.post('/login/user', passport.authenticate('user'), function(req, res) {
-	//accountName = req.body.username;
-	console.log('from /login/user req.user is ' + req.user);
-    res.redirect('/dashboard');
-	//console.log(accountName);
-});
-*/
-
-
-/* OLD POST to login page */
-/*
-router.post('/login/user', function(req, res, next) {
-  	passport.authenticate('user', function(err, user, info) {
-    if (err) { 
-    	return next(err); 
-    }
-    if (!user) {
-    	return res.redirect('/login'); 
-    }
-    req.logIn(user, function(err) {
-      if (err) { 
-      	return next(err); 
-      }
-      return res.redirect('/dashboard');
-    });
-  })(req, res, next);
-});
-
-router.post('/login/organization', passport.authenticate('org'), function(req, res) {
-	console.log('as;dkfja;sdjk');
-	console.log('req is' + req.org);
-	//accountName = req.body.email;
-    res.redirect('/dashboard');
-	//console.log(accountName);
-});
-*/
-
 /* GET logout */
 router.get('/logout', function(req, res) {
 	req.session.destroy(function(err) {
@@ -389,43 +289,8 @@ router.post('/register', function(req, res, next) {
 
 	allUser.register(newUser, req.body.password, function(err) {
 	});
-	//should redirect to login after login starts working
 	res.redirect('/login');
-	//lib.addAllUser(req.body, function(id) {
-		//console.log(req.body);
-		//return res.redirect('/dashboard');
-		//accountEmail = req.user.email;
-	//});
 })
-
-
-/* OLD POST to register. */
-/*
-router.post('/register/:mode', function(req, res, next) {
-
-	/* User Registration
-	if (req.params.mode == "user") {
-		lib.addUser(req.body, function(id) {
-			accountName = req.body.username;
-			res.redirect('/dashboard');
-		});
-	}
-
-	/* Organization Registration
-	else if (req.params.mode == "organization") {
-		lib.addOrganization(req.body, function(id) {
-			accountName = req.body.email;
-			res.redirect('/dashboard');
-		});
-	}
-
-	else {
-		res.send("Invalid registration mode");
-	}
-
-});
-*/
-
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

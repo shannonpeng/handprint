@@ -132,40 +132,6 @@ var lib = {
 		});
 	},
 
-	addAllUser: function(user, callback) {
-		console.log(user);
-		allUser.find({username: user.username}, function(err, users) {
-
-			if (err) {
-				console.log(err);
-			}
-
-			if (users.length == 0) {
-				var newUser = new allUser({
-					mode: user.mode,
-					name: user.name,
-					username: user.username,
-					email: user.email,
-					//bio: user.bio,
-					//location_name: user.location_name,
-					//location_zipcode: user.location_zipcode,
-					// need to add in other fields, but need check to make sure it exists first
-				});
-
-				allUser.register(newUser, user.password, function(err) {
-					/*
-					if (err) {
-						console.log(err);
-					}
-					callback(newUser._id);
-					*/
-				});
-				res.redirect('/')
-			}
-
-		});
-	},
-
 	/* Edit user
 	ARGUMENTS:
 	- u: object with user properties
