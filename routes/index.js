@@ -8,10 +8,15 @@ var LocalStrategy = require('passport-local').Strategy;
 var User = require('../schemas/user');
 var Challenge = require('../schemas/challenge');
 var Organization = require('../schemas/organization');
+var allUser = require('../schemas/allUser');
 
 var lib = require('./lib');
 
 /* Passport */
+passport.use('local', allUser.createStrategy());
+passport.serializeUser(allUser.serializeUser());
+passport.deserializeUser(allUser.deserializeUser());
+
 passport.use('user', User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -48,21 +53,68 @@ router.get('/challenges-list', function(req, res, next) {
 
 /* GET dashboard. */
 router.get('/dashboard', function(req, res, next) {
-
+	console.log('in dashboard');
+	console.log(req.user);
 	if (req.user) {
+		if (req.user.mode == 'volunteer') {
+			var username = req.user.username;
 
-		var username = req.user;
+			var challenges = [];
+
+			allUser.findOne({username: username}, 
+				function(err, user) {
+					lib.getChallenges(function(c) {
+						challenges = c;
+						res.render('dashboard', {
+							user: user,
+							challenges: challenges
+						}, console.log('callback of res.render'));
+					});
+				}
+			);
+		}
+
+		else if (req.user.mode == 'organization') {
+			var orgname = req.user.name;
+
+			var challenges = [];
+
+			allUser.findOne({ name : orgname },
+		    function(err, org) {
+		    	lib.getChallenges(function(c) {
+			    	res.render('org-dashboard', {
+				    	org: org,
+				    	challenges: c
+				    });
+			    });
+			});
+		}
+
+		else {
+			res.send('user could not be found');
+		}
+	}
+	
+	/* OLD REG STUFF; THIS IS FUCKED UP BUT I DIDN'T WANNA DELETE */
+	/*
+	if (req.local) {
+		console.log('req.user is ' + req.local);
+		console.log('req.user.username is ' + req.local.username);
+		var username = req.local.username;
 
 	    var challenges = [];
 
 	    User.findOne({ username : username },
 		    function(err, user) {
+		    	console.log('in callback function');
 		    	lib.getChallenges(function(c) {
+		    		console.log('in lib.getChallenges');
 			    	challenges = c;
 			    	res.render('dashboard', {
 				    	user: user,
 				    	challenges: challenges
-				    });
+				    }, console.log('callback of res.render'));
+					//res.render('dashboard');
 			    });
 			}    	
 		);
@@ -91,6 +143,7 @@ router.get('/dashboard', function(req, res, next) {
 	else {
 		res.redirect('/');
 	}
+	*/
 
     
 });
@@ -233,7 +286,7 @@ router.post('/edit-profile', function(req, res, next) {
 
 /* POST to createChallenge. */
 router.post('/createChallenge', function(req, res, next) {
-
+	console.log(req.org);
 	var c = [req.body.challenge];
 
 	Organization.findOne({ orgname: req.body.orgname }, function(err, org) {
@@ -256,18 +309,61 @@ router.get('/login', function(req, res, next) {
 	res.render('login');
 })
 
-/* POST to login page. */
+/* POST to login page */
+router.post('/login', passport.authenticate('local', {
+	successRedirect: '/dashboard',
+	failureRedirect: '/register',
+	failureFlash: false
+}));
+
+/* OLD POST to login page. */
+
+/*
 router.post('/login/user', passport.authenticate('user'), function(req, res) {
-	accountName = req.body.username;
+	//accountName = req.body.username;
+	console.log('from /login/user req.user is ' + req.user);
     res.redirect('/dashboard');
-	console.log(accountName);
+	//console.log(accountName);
+});
+*/
+
+/*
+router.post('/login/user', passport.authenticate('user'), function(req, res) {
+	//accountName = req.body.username;
+	console.log('from /login/user req.user is ' + req.user);
+    res.redirect('/dashboard');
+	//console.log(accountName);
+});
+*/
+
+
+/* OLD POST to login page */
+/*
+router.post('/login/user', function(req, res, next) {
+  	passport.authenticate('user', function(err, user, info) {
+    if (err) { 
+    	return next(err); 
+    }
+    if (!user) {
+    	return res.redirect('/login'); 
+    }
+    req.logIn(user, function(err) {
+      if (err) { 
+      	return next(err); 
+      }
+      return res.redirect('/dashboard');
+    });
+  })(req, res, next);
 });
 
 router.post('/login/organization', passport.authenticate('org'), function(req, res) {
-	accountName = req.body.email;
+	console.log('as;dkfja;sdjk');
+	console.log('req is' + req.org);
+	//accountName = req.body.email;
     res.redirect('/dashboard');
-	console.log(accountName);
+	//console.log(accountName);
 });
+*/
 
 /* GET logout */
 router.get('/logout', function(req, res) {
@@ -281,11 +377,33 @@ router.get('/register', function(req, res, next) {
  	res.render('register');
 });
 
+router.post('/register', function(req, res, next) {
+	// moved here from lib.js
+	console.log('signed up');
+	var newUser = new allUser({
+		mode: req.body.mode,
+		name: req.body.name,
+		username: req.body.username,
+		email: req.body.email
+	});
 
-/* POST to register. */
+	allUser.register(newUser, req.body.password, function(err) {
+	});
+	//should redirect to login after login starts working
+	res.redirect('/login');
+	//lib.addAllUser(req.body, function(id) {
+		//console.log(req.body);
+		//return res.redirect('/dashboard');
+		//accountEmail = req.user.email;
+	//});
+})
+
+
+/* OLD POST to register. */
+/*
 router.post('/register/:mode', function(req, res, next) {
 
-	/* User Registration */
+	/* User Registration
 	if (req.params.mode == "user") {
 		lib.addUser(req.body, function(id) {
 			accountName = req.body.username;
@@ -293,7 +411,7 @@ router.post('/register/:mode', function(req, res, next) {
 		});
 	}
 
-	/* Organization Registration */
+	/* Organization Registration
 	else if (req.params.mode == "organization") {
 		lib.addOrganization(req.body, function(id) {
 			accountName = req.body.email;
@@ -306,6 +424,7 @@ router.post('/register/:mode', function(req, res, next) {
 	}
 
 });
+*/
 
 
 /* GET home page. */

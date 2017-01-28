@@ -40,6 +40,8 @@ $(document).ready(function() {
                     password: password
                 }),
                 success: function(data) {
+                    console.log(data);
+                    //window.location.href = data.redirect;
                     console.log("successful login");
                 },
                 error: function(error) {
@@ -52,8 +54,10 @@ $(document).ready(function() {
     /* ORGANIZATION LOGIN */
 
     $("#organization .button.submit").click(function() {
+        console.log('in org login');
         var email = $("#organization .email").val();
         var password = $("#organization .password").val();
+        console.log(email, password);
         if (!(email && password)) {
             alert('Please fill out all required fields.');
         }

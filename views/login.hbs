@@ -34,26 +34,36 @@
     </div>
 
     <div id="login-form">
-
-      <center><h2 style="font-weight:normal">I want to login as a</h2></center>
+      <form name="login" method="post" action="/login">
+        <p>Email<span class="asterisk">*</span></p>
+        <input type="text" name="email" class="email" placeholder="time" required></input>
+        <p>Password<span class="asterisk"<*</span></p>
+        <input type="password" name="password" class="password" placeholder="Password" required></input>
+        <input type="submit" class="submit">
+      </form>
+    </div>
+     
+     <!-- EVERYTHING BELOW THIS LINE IS PART OF OLD LOGIN FORM --> 
+     <!-- <center><h2 style="font-weight:normal">I want to login as a</h2></center>
       <div id="mode-tab">
         <ul class="tab">
-          <!-- javascript:void(0) keeps browser on same page -->
+          <!-- javascript:void(0) keeps browser on same page
           <li><a href="javascript:void(0)" class="tab-links" 
             onclick="openForm(event, 'volunteer')"><h2>Volunteer</h2></a></li>
           <li><a href="javascript:void(0)" class="tab-links" 
             onclick="openForm(event, 'organization')"><h2>Organization</h2></a></li>
         </ul>
       </div>
-
       <div id="volunteer" class="tab-content">
+        <form name = "volunteerLogin" method="post" action="/login">
           <p>Username<span class="asterisk">*</span></p>
           <input type="text" class="username" placeholder="tim" required></input>
           <p>Password<span class="asterisk">*</span></p>
           <input type="password" class="password" placeholder="Password" required></input>
           <div class="button submit">Submit</div>
       </div>
-
+      -->
+      <!--
       <div id="organization" class="tab-content">
           <p>Email<span class="asterisk">*</span></p>
           <input type="text" class="email" placeholder="rfl@rfl.org" required></input>
@@ -61,6 +71,7 @@
           <input type="password" class="password" placeholder="Password" required></input>
           <div class="button submit">Submit</div>
       </div>
+      -->
 
     </div>
   </body>

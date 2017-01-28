@@ -33,19 +33,39 @@
     </div>
 
     <div id="reg-form">
+      <form name="addAllUser" method="post" action="/register">
+        <p>Are you a volunteer or organization</p>
+        <input type="radio" name="mode" value="volunteer">Volunteer<br>
+        <input type="radio" name="mode" value="organization">Orgnaization<br>
+        <p>Name:*<br>
+        <input type="text" name="name" required><br>
+        <p>Username:*<br>
+        <input type="text" name="username" required><br>
+        <p>Email*<br>
+        <input type="text" name="email" required<br>
+        <p>Password*<br>
+        <input type="password" name="password" required<br>
+        <!-- Need to add location, bio/description -->
+        <input type="submit" value="submit">
+      </form>
+    </div>
 
-    <center><h2 style="font-weight:normal">I want to register as a</h2></center>
+    <!-- BELOW THIS LINE IS OLD FORM -->
 
-    <div id="mode-tab">
+    <!--<center><h2 style="font-weight:normal">I want to register as a</h2></center>-->
+
+    <!--<div id="mode-tab">
       <ul class="tab">
-        <!-- javascript:void(0) keeps browser on same page -->
+        <!-- javascript:void(0) keeps browser on same page 
         <li><a href="javascript:void(0)" class="tab-links" 
           onclick="openForm(event, 'volunteer')"><h2>Volunteer</h2></a></li>
         <li><a href="javascript:void(0)" class="tab-links" 
           onclick="openForm(event, 'organization')"><h2>Organization</h2></a></li>
       </ul>
     </div>
+    -->
 
+    <!--
     <div id="volunteer" class="tab-content">
         <p>Username<span class="asterisk">*</span></p>
         <input type="text" class="username" placeholder="tim" required></input>
@@ -77,6 +97,7 @@
         <input type="text" class="description" placeholder="Hello!"></input>
         <div class="button submit">Submit</div>
     </div>
+    -->
    
     </div>
     </div>
