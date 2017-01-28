@@ -235,10 +235,14 @@ router.post('/edit-profile', function(req, res, next) {
 
 /* POST to createChallenge. */
 router.post('/createChallenge', function(req, res, next) {
-	console.log(req.org);
+	console.log('in createChallenge');
+	console.log(req.body.challenge);
+	console.log(req.user);
+	var org_id = req.user._id;
 	var c = [req.body.challenge];
 
-	Organization.findOne({ orgname: req.body.orgname }, function(err, org) {
+	allUser.findOne({ username: req.user.username }, function(err, org) {
+		console.log('line 242 ' + org);
 		lib.addChallengesToOrg(org._id, c, function(ids, org) {
 	    	lib.getChallenges(function(c) {
 		    	res.render('org-dashboard', {

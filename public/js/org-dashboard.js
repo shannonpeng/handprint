@@ -20,6 +20,7 @@ $(document).ready(function() {
   });
 
   $("#feed .challenge-form .submit").click(function(event) {
+    console.log("in challenge-form submit");
     var c = {};
     c.title = $("#feed .challenge-form .challenge-title").val();
     c.start_date = dateToMS($("#feed .challenge-form .challenge-start-date").val());
@@ -38,6 +39,17 @@ $(document).ready(function() {
         type: 'POST',
         contentType: 'application/json; charset=utf-8',
         datatype: 'json',
+        /*
+        data: JSON.stringify({
+          title: title,
+          start_date: start_date,
+          end_date: end_date,
+          description: description,
+          location_name: location_name,
+          points: points,
+          category_tags: category_tags
+        }),
+        */
         data: JSON.stringify({
           // TODO: WHO IS LOGGED IN???
           orgname: 'bch',
@@ -51,6 +63,6 @@ $(document).ready(function() {
         }
       });
     }
-  }
+  });
 });
 

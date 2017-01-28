@@ -168,15 +168,17 @@
 	opacity: 1;
 }
 
+/*
 #feed .challenge-form.closed {
 	padding-top: 0;
 	padding-bottom: 0;
 	height: 0;
 	opacity: 0;
 }
+*/
 
 #feed .challenge-form.closed * {
-	display: none;
+	/*display: none;*/
 }
 
 #feed .challenge-form input {

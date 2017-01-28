@@ -313,7 +313,7 @@ var lib = {
 	*/
 	addChallengesToOrg: function(orgID, challenges, callback) {
 
-		Organization.findById(orgID, function (err, org) {
+		allUser.findById(orgID, function (err, org) {
 
 			if (err) {
 				console.log(err);
