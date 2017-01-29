@@ -242,7 +242,7 @@ router.post('/createChallenge', function(req, res, next) {
 	var c = [req.body.challenge];
 
 	allUser.findOne({ username: req.user.username }, function(err, org) {
-		console.log('line 242 ' + org);
+		//console.log('line 242 ' + org);
 		lib.addChallengesToOrg(org._id, c, function(ids, org) {
 	    	lib.getChallenges(function(c) {
 		    	res.render('org-dashboard', {
@@ -254,6 +254,49 @@ router.post('/createChallenge', function(req, res, next) {
 		});
 	});
 
+});
+
+/* POST to addPoints */
+/* Gives user points for completing challenge
+ * by adding points to profile
+ */
+router.post('/addPoints', function(req, res, next) {
+	console.log(req.body);
+	var challengeId = req.body;
+	var points = 0;
+	var currentPoints = 0;
+	Challenge.findOne({_id: challengeId}, function(err, challenge) {
+		console.log(challenge);
+		points = parseInt(challenge.points);
+	});
+	console.log(req.user);
+	allUser.findOne({username: req.user.username}, function(err, user) {
+		if (err) {
+			console.log(err);
+		}
+		if (user == null) {
+			console.log("no user with that username was found");
+		}
+		else {
+			if (user.points) {
+				currentPoints = parseInt(user.points);
+			}
+			else {
+				currentPoints = 0;
+			}
+			allUser.update({'username':req.user.username}, {
+				$set:{'points': parseInt(points) + parseInt(currentPoints)}
+			}, function(err, result) {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					console.log("addded succesfully; check mongo for point value");
+				}
+			});
+		}
+	});
+		
 });
 
 
@@ -288,7 +331,8 @@ router.post('/register', function(req, res, next) {
 		mode: req.body.mode,
 		name: req.body.name,
 		username: req.body.username,
-		email: req.body.email
+		email: req.body.email,
+		points: 1
 	});
 
 	allUser.register(newUser, req.body.password, function(err) {

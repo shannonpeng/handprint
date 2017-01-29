@@ -47,7 +47,6 @@
           <div class="header">
             <h1>Welcome, {{ user.name }}</h1>
           </div>
-
           <div class="content">
             <div class="challenges">
               {{#each challenges}}
@@ -67,7 +66,7 @@
                   </div>
                 </div>
                 <a name="{{ _id }}">
-                  <div class="challenge-complete">
+                  <div class="challenge-complete" id="{{_id}}">
                       <p>complete</p>
                   </div>
                 </a>

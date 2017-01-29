@@ -118,7 +118,7 @@ var lib = {
 					cover_pic_url: user.cover_pic_url,
 					friends: friends,
 					challenges: [],
-					points: 0,
+					points: 1,
 					level: 1
 				});
 
