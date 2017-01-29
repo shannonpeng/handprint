@@ -12,6 +12,10 @@ var Organization = require('../schemas/organization');
 var lib = require('./lib');
 
 /* Passport */
+passport.use('local', allUser.createStrategy());
+passport.serializeUser(allUser.serializeUser());
+passport.deserializeUser(allUser.deserializeUser());
+
 passport.use('user', User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -48,34 +52,33 @@ router.get('/challenges-list', function(req, res, next) {
 
 /* GET dashboard. */
 router.get('/dashboard', function(req, res, next) {
-
+	console.log('in dashboard');
+	console.log(req.user);
 	if (req.user) {
+		if (req.user.mode == 'volunteer') {
+			var username = req.user.username;
 
-		var username = req.user;
+			var challenges = [];
 
-	    var challenges = [];
+			allUser.findOne({username: username}, 
+				function(err, user) {
+					lib.getChallenges(function(c) {
+						challenges = c;
+						res.render('dashboard', {
+							user: user,
+							challenges: challenges
+						}, console.log('callback of res.render'));
+					});
+				}
+			);
+		}
 
-	    User.findOne({ username : username },
-		    function(err, user) {
-		    	lib.getChallenges(function(c) {
-			    	challenges = c;
-			    	res.render('dashboard', {
-				    	user: user,
-				    	challenges: challenges
-				    });
-			    });
-			}    	
-		);
-		
-	}
+		else if (req.user.mode == 'organization') {
+			var orgname = req.user.name;
 
-	else if (req.org) {
+			var challenges = [];
 
-		var orgname = req.org;
-
-	    var challenges = [];
-
-	    Organization.findOne({ orgname : orgname },
+			allUser.findOne({ name : orgname },
 		    function(err, org) {
 		    	lib.getChallenges(function(c) {
 			    	res.render('org-dashboard', {
@@ -83,15 +86,13 @@ router.get('/dashboard', function(req, res, next) {
 				    	challenges: c
 				    });
 			    });
-			}    	
-		);
+			});
+		}
 
+		else {
+			res.send('user could not be found');
+		}
 	}
-
-	else {
-		res.redirect('/');
-	}
-
     
 });
 
@@ -233,10 +234,14 @@ router.post('/edit-profile', function(req, res, next) {
 
 /* POST to createChallenge. */
 router.post('/createChallenge', function(req, res, next) {
-
+	console.log('in createChallenge');
+	console.log(req.body.challenge);
+	console.log(req.user);
+	var org_id = req.user._id;
 	var c = [req.body.challenge];
 
-	Organization.findOne({ orgname: req.body.orgname }, function(err, org) {
+	allUser.findOne({ username: req.user.username }, function(err, org) {
+		//console.log('line 242 ' + org);
 		lib.addChallengesToOrg(org._id, c, function(ids, org) {
 	    	lib.getChallenges(function(c) {
 		    	res.render('org-dashboard', {
@@ -250,24 +255,60 @@ router.post('/createChallenge', function(req, res, next) {
 
 });
 
+/* POST to addPoints */
+/* Gives user points for completing challenge
+ * by adding points to profile
+ */
+router.post('/addPoints', function(req, res, next) {
+	console.log(req.body);
+	var challengeId = req.body;
+	var points = 0;
+	var currentPoints = 0;
+	Challenge.findOne({_id: challengeId}, function(err, challenge) {
+		console.log(challenge);
+		points = parseInt(challenge.points);
+	});
+	console.log(req.user);
+	allUser.findOne({username: req.user.username}, function(err, user) {
+		if (err) {
+			console.log(err);
+		}
+		if (user == null) {
+			console.log("no user with that username was found");
+		}
+		else {
+			if (user.points) {
+				currentPoints = parseInt(user.points);
+			}
+			else {
+				currentPoints = 0;
+			}
+			allUser.update({'username':req.user.username}, {
+				$set:{'points': parseInt(points) + parseInt(currentPoints)}
+			}, function(err, result) {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					console.log("addded succesfully; check mongo for point value");
+				}
+			});
+		}
+	});
+		
+});
 
 /* GET login page. */
 router.get('/login', function(req, res, next) {
 	res.render('login');
 })
 
-/* POST to login page. */
-router.post('/login/user', passport.authenticate('user'), function(req, res) {
-	accountName = req.body.username;
-    res.redirect('/dashboard');
-	console.log(accountName);
-});
-
-router.post('/login/organization', passport.authenticate('org'), function(req, res) {
-	accountName = req.body.email;
-    res.redirect('/dashboard');
-	console.log(accountName);
-});
+/* POST to login page */
+router.post('/login', passport.authenticate('local', {
+	successRedirect: '/dashboard',
+	failureRedirect: '/register',
+	failureFlash: false
+}));
 
 /* GET logout */
 router.get('/logout', function(req, res) {
@@ -283,29 +324,22 @@ router.get('/register', function(req, res, next) {
 
 
 /* POST to register. */
-router.post('/register/:mode', function(req, res, next) {
+router.post('/register', function(req, res, next) {
+	// moved here from lib.js
+	console.log('signed up');
+	var newUser = new allUser({
+		mode: req.body.mode,
+		name: req.body.name,
+		username: req.body.username,
+		email: req.body.email,
+		points: 1
+	});
 
-	/* User Registration */
-	if (req.params.mode == "user") {
-		lib.addUser(req.body, function(id) {
-			accountName = req.body.username;
-			res.redirect('/dashboard');
-		});
-	}
+	allUser.register(newUser, req.body.password, function(err) {
+	});
+	res.redirect('/login');
+})
 
-	/* Organization Registration */
-	else if (req.params.mode == "organization") {
-		lib.addOrganization(req.body, function(id) {
-			accountName = req.body.email;
-			res.redirect('/dashboard');
-		});
-	}
-
-	else {
-		res.send("Invalid registration mode");
-	}
-
-});
 
 
 /* GET home page. */

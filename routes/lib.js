@@ -1,6 +1,7 @@
 var User = require('../schemas/user');
 var Challenge = require('../schemas/challenge');
 var Organization = require('../schemas/organization');
+var allUser = require('../schemas/allUser');
 
 var lib = {
 
@@ -117,7 +118,7 @@ var lib = {
 					cover_pic_url: user.cover_pic_url,
 					friends: friends,
 					challenges: [],
-					points: 0,
+					points: 1,
 					level: 1
 				});
 
@@ -312,7 +313,7 @@ var lib = {
 	*/
 	addChallengesToOrg: function(orgID, challenges, callback) {
 
-		Organization.findById(orgID, function (err, org) {
+		allUser.findById(orgID, function (err, org) {
 
 			if (err) {
 				console.log(err);
