@@ -11,8 +11,8 @@ var routes = require('./routes/index');
 var app = express();
 
 // database setup
-//mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://handprint:ULZUyCY9IJSE2S0NUzjQeYjy33p3705aIDOppv9YWgnitkyZag1kduCWwMD9dHgRbJZUqvnPQhDWNVsLe1TSVg==@handprint.documents.azure.com:10250/?ssl=true');
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/handprint');
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://handprint:ULZUyCY9IJSE2S0NUzjQeYjy33p3705aIDOppv9YWgnitkyZag1kduCWwMD9dHgRbJZUqvnPQhDWNVsLe1TSVg==@handprint.documents.azure.com:10250/?ssl=true');
+//mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/handprint');
 var connection = mongoose.connection;
 connection.on('error', console.error.bind(console, 'connection error:'));
 connection.on('connected', function() {
