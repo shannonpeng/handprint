@@ -56,6 +56,7 @@ $(document).ready(function() {
           challenge: c
         }),
         success: function(data) {
+          console.log('success');
           window.location.replace('/dashboard');
         },
         error: function(err) {
