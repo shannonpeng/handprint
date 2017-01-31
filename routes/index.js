@@ -72,7 +72,7 @@ router.get('/dashboard', function(req, res, next) {
 						console.log(err);
 					}
 
-					Challenge.find({users: { $elemMatch: { $in : req.user.friends } }}, function(err, challenges) {
+					Challenge.find(/*{users: { $elemMatch: { $in : req.user.friends } }*/}, function(err, challenges) {
 
 						if (err) {
 							console.log(err);
