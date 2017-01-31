@@ -50,4 +50,34 @@ $(document).ready(function() {
 
     })
     */
+
+    /* TOGGLE PLACEHOLDERS */
+
+    $("#reg-form input.mode").click(function(event) {
+
+        var mode = $(this).val();
+
+        console.log(mode);
+
+        if (mode == "volunteer") {
+            $("#reg-form .username").attr('placeholder', 'tim');
+            $("#reg-form .name").attr('placeholder', 'Tim Beaver');
+            $("#reg-form .email").attr('placeholder', 'tim@mit.edu');
+            $("#reg-form .password").attr('placeholder', 'Password');
+            $("#reg-form .location").attr('placeholder', 'Cambridge, MA');
+            $("#reg-form .bio").attr('placeholder', 'Hello! I\'m Tim Beaver.');
+        }
+
+        else if (mode == "organization") {
+            $("#reg-form .username").attr('placeholder', 'bch');
+            $("#reg-form .name").attr('placeholder', 'Boston Children\'s Hospital');
+            $("#reg-form .email").attr('placeholder', 'bch@bch.org');
+            $("#reg-form .password").attr('placeholder', 'Password');
+            $("#reg-form .location").attr('placeholder', 'Boston, MA');
+            $("#reg-form .bio").attr('placeholder', 'We\'re Boston Children\'s Hospital.');
+        }
+
+    });
+
+
 });

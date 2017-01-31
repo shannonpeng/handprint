@@ -14,7 +14,7 @@
   <body>
 
     {{>navbar}}
-    
+
     <div id="feed">
 
       <div class="container">
@@ -108,10 +108,10 @@
                     {{/each}}
                   </div>
                   <div class="challenge-users" style="display:block">
-                    <p>Users completed:</p>
                     <ul>
                     {{#each users}}
-                    <li><p>{{ username }}</p></li>
+                    <li><a href="/profile/{{username}}"><div style="background:linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1)), url('{{ profile_pic_url }}');background-size:cover">
+                  </div></a></li>
                     {{/each}}
                     </ul>
                   </div>

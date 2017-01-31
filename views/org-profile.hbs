@@ -51,7 +51,8 @@
 		  					<div class="challenge-users">
 		  						<ul>
 		  						{{#each users }}
-		  						<li><p># {{ username }}</p></li>
+		  						<li><a href="/profile/{{username}}"><div style="background:linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1)), url('{{ profile_pic_url }}');background-size:cover">
+		  						</div></a></li>
 		  						{{/each}}
 		  						</ul>
 		  					</div>

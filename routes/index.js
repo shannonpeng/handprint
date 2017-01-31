@@ -55,16 +55,29 @@ router.get('/dashboard', function(req, res, next) {
 			var challenges = [];
 
 			Account.findOne({ username: username }, 
+
 				function(err, user) {
 
-					Challenge.find( { /*users: { $any: req.user.friends }  */} , function(err, challenges) {
+					if (err) {
+						console.log(err);
+					}
+
+					Challenge.find({ /*users: { $any: req.user.friends } */} , function(err, challenges) {
+
+						if (err) {
+							console.log(err);
+						}
 
 						if (challenges) {
 
 							var c = [];
 
 				    		for (var i = 0; i < challenges.length; i++ ) {
-				    			c.push(lib.formatChallenge(challenges[i]));
+
+				    			lib.formatChallenge(challenges[i], function(challenge) {
+				    				c.push(challenge);
+				    			});
+
 				    		}
 
 							res.render('dashboard', {
@@ -101,7 +114,9 @@ router.get('/dashboard', function(req, res, next) {
 			    		var c = [];
 
 			    		for (var i = 0; i < challenges.length; i++ ) {
-			    			c.push(lib.formatChallenge(challenges[i]));
+			    			lib.formatChallenge(challenges[i], function(c) {
+								challenges_list.push(c);
+							});
 			    		}
 
 			    		res.render('org-dashboard', {
@@ -158,31 +173,59 @@ router.get('/profile/:id', function(req, res, next) {
 						}
 
 						else if (challenge) {
-							var c = lib.formatChallenge(challenge);
-							challenges.push(c);
+
+							lib.formatChallenge(challenge, function(c) {
+								challenges.push(c);
+							});
+							
 						}
 
 					});
 				}
 			}
 
-			if (account.mode == "volunteer") {
-				res.render('profile', {
-					account: req.user,
-					user: account,
-					challenges: challenges,
-					friends: account.friends
-		 		});
-			}
+			if (req.user) {
 
-			else if (account.mode == "organization") {
-				res.render('org-profile', {
-					account: req.user,
-					org: account,
-					challenges: challenges
-		 		});
+				var following = req.user.friends.indexOf(account._id) >= 0;
+				var notSelf = !(account.username == req.user.username);
+				console.log(account.username + " vs " + req.user.username);
+				if (account.mode == "volunteer") {
+					res.render('profile', {
+						account: req.user,
+						user: account,
+						challenges: challenges,
+						friends: account.friends,
+						following: following,
+						notSelf: notSelf
+			 		});
+				}
+				else if (account.mode == "organization") {
+					res.render('org-profile', {
+						account: req.user,
+						org: account,
+						challenges: challenges
+			 		});
+				}
 			}
+			else {
 
+				if (account.mode == "volunteer") {
+					res.render('profile', {
+						account: req.user,
+						user: account,
+						challenges: challenges,
+						friends: account.friends,
+			 		});
+				}
+
+				else if (account.mode == "organization") {
+					res.render('org-profile', {
+						account: req.user,
+						org: account,
+						challenges: challenges
+			 		});
+				}
+			}
 			
 		}
 		
@@ -231,8 +274,10 @@ router.post('/createChallenge', function(req, res, next) {
 /* POST to completeChallenge. */
 router.post('/completeChallenge', function(req, res, next) {
 
-	var cID = req.body.id;
-	var awardPoints = 0;
+	var cID = req.body.id; // challenge ID
+	var awardPoints = 0; //initialize awardPoints
+
+	console.log(req.user.username + ' has completed challenge ' + cID);
 
 	Challenge.findOne({_id: cID }, function(err, challenge) {
 
@@ -241,24 +286,22 @@ router.post('/completeChallenge', function(req, res, next) {
 			return;
 		}
 
-
 		else {
 
-			if ($.inArray(req.user._id, challenge.users ) >= 0) {
-				// then user already completed this challenge
+			if (challenge.users.indexOf(req.user._id) >= 0) { // check if user already completed this challenge
 				res.send('You have already completed this challenge!');
+				return;
 			}
 
-			awardPoints = parseInt(challenge.points);
+			challenge.users.push(req.user._id); // add user's ID to list of users that completed the challenge then save challenge
 
-			challenge.users.push(req.user._id);
 			challenge.save(function(err, data) {
 				if (err) {
 					console.log(err);
 				}
 			});
 
-			Account.findOne({ username: req.user.username }, function(err, user) {
+			Account.findOne({ _id: req.user._id }, function(err, user) { // proceed to find user that is logged in
 
 				if (err) {
 					console.log(err);
@@ -271,15 +314,19 @@ router.post('/completeChallenge', function(req, res, next) {
 
 				else {
 
-					user.points = user.points + awardPoints;
-					user.challenges.push(cID);
+					awardPoints = parseInt(challenge.points); // set awardPoints to challenge's points
+
+					user.points = user.points + awardPoints; // add points to user
+					user.level = lib.pointsToLevel(user.points); // update user level
+
+					user.challenges.push(cID); // add challengeID to user's list of completed challenges
 
 					user.save(function(err) {
 						if (err) {
 							console.log(err);
 						}
 						else {
-							res.send('Challenge marked as complete!')
+							res.send('Challenge marked as complete!');
 						}
 					})
 
@@ -291,6 +338,39 @@ router.post('/completeChallenge', function(req, res, next) {
 		
 });
 
+/* POST to follow user. */
+router.post('/followUser', function(req, res, next) {
+
+	var targetId = req.body.id;
+
+	Account.findOne({ _id: req.user._id }, function(err, account) {
+
+		if (err) {
+			console.log(err);
+		}
+		else if (account) {
+
+			var index = account.friends.indexOf(targetId);
+			if (index >= 0) { // user is already following this target user, proceed to unfollow
+				account.friends.splice(index, 1);
+			}
+			else {
+				account.friends.push(targetId);
+			}
+			account.save(function(err, data) {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					res.send('Following status updated!');
+				}
+			})
+
+		}
+	})
+
+});
+
 /* GET login page. */
 router.get('/login', function(req, res, next) {
 	res.render('login');
@@ -298,8 +378,8 @@ router.get('/login', function(req, res, next) {
 
 /* POST to login page */
 router.post('/login',
-  passport.authenticate('local', { failureRedirect: '/' }), function(req, res) {
-  	res.redirect('/dashboard')
+  passport.authenticate('local', { failureRedirect: '/login' }), function(req, res) {
+  	res.redirect('/dashboard');
   });
 
 /* GET logout */
@@ -330,7 +410,8 @@ router.post('/register', function(req, res, next) {
 
 router.post('/search', function(req, res, next) {
 
-	Account.find({ username : req.body.searchItem, mode: 'volunteer' }, function(err, volunteers) {
+	Account.find({ $and: [ { mode: 'volunteer'}, { $or: [ { username: {$regex : ".*" + req.body.searchItem + ".*"} }, { name: {$regex : ".*" + req.body.searchItem + ".*"} } ] }] }
+, function(err, volunteers) {
 
 		if (err) {
 			console.log(err);
@@ -338,7 +419,8 @@ router.post('/search', function(req, res, next) {
 
 		else if (volunteers) {
 
-			Account.find({ username: req.body.searchItem, mode: 'organization'}, function(err, organizations) {
+			Account.find({ $and: [ { mode: 'organization'}, { $or: [ { username: {$regex : ".*" + req.body.searchItem + ".*"} }, { name: {$regex : ".*" + req.body.searchItem + ".*"} } ] }] }
+, function(err, organizations) {
 
 				if (err) {
 					console.log(err);
@@ -351,15 +433,7 @@ router.post('/search', function(req, res, next) {
 						searchItem: req.body.searchItem,
 						volunteers: volunteers,
 						organizations: organizations
-					} /*, function(err, data) {
-						if (err) {
-							console.log(err);
-						}
-						else {
-							res.send(data);
-							console.log("SEARCH PAGE RENDERED");
-						}
-					}*/);
+					});
 
 				}
 

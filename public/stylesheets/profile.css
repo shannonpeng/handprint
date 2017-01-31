@@ -182,10 +182,81 @@
 	color: #808080;
 }
 
+#profile .challenge .challenge-users {
+	display: block;
+}
+
+#profile .challenge .challenge-users ul {
+	list-style-type: none;
+	padding-left: 0;
+}
+
+#profile .challenge .challenge-users ul li {
+	display: inline-block;
+}
+
+#profile .challenge .challenge-users ul li div {
+	width: 25px;
+	height: 25px;
+	background-position: 50% 50%;
+	border-radius: 50% 50%;
+	background-size: cover;
+	display: inline-block;
+	position: relative;
+}
+
+#profile .challenge .challenge-users ul li div p {
+	color: white;
+	position: absolute;
+	bottom: 0;
+	padding: 10px;
+}
+
+#profile .button {
+    color: white;
+    text-align: center;
+    text-transform: uppercase;
+    max-width: 150px;
+    padding: 10px 15px;
+    margin: auto;
+    margin-top: 25px;
+}
+
+#profile .button.follow {
+	background: rgba(16, 102, 213, 0.5);
+    border: 5px solid rgba(16, 102, 213, 0.5);
+}
+
+#profile .button.follow:hover {
+	background: rgba(16, 102, 213, 1);
+}
+
+#profile .button.unfollow {
+	background: rgba(232, 65, 75, 0.5);
+	border: 5px solid rgba(232, 65, 75, 0.5);
+}
+
+#profile .button.unfollow:hover {
+	background: rgba(232, 65, 75, 1);
+}
+
+#profile .button h2 {
+    margin: auto;
+    font-weight: bold;
+}
+
+#profile .button:hover {
+    cursor: pointer;
+}
+
 @media screen and (max-width: 1200px) {
 
 	#profile .content, #profile .challenges, #profile .friends, #profile .challenge .challenge-info {
 		width: 100%;
+		padding: 0;
+	}
+
+	#profile .profile-header {
 		padding: 0;
 	}
 

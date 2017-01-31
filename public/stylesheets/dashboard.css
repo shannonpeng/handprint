@@ -78,6 +78,10 @@
 	margin: 5px 0px;
 }
 
+#feed .challenge .challenge-organization {
+	margin: 10px 0px;
+}
+
 #feed .challenge .challenge-title {
 	font-size: 1.25em;
 }
@@ -108,13 +112,43 @@
 	background: #efefef;
 	color: #808080;
 }
+
+#feed .challenge .challenge-users {
+	display: block;
+}
+
+#feed .challenge .challenge-users ul {
+	list-style-type: none;
+	padding-left: 0;
+}
+
+#feed .challenge .challenge-users ul li {
+	display: inline-block;
+}
+
+#feed .challenge .challenge-users ul li div {
+	width: 25px;
+	height: 25px;
+	background-position: 50% 50%;
+	border-radius: 50% 50%;
+	background-size: cover;
+	display: inline-block;
+	position: relative;
+}
+
+#feed .challenge .challenge-users ul li div p {
+	color: white;
+	position: absolute;
+	bottom: 0;
+	padding: 10px;
+}
+
 #feed .challenge-complete  {
 	float: right;
 	color:  rgba(16, 102, 213, 0.5);;
 	padding: 10px 25px;
 	border: 5px solid rgba(16, 102, 213, 0.5);
 	text-transform: uppercase;
-	letter-spacing: 4px;
 	margin: 15px auto;
 }
 

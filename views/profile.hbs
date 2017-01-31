@@ -9,11 +9,11 @@
     <link rel="shortcut icon" href="/favicon.png" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="/js/main.js"></script>
+    <script src="/js/profile.js"></script>
   </head>
   <body>
 
   	{{>navbar}}
-
 
   	<div class="container">
 
@@ -26,6 +26,9 @@
 		  				<h1 class="heavy">{{ user.name }}</h1>
 		  				<h3 class="user-location">{{ user.location }}</h3>
 			  			<p class="user-bio">{{ user.bio }}</p>
+			  			{{#if notSelf}}
+			  				<div class="button {{#if following}}unfollow{{else}}follow{{/if}}" name="{{user._id}}">{{#if following}}unfollow{{else}}follow{{/if}}</div>
+			  			{{/if}}
 		  			</div>
 		  			<div class="stats">
 		  				<h2 class="user-level"><b>Level {{ user.level }}</b></h2>
@@ -46,7 +49,7 @@
 		  				<div class="challenge-info">
 		  					<b><p class="challenge-title">{{ title }}</p></b>
 		  					<p>{{ description }}</p>
-		  					<p class="challenge-location">{{ location_name }}</p>
+		  					<p class="challenge-location">{{ location }}</p>
 		  					<p class="challenge-organization">posted by <a href="/profile/{{ organization.username }}">{{ organization.name }}</a></p>
 		  					<p class="challenge-date">{{ start_date }} &mdash; {{ end_date }}</p>
 
@@ -62,16 +65,16 @@
 		  			{{/each}}
 		  		</div>
 
-		  		{{# if user.mode == 'volunteer'}}
+		  		{{# if friends }}
 
-			  		<div class="friends">
-			  			<h2>Friends</h2>
-			  			{{#each friends}}
-			  			<a href="/users/{{username}}"><div class="friend" style="background:linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1)), url('{{ profile_pic_url }}');background-size:cover">
-			  				<b><p>{{ name }}</p></b>
-			  			</div></a>
-			  			{{/each}}
-				  	</div>
+		  		<div class="friends">
+		  			<h2>Friends</h2>
+		  			{{#each friends}}
+		  			<a href="/profile/{{username}}"><div class="friend" style="background:linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1)), url('{{ profile_pic_url }}');background-size:cover">
+		  				<b><p>{{ name }}</p></b>
+		  			</div></a>
+		  			{{/each}}
+			  	</div>
 
 			  	{{/if}}
 

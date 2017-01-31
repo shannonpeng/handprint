@@ -3,12 +3,80 @@ var Challenge = require('../schemas/challenge');
 
 var lib = {
 
+	/* Map points to level */
+	pointsToLevel: function(points) {
+		return Math.floor(points / 100) + 1;
+	},
+
+	/* Clean up volunteer data */
+
+	exportVolunteer: function(v) {
+
+		var volunteer = {};
+
+		volunteer._id = v._id;
+		volunteer.name = v.name;
+		volunteer.username = v.username;
+		volunteer.profile_pic_url = v.profile_pic_url;
+		volunteer.cover_pic_url = v.cover_pic_url;
+		volunteer.level = v.level;
+		volunteer.points = v.points;
+
+		return volunteer;
+
+	},
+
 	/* Convert dates in given Challenge object */
 
-	formatChallenge: function(c) {
-		c.start_date = (new Date(parseInt(c.start_date))).toDateString();
-		c.end_date = (new Date(parseInt(c.end_date))).toDateString();
-		return c;
+	formatChallenge: function(c, callback) {
+
+		var challenge = {};
+
+		challenge._id = c._id;
+		challenge.title = c.title;
+		challenge.start_date = (new Date(parseInt(c.start_date))).toDateString();
+		challenge.end_date = (new Date(parseInt(c.end_date))).toDateString();
+		challenge.description = c.description;
+		challenge.location = c.location;
+		challenge.points = c.points;
+		challenge.category_tags = c.category_tags;
+
+		Account.find({ _id: c.organization, mode: 'organization'}, function(err, orgs) {
+
+			if (err) {
+				console.log(err);
+				return;
+			}
+
+			else if (orgs) {
+
+				challenge.organization = orgs[0];
+				
+				Account.find({ _id: { $in: c.users }}, function(err, volunteers) {
+
+					if (err) {
+						console.log(err);
+						return;
+					}
+
+					else if (volunteers) {
+
+						challenge.users = [];
+
+						for (var i = 0; i < volunteers.length; i++) {
+							challenge.users.push(lib.exportVolunteer(volunteers[i]));
+						}
+
+						callback(challenge);
+
+					}
+
+				});
+
+			}
+
+		});
+
 	},
 
 	/* Get organizations list */
@@ -60,38 +128,41 @@ var lib = {
 	/* Get challenges list */
 
 	getChallenges: function(callback) {
-
-		var challenges_list = [];
-
-		var expandChallenge = function(c) {
-
-			c = lib.formatChallenge(c);
-
-			
-
-
-
-
-		}
+		
 
 		Challenge.find({}, function(err, challenges) {
 
 			if (err) {
 				console.log(err);
+				return;
 			}
 
-			else if (challenges != null) {
+			else if (challenges) {
+
+				var challenges_list = [];
+
+				for (var i = 0; i < challenges.length; i++) {
+
+					lib.formatChallenge(challenges[i], function(c) {
+
+						challenges_list.push(c);
+
+						if (i == challenges.length - 1) {
+							callback(challenges_list);
+						}
+
+
+					});
+
+					
+
+				}
+
 
 			}
-
-
 
 		});
 
-
-
-		callback(challenges_list);
-	
 	},
 
 	/* Add account
@@ -121,8 +192,8 @@ var lib = {
 					email: account.email,
 					bio: account.bio,
 					location: account.location,
-					profile_pic_url: '/images/user.jpg',
-					cover_pic_url: '/images/sky.jpg',
+					profile_pic_url: '/images/default_profile_picture.jpg',
+					cover_pic_url: '/images/default_cover_picture.jpg',
 					challenges: []
 				});
 

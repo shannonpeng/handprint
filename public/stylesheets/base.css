@@ -83,8 +83,8 @@ nav .search img {
 }
 
 nav .profile-picture  {
-	width: 40px;
-	height: 40px;
+	width: 25px;
+	height: 25px;
 	border-radius: 50% 50%;
 	background-position: 0 0;
 	background-size: cover;
@@ -98,7 +98,6 @@ nav form {
 
 nav .links {
 	float: right;
-	padding: 15px;
 }
 
 nav div {

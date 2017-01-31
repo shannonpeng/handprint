@@ -1,8 +1,8 @@
 .header {
     width: 100%;
     color: white;
-    background: linear-gradient(45deg, rgba(61, 158, 223, 0.6), rgba(16, 102, 213, 0.4)), url('/images/bench.jpg');
-    background-position: 50% 50%;
+    background: linear-gradient(45deg, rgba(61, 158, 223, 0.6), rgba(16, 102, 213, 0.4)), url('/images/volunteer-2.png');
+    background-position: 50% 0%;
     background-repeat: no-repeat;
     background-size: cover;
     text-align: center;
