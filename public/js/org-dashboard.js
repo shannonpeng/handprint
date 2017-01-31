@@ -21,18 +21,21 @@ $(document).ready(function() {
 
   $("#feed .challenge-form .submit").click(function(event) {
     
-    var current_date = (new Date).getTime();
+    var current_date = Date.now();
+    console.log(current_date);
     var c = {};
     var start_date = dateToMS($("#feed .challenge-form .challenge-start-date").val());
+    console.log(start_date);
     var end_date = dateToMS($("#feed .challenge-form .challenge-end-date").val());
-    if (dates.compare(start_date, current_date) < 0 || dates.compare(start_date, current_date) < 0) {
+    console.log(end_date);
+    if (start_date < current_date || start_date > end_date ) {
       alert('Please choose valid dates.');
     }
     else {
-      c.start_date = dateToMS($("#feed .challenge-form .challenge-start-date").val());
-      c.end_date = dateToMS($("#feed .challenge-form .challenge-end-date").val());
+      c.start_date = start_date;
+      c.end_date = end_date;
     }
-
+    
     c.title = $("#feed .challenge-form .challenge-title").val();
     c.description = $("#feed .challenge-form .challenge-description").val();
     c.location_name = $("#feed .challenge-form .challenge-location").val();
