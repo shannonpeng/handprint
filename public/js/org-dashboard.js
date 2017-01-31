@@ -25,12 +25,12 @@ $(document).ready(function() {
     c.start_date = dateToMS($("#feed .challenge-form .challenge-start-date").val());
     c.end_date = dateToMS($("#feed .challenge-form .challenge-end-date").val());
     c.description = $("#feed .challenge-form .challenge-description").val();
-    c.location_name = $("#feed .challenge-form .challenge-location").val();
+    c.location = $("#feed .challenge-form .challenge-location").val();
     c.points = $("#feed .challenge-form .challenge-points").val();
     c.category_tags = $("#feed .challenge-form .challenge-tags").val().split(", ");
-    //console.log(c);
-    if (!(c.title && c.start_date && c.end_date && c.description && c.location_name && c.points)) {
+    if (!(c.title && c.start_date && c.end_date && c.description && c.location && c.points)) {
       alert('Please fill out all required fields.');
+      console.log(c);
     }
     else {
       $.ajax({
@@ -39,8 +39,6 @@ $(document).ready(function() {
         contentType: 'application/json; charset=utf-8',
         datatype: 'json',
         data: JSON.stringify({
-          // TODO: WHO IS LOGGED IN???
-          orgname: 'bch',
           challenge: c
         }),
         success: function(data) {
@@ -51,6 +49,6 @@ $(document).ready(function() {
         }
       });
     }
-  }
+  });
 });
 

@@ -109,10 +109,13 @@ nav div {
 @media screen and (max-width: 1200px) {
 
 	nav {
+		width: 150%;
 		position: relative;
 		padding: 5px;
 		background: #252525;
 		font-size: 0.8em;
+		overflow-x: scroll;
+		overflow-y: hidden;
 	}
 
 	nav .links {

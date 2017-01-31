@@ -12,30 +12,34 @@
   </head>
   <body>
 
-  	<nav>
+  	<nav> 
+        <!-- Logo -->
+        <div class="logo">
+          <a href="/"><img src="/images/logo-white.png"></a>
+        </div>
 
-  		<!-- Logo -->
-  		<div class="logo">
-  			<a href="/"><img src="/images/logo-white.png"></a>
-  		</div>
-
-  		<!-- Search -->
-  		<!--<div class="search">
-  			<img src="/images/search-white.png">
-  			<input placeholder="Search for a challenge">
-  		</div>-->
-
-  		<!-- Links -->
-  		<div class="links">
-	  		<div><a href="/dashboard">dashboard</a></div>
-		  	<a href="/users/{{ org.orgname }}"><div class="account">
-  				<div><h3>{{ org.name }}</h3></div>
-  				<div class="profile-picture" style="background-image:url('{{ org.profile_pic_url}}')">
-  				</div>
-			</div></a>
-  		</div>	
-
-  	</nav>
+        {{#if account}}
+        <div class="links">
+          <div><a href="/dashboard">dashboard</a></div>
+          <a href="/profile/{{ account.username}}">
+            <div class="account">
+            <div><h3>{{ account.name }}</h3></div>
+            <div class="profile-picture" style="background-image:url('{{ account.profile_pic_url}}')">
+            </div>
+            <div><a href="/logout">logout</a></div>
+            </div>
+          </a>
+        </div>
+        {{else}}
+        <div class="links">
+          <div><a href="/">Home</a></div>
+          <div><a href="/register">Become an Organization</a></div>
+          <div><a href="/register">Sign Up</a></div>
+          <div><a href="/login">Login</a></div>
+        </div>
+        {{/if}}
+        
+    </nav>
 
   	<div class="container">
 
@@ -46,8 +50,8 @@
 		  			<div class="profile-picture" style="background-image:url('{{ org.profile_pic_url}}')"></div>
 		  			<div class="info">
 		  				<h1 class="heavy">{{ org.name }}</h1>
-		  				<h3 class="org-location">{{ org.location_name }}</h3>
-			  			<p class="org-description">{{ org.description }}</p>
+		  				<h3 class="org-location">{{ org.location }}</h3>
+			  			<p class="org-description">{{ org.bio }}</p>
 		  			</div>
 		  		</div>
 	  		</div>
@@ -70,6 +74,13 @@
 		  						{{#each category_tags}}
 		  						<div><p># {{ this }}</p></div>
 		  						{{/each}}
+		  					</div>
+		  					<div class="challenge-users">
+		  						<ul>
+		  						{{#each users }}
+		  						<li><p># {{ username }}</p></li>
+		  						{{/each}}
+		  						</ul>
 		  					</div>
 		  				</div>
 		  			</div>

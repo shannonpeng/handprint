@@ -1,43 +1,32 @@
-var User = require('../schemas/user');
+var Account = require('../schemas/account');
 var Challenge = require('../schemas/challenge');
-var Organization = require('../schemas/organization');
-var allUser = require('../schemas/allUser');
 
 var lib = {
 
-	/* Convert dates in Challenge object */
+	/* Convert dates in given Challenge object */
 
 	formatChallenge: function(c) {
-
-		var challenge = new Object();
-		challenge._id = c._id;
-		challenge.title = c.title;
-		challenge.start_date = (new Date(parseInt(c.start_date))).toDateString();
-		challenge.end_date = (new Date(parseInt(c.end_date))).toDateString();
-		challenge.description = c.description;
-		challenge.location_name = c.location_name;
-		challenge.location_zipcode = c.location_zipcode;
-		challenge.points = c.points;
-		challenge.category_tags = c.category_tags;
-		return challenge;
-
+		c.start_date = (new Date(parseInt(c.start_date))).toDateString();
+		c.end_date = (new Date(parseInt(c.end_date))).toDateString();
+		return c;
 	},
 
 	/* Get organizations list */
 
 	getOrganizations: function(callback) {
 		var orgs_list = [];
-		Organization.find({}, function(err, orgs) {
+		Account.find({ mode: 'organization' }, function(err, orgs) {
 			if (err) {
 				console.log(err);
 			}
 			else {
 				for (var i = 0; i < orgs.length; i++) {
 					var org = {};
-					org.orgname = orgs[i].orgname;
 					org.name = orgs[i].name;
+					org.username = orgs[i].username;
+					org.bio = orgs[i].bio;
+					org.location = orgs[i].location;
 					org.profile_pic_url = orgs[i].profile_pic_url;
-					org.location_name = orgs[i].location_name;
 					orgs_list.push(org);
 				}
 				callback(orgs_list);
@@ -45,27 +34,25 @@ var lib = {
 		});
 	},
 
-	/* Get users list */
+	/* Get volunteers list */
 
-	getUsers: function(callback) {
-		var users_list = [];
-		User.find({}, function(err, users) {
+	getVolunteers: function(callback) {
+		var volunteers_list = [];
+		Account.find({ mode: 'volunteer'}, function(err, volunteers) {
 			if (err) {
 				console.log(err);
 			}
 			else {
-				for (var i = 0; i < users.length; i++) {
-					var user = {};
-					user.name = users[i].name;
-					user.username = users[i].username;
-					user.bio = users[i].bio;
-					user.profile_pic_url = users[i].profile_pic_url;
-					user.location_name = users[i].location_name;
-					user.points = users[i].points;
-					user.level = users[i].level;
-					users_list.push(user);
+				for (var i = 0; i < volunteers.length; i++) {
+					var volunteer = {};
+					volunteer.username = volunteers[i].username;
+					volunteer.bio = volunteers[i].bio;
+					volunteer.location = volunteers[i].location;
+					volunteer.points = volunteers[i].points;
+					volunteer.level = volunteers[i].level;
+					volunteers.push(volunteer);
 				}
-				callback(users_list);
+				callback(volunteers_list);
 			}
 		});
 	},
@@ -73,129 +60,170 @@ var lib = {
 	/* Get challenges list */
 
 	getChallenges: function(callback) {
+
 		var challenges_list = [];
+
+		var expandChallenge = function(c) {
+
+			c = lib.formatChallenge(c);
+
+			
+
+
+
+
+		}
+
 		Challenge.find({}, function(err, challenges) {
+
 			if (err) {
 				console.log(err);
 			}
-			else {
-				for (var i = 0; i < challenges.length; i++) {
-					var challenge = lib.formatChallenge(challenges[i]);
-					challenges_list.push(challenge);
-				}
-				callback(challenges_list);
+
+			else if (challenges != null) {
+
 			}
+
+
+
 		});
+
+
+
+		callback(challenges_list);
+	
 	},
 
-	/* Add user
+	/* Add account
 	ARGUMENTS:
-	- user: object with user properties
+	- account: object with account properties
 	- callback: callback function
 	RETURNS:
-	- String: Mongo ObjectID of newly created user
+	- String: Error Message (undefined if no error)
+	- String: Mongo ObjectID of newly created account
 	*/
-	addUser: function(user, callback) {
-		User.find({ username: user.username }, function(err, users) {
+	addAccount: function(account, callback) {
+
+		Account.find({ username: account.username }, function(err, accounts) {
 
 			if (err) {
 				console.log(err);
 			}
 
-			if (users.length == 0) {
+			// if no account (either organization or volunteer) exists with the supplied username
 
-				/* TODO: Fetch friends from Facebook */
-				var friends = [];
+			if (accounts.length == 0) {
 
-				var newUser = new User({
-					username: user.username,
-					name: user.name,
-					email: user.email,
-					bio: user.bio,
-					location_name: user.location_name,
-					location_zipcode: user.location_zipcode,
-					profile_pic_url: user.profile_pic_url,
-					cover_pic_url: user.cover_pic_url,
-					friends: friends,
-					challenges: [],
-					points: 1,
-					level: 1
+				var newAccount = new Account({
+					mode: account.mode,
+					username: account.username,
+					name: account.name,
+					email: account.email,
+					bio: account.bio,
+					location: account.location,
+					profile_pic_url: '/images/user.jpg',
+					cover_pic_url: '/images/sky.jpg',
+					challenges: []
 				});
 
-				User.register(newUser, user.password, function(err) {
+				if (account.mode == 'volunteer') {
+
+					/* TODO: GET FRIENDS FROM FACEBOOK */
+					var friends = [];
+
+					newAccount.friends = friends;
+					newAccount.points = 1;
+					newAccount.level = 1;
+
+				}
+
+				Account.register(newAccount, account.password, function(err) {
+
 					if (err) {
 						console.log(err);
 					}
-					callback(newUser._id);
+
+					console.log("ACCOUNT " + account.username + " CREATED");
+
+					callback(null, newAccount._id);
+
 				});
 			}
+			else {
+				callback("ERROR: USERNAME ALREADY EXISTS", null);
+			}
 		});
+
 	},
 
-	/* Edit user
+
+	/* Edit account
 	ARGUMENTS:
-	- u: object with user properties
+	- u: object with account properties
 	- callback: callback function
 	RETURNS:
-	- String: Mongo ObjectID of modified user
+	- String: Error message (undefined if no error)
+	- String: Mongo ObjectID of modified account
 	*/
-	editUser: function(u, callback) {
+	editAccount: function(u, callback) {
 
-		User.findOne({ username: u.username }, function(err, user) {
+		Account.findOne({ username: u.username }, function(err, account) {
 
 			if (err) {
 				console.log(err);
 			}
 
-			if (user == null) {
-				console.log("err: No user found with username " + u.username);
+			if (account == null) {
+				callback("ERROR: NO ACCOUNT FOUND WITH USERNAME " + u.username, null);
 			}
 
-			user.name = u.name;
-			user.email = u.email;
-			user.bio = u.bio;
-			user.location_name = u.location_name;
-			user.location_zipcode = u.location_zipcode;
-			user.profile_pic_url = u.profile_pic_url;
-			user.cover_pic_url = u.cover_pic_url;
+			else {
+				account.name = u.name;
+				account.email = u.email;
+				account.bio = u.bio;
+				account.location = u.location;
+				account.profile_pic_url = u.profile_pic_url;
+				account.cover_pic_url = u.cover_pic_url;
+			}
 
-			user.save(function(err, data) {
+			account.save(function(err, data) {
 				if (err) {
 					console.log(err);
 				}
-				console.log("user " + u.username + " updated!");
-				callback(data);
+				console.log("ACCOUNT " + u.username + " UPDATED");
+				callback(null, data);
 			});
 
 		});
 
 	},
 
-	/* Delete user
+	/* Delete account
 	ARGUMENTS:
-	- u: object with user properties
+	- u: object with account properties
 	- callback: callback function
 	RETURNS:
-	- String: Mongo ObjectID of deleted user
+	- String: Error message (undefined if no error)
+	- String: Mongo ObjectID of deleted account
 	*/
-	deleteUser: function(u, callback) {
+	deleteAccount: function(u, callback) {
 
-		User.findOne({ username: u.username }, function(err, user) {
+		Account.findOne({ username: u.username }, function(err, account) {
 
 			if (err) {
 				console.log(err);
 			}
 
-			if (user == null) {
-				console.log("err: No user found with username " + u.username);
+			if (account == null) {
+				callback("ERROR: NO ACCOUNT FOUND WITH USERNAME " + u.username, null);
 			}
 
-			user.remove(function(err, data) {
+			account.remove(function(err, data) {
 				if (err) {
 					console.log(err);
 				}
-				console.log("user " + u.username + "deleted!");
-				callback(data);
+				console.log("ACCOUNT " + u.username + "DELETED");
+				callback(null, data);
 			});
 
 		});
@@ -204,20 +232,22 @@ var lib = {
 
 	/* Add challenge
 	ARGUMENTS:
+	- orgID: Mongo ObjectID of organization that created the challenge
 	- challenge: object with challenge properties
 	- callback: callback function
 	RETURNS:
+	- String: Error message (undefined if no error)
 	- String: Mongo ObjectID of newly created challenge
 	*/
-	addChallenge: function(challenge, callback) {
+	addChallenge: function(orgID, challenge, callback) {
 
 		var c = new Challenge({
+			organization: orgID,
 			title: challenge.title,
 			start_date: challenge.start_date,
 			end_date: challenge.end_date,
 			description: challenge.description,
-			location_name: challenge.location_name,
-			location_zipcode: challenge.location_zipcode,
+			location: challenge.location,
 			points: challenge.points,
 			category_tags: challenge.category_tags,
 		});
@@ -225,8 +255,9 @@ var lib = {
 		c.save(function(err, c) {
 			if (err) {
 				console.log(err);
+				callback(err, null);
 			}
-			callback(c._id);
+			callback(null, c._id);
 		});
 
 	},
@@ -236,6 +267,7 @@ var lib = {
 	- c: object with challenge properties
 	- callback: callback function
 	RETURNS:
+	- String: Error message (undefined if no error)
 	- String: Mongo ObjectID of modified challenge
 	*/
 	editChallenge: function(c, callback) {
@@ -247,15 +279,14 @@ var lib = {
 			}
 
 			if (challenge == null) {
-				console.log("err: No challenge found with id " + c._id);
+				callback("ERROR: NO CHALLENGE FOUND WITH ID " + c._id, null);
 			}
 
 			challenge.title = c.title;
 			challenge.start_date = c.start_date;
 			challenge.end_date = c.end_date;
 			challenge.description = c.description;
-			challenge.location_name = c.location_name;
-			challenge.location_zipcode = c.location_zipcode;
+			challenge.location = c.location;
 			challenge.points = c.points;
 			challenge.category_tags = c.category_tags;
 
@@ -263,8 +294,8 @@ var lib = {
 				if (err) {
 					console.log(err);
 				}
-				console.log("challenge " + c._id + " updated!");
-				callback(data);
+				console.log("CHALLENGE " + c._id + " UPDATED");
+				callback(null, data);
 			});
 
 		});
@@ -287,14 +318,14 @@ var lib = {
 			}
 
 			if (challenge == null) {
-				console.log("err: No challenge found with id " + c._id);
+				callback("ERROR: NO CHALLENGE FOUND WITH ID " + c._id);
 			}
 
 			challenge.remove(function(err, data) {
 				if (err) {
 					console.log(err);
 				}
-				console.log("challenge " + c._id + "deleted!");
+				console.log("CHALLENGE " + c._id + " DELETED");
 				callback(data);
 			});
 
@@ -313,14 +344,14 @@ var lib = {
 	*/
 	addChallengesToOrg: function(orgID, challenges, callback) {
 
-		allUser.findById(orgID, function (err, org) {
+		Account.findOne({ _id: orgID }, function (err, org) {
 
 			if (err) {
 				console.log(err);
 			}
 
 			if (org == null) {
-				console.log("err: No org found with org._id " + orgID);
+				callback("ERROR: NO ORGANIZATION FOUND WITH ID " + orgID);
 			}
 
 			else {
@@ -328,128 +359,27 @@ var lib = {
 			  	var ids = [];
 
 			  	if (challenges) {
+
 			  		for (var i = 0; i < challenges.length; i++) {
-						lib.addChallenge(challenges[i], function(id) {
-							org.challenges.push(id);
-							org.save();
-							ids.push(id);
+						lib.addChallenge(orgID, challenges[i], function(err, id) {
+							if (err) {
+								console.log(err);
+							}
+							else {
+								org.challenges.push(id);
+								ids.push(id);
+								org.save(function(err, data) {
+									if (err) {
+										console.log(err);
+									}
+								});
+							}
 						});
 					}
+
 			  	}
-
 				callback(ids, org);
-
 			}
-
-		});
-
-	},
-
-	/* Add organization
-	ARGUMENTS:
-	- org: object with organization properties
-	- callback: callback function
-	RETURNS:
-	- String: Mongo ObjectID of newly created organization
-	*/
-	addOrganization: function(org, callback) {
-		
-		Organization.find({ email: org.email }, function(err, orgs) {
-
-			if (err) {
-				console.log(err);
-			}
-
-			if (orgs.length == 0) {
-
-				var newOrg = new Organization({
-					name: org.name,
-					orgname: org.orgname,
-					email: org.email,
-					location_name: org.location_name,
-					location_zipcode: org.location_zipcode,
-					profile_pic_url: org.profile_pic_url,
-					cover_pic_url: org.cover_pic_url,
-					description: org.description,
-					challenges: []
-				});
-
-				Organization.register(newOrg, org.password, function(err) {
-					if (err) {
-						console.log(err);
-					}
-					lib.addChallengesToOrg(newOrg._id, org.challenges, function (ids) {});
-					callback(newOrg._id);
-				});
-			}
-		});
-
-	},
-
-	/* Edit organization
-	ARGUMENTS:
-	- o: object with organization properties
-	- callback: callback function
-	RETURNS:
-	- String: Mongo ObjectID of modified organization
-	*/
-	editOrganization: function(o, callback) {
-
-		Organization.findOne({ orgname: o.orgname }, function(err, org) {
-
-			if (err) {
-				console.log(err);
-			}
-
-			if (org == null) {
-				console.log("err: No org found with orgname " + o.orgname);
-			}
-
-			org.name = o.name;
-			org.email = o.email;
-			org.description = o.description;
-			org.location_name = o.location_name;
-			org.location_zipcode = o.location_zipcode;
-			org.profile_pic_url = o.profile_pic_url;
-			org.cover_pic_url = o.cover_pic_url;
-
-			org.save(function(err, data) {
-				if (err) {
-					console.log(err);
-				}
-				console.log("org " + o.orgname + " updated!");
-				callback(data);
-			});
-
-		});
-	},
-
-	/* Delete organization
-	ARGUMENTS:
-	- o: object with organization properties
-	- callback: callback function
-	RETURNS:
-	- String: Mongo ObjectID of deleted organization
-	*/
-	deleteOrganization: function(o, callback) {
-
-		Organization.findOne({ orgname: o.orgname }, function(err, org) {
-
-			if (err) {
-				console.log(err);
-			}
-
-			if (org == null) {
-				console.log("err: No org found with orgname " + o.orgname);
-			}
-
-			org.remove(function(err, data) {
-				if (err) {
-					console.log(err);
-				}
-				console.log("org " + o.orgname + "deleted!");
-				callback(data);
-			});
 
 		});
 

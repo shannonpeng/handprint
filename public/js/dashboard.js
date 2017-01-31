@@ -1,4 +1,5 @@
 $(document).ready(function() {
+
 	$('.challenge-complete').click(function(event){
 		if ($(this).hasClass("completed")) {
 			$(this).removeClass("completed");
@@ -7,15 +8,15 @@ $(document).ready(function() {
 		else {
 			$(this).addClass("completed");
             var points = document.getElementById('')
-            var challengeId = $(this).attr("id");
+            var challengeId = $(this).attr('id');
 
             $.ajax({
-                url: '/addPoints',
+                url: '/completeChallenge',
                 type: 'POST',
                 contentType: 'application/json; charset=utf-8',
                 datatype: 'json',
                 data: JSON.stringify({
-                    _id: challengeId
+                    id: challengeId
                 }),
                 success: function(data) {
                     console.log('success');
@@ -26,4 +27,5 @@ $(document).ready(function() {
             });
 		}
 	});
+    
 });

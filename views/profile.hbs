@@ -12,31 +12,35 @@
   </head>
   <body>
 
-  	<nav>
+  	<nav> 
+        <!-- Logo -->
+        <div class="logo">
+          <a href="/"><img src="/images/logo-white.png"></a>
+        </div>
 
-  		<!-- Logo -->
-  		<div class="logo">
-  			<a href="/"><img src="/images/logo-white.png"></a>
-  			<a style="display:none" href="/"><img src="/images/logo-blue.png"></a>
-  		</div>
+        {{#if account}}
+        <div class="links">
+          <div><a href="/dashboard">dashboard</a></div>
+          <a href="/profile/{{ account.username}}">
+            <div class="account">
+            <div><h3>{{ account.name }}</h3></div>
+            <div class="profile-picture" style="background-image:url('{{ account.profile_pic_url}}')">
+            </div>
+            <div><a href="/logout">logout</a></div>
+            </div>
+          </a>
+        </div>
+        {{else}}
+        <div class="links">
+          <div><a href="/">Home</a></div>
+          <div><a href="/register">Become an Organization</a></div>
+          <div><a href="/register">Sign Up</a></div>
+          <div><a href="/login">Login</a></div>
+        </div>
+        {{/if}}
+        
+    </nav>
 
-  		<!-- Search -->
-  		<!--<div class="search">
-  			<img src="/images/search-white.png">
-  			<input placeholder="Search for a challenge">
-  		</div>-->
-
-  		<!-- Links -->
-  		<div class="links">
-	  		<div><a href="/dashboard">dashboard</a></div>
-		  	<a href="/users/{{ user.username}}"><div class="account">
-  				<div><h3>{{ user.name }}</h3></div>
-  				<div class="profile-picture" style="background-image:url('{{ user.profile_pic_url}}')">
-  				</div>
-			</div></a>
-  		</div>	
-
-  	</nav>
 
   	<div class="container">
 
@@ -47,7 +51,7 @@
 		  			<div class="profile-picture" style="background-image:url('{{ user.profile_pic_url}}')"></div>
 		  			<div class="info">
 		  				<h1 class="heavy">{{ user.name }}</h1>
-		  				<h3 class="user-location">{{ user.location_name }}</h3>
+		  				<h3 class="user-location">{{ user.location }}</h3>
 			  			<p class="user-bio">{{ user.bio }}</p>
 		  			</div>
 		  			<div class="stats">
@@ -70,7 +74,9 @@
 		  					<b><p class="challenge-title">{{ title }}</p></b>
 		  					<p>{{ description }}</p>
 		  					<p class="challenge-location">{{ location_name }}</p>
+		  					<p class="challenge-organization">posted by <a href="/profile/{{ organization.username }}">{{ organization.name }}</a></p>
 		  					<p class="challenge-date">{{ start_date }} &mdash; {{ end_date }}</p>
+
 		  					<div class="challenge-tags">
 		  						{{#each category_tags}}
 		  						<div><p># {{ this }}</p></div>

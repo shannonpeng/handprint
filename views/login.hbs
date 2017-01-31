@@ -17,61 +17,53 @@
         <div class="logo">
           <a href="/"><img src="/images/logo-white.png"></a>
         </div>
-        <!-- Links -->
+
+        {{#if account}}
         <div class="links">
-          <!--need to make /about in index.js-->
-          <div><a href>About</a></div>
-          <!--the following a hrefs should link to sign up page-->
+          <div><a href="/dashboard">dashboard</a></div>
+          <a href="/profile/{{ account.username}}">
+            <div class="account">
+            <div><h3>{{ account.name }}</h3></div>
+            <div class="profile-picture" style="background-image:url('{{ account.profile_pic_url}}')">
+            </div>
+            <div><a href="/logout">logout</a></div>
+            </div>
+          </a>
+        </div>
+        {{else}}
+        <div class="links">
+          <div><a href="/">Home</a></div>
           <div><a href="/register">Become an Organization</a></div>
           <div><a href="/register">Sign Up</a></div>
           <div><a href="/login">Login</a></div>
         </div>
-      </nav>
+        {{/if}}
+        
+    </nav>
+
 
     <div class="header">
       <div class="logo"><img src="/images/logo-white.png"></div>
       <h1>Login</h1>
     </div>
 
+    {{#if message}}
+    <h2 class="message">{{ message }}</h2>
+    {{/if}}
+
     <div id="login-form">
-      <form name="login" method="post" action="/login">
-        <p>Email<span class="asterisk">*</span></p>
-        <input type="text" name="email" class="email" placeholder="time" required></input>
-        <p>Password<span class="asterisk"<*</span></p>
-        <input type="password" name="password" class="password" placeholder="Password" required></input>
-        <input type="submit" class="submit">
-      </form>
+
+    <form name="login" method="post" action="/login">
+  
+      <p>Email<span class="asterisk">*</span></p>
+      <input type="text" name="email" class="email" placeholder="tim@mit.edu" required>
+      <p>Password<span class="asterisk">*</span></p>
+      <input type="password" name="password" class="password" placeholder="Password" required>
+      <input type="submit" value="Submit" class="button submit">
+
+    </form>
+
     </div>
-     
-     <!-- EVERYTHING BELOW THIS LINE IS PART OF OLD LOGIN FORM --> 
-     <!-- <center><h2 style="font-weight:normal">I want to login as a</h2></center>
-      <div id="mode-tab">
-        <ul class="tab">
-          <!-- javascript:void(0) keeps browser on same page
-          <li><a href="javascript:void(0)" class="tab-links" 
-            onclick="openForm(event, 'volunteer')"><h2>Volunteer</h2></a></li>
-          <li><a href="javascript:void(0)" class="tab-links" 
-            onclick="openForm(event, 'organization')"><h2>Organization</h2></a></li>
-        </ul>
-      </div>
-      <div id="volunteer" class="tab-content">
-        <form name = "volunteerLogin" method="post" action="/login">
-          <p>Username<span class="asterisk">*</span></p>
-          <input type="text" class="username" placeholder="tim" required></input>
-          <p>Password<span class="asterisk">*</span></p>
-          <input type="password" class="password" placeholder="Password" required></input>
-          <div class="button submit">Submit</div>
-      </div>
-      -->
-      <!--
-      <div id="organization" class="tab-content">
-          <p>Email<span class="asterisk">*</span></p>
-          <input type="text" class="email" placeholder="rfl@rfl.org" required></input>
-          <p>Password<span class="asterisk">*</span></p>
-          <input type="password" class="password" placeholder="Password" required></input>
-          <div class="button submit">Submit</div>
-      </div>
-      -->
 
     </div>
   </body>

@@ -13,20 +13,33 @@
   <body>
 
      <nav> 
-	      <!-- Logo -->
-	      <div class="logo">
-	        <a href="/"><img src="/images/logo-white.png"></a>
-	      </div>
-	      <!-- Links -->
-	      <div class="links">
-	        <!--need to make /about in index.js-->
-	        <div><a href>About</a></div>
-	        <!--the following a hrefs should link to sign up page-->
-	        <div><a href="/register">Become an Organization</a></div>
-	        <div><a href="/register">Sign Up</a></div>
-	        <div><a href="/login">Login</a></div>
-	      </div>
-      </nav>
+        <!-- Logo -->
+        <div class="logo">
+          <a href="/"><img src="/images/logo-white.png"></a>
+        </div>
+
+        {{#if account}}
+        <div class="links">
+          <div><a href="/dashboard">dashboard</a></div>
+          <a href="/profile/{{ account.username}}">
+            <div class="account">
+            <div><h3>{{ account.name }}</h3></div>
+            <div class="profile-picture" style="background-image:url('{{ account.profile_pic_url}}')">
+            </div>
+            <div><a href="/logout">logout</a></div>
+            </div>
+          </a>
+        </div>
+        {{else}}
+        <div class="links">
+          <div><a href="/">Home</a></div>
+          <div><a href="/register">Become an Organization</a></div>
+          <div><a href="/register">Sign Up</a></div>
+          <div><a href="/login">Login</a></div>
+        </div>
+        {{/if}}
+        
+    </nav>
 
     <div id="carousel">
       <div class="content">
@@ -54,9 +67,9 @@
       <div class="organizations">
         <h2>Connect to volunteer organizations</h2>
         {{#each organizations}}
-            <a href="/organizations/{{orgname}}">
+            <a href="/profile/{{ username }}">
               <div class="organization">
-              <div class="organization-pic" style="background-image:url('{{ profile_pic_url}}')"></div>
+              <div class="organization-pic" style="background-image:url('{{ profile_pic_url }}')"></div>
               <b><p>{{ name }}</p></b>
               <p>{{ location_name }}</p>
               </div>
