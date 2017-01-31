@@ -80,8 +80,8 @@
 @media screen and (max-width: 1000px) {
 
     #carousel {
-        font-size: 1em;
-        padding-top: 100px;
+        font-size: 0.75em;
+        padding-top: 50px;
     }
 
     #carousel .content {

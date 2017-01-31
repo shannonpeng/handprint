@@ -159,8 +159,12 @@
 }
 
 #feed .challenge-complete.completed {
-	background: rgba(16, 102, 213, 1);
+	background: rgba(200, 200, 200, 1);
+	border: 5px solid rgba(200, 200, 200, 1);
 	color: white;
+}
+#feed .challenge-complete.completed:hover {
+	cursor: normal;
 }
 
 #feed .create-challenge > div {
@@ -188,6 +192,18 @@
 }
 
 #feed .create-challenge:hover {
+	cursor: pointer;
+}
+
+#feed .challenge .delete-challenge  {
+	float: right;
+	padding: 10px 25px;
+	font-size: 2em;
+	color: #404040;
+	margin: 15px auto;
+}
+
+#feed .challenge .delete-challenge:hover {
 	cursor: pointer;
 }
 

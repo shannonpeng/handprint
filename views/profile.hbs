@@ -50,7 +50,7 @@
 		  					<b><p class="challenge-title">{{ title }}</p></b>
 		  					<p>{{ description }}</p>
 		  					<p class="challenge-location">{{ location }}</p>
-		  					<p class="challenge-organization">posted by <a href="/profile/{{ organization.username }}">{{ organization.name }}</a></p>
+		  					<p class="challenge-organization">posted by <b><a href="/profile/{{ organization.username }}">{{ organization.name }}</b></a></p>
 		  					<p class="challenge-date">{{ start_date }} &mdash; {{ end_date }}</p>
 
 		  					<div class="challenge-tags">
@@ -68,7 +68,7 @@
 		  		{{# if friends }}
 
 		  		<div class="friends">
-		  			<h2>Friends</h2>
+		  			<h2>Following</h2>
 		  			{{#each friends}}
 		  			<a href="/profile/{{username}}"><div class="friend" style="background:linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1)), url('{{ profile_pic_url }}');background-size:cover">
 		  				<b><p>{{ name }}</p></b>

@@ -52,8 +52,6 @@ router.get('/dashboard', function(req, res, next) {
 
 			var username = req.user.username;
 
-			var challenges = [];
-
 			Account.findOne({ username: username }, 
 
 				function(err, user) {
@@ -62,37 +60,48 @@ router.get('/dashboard', function(req, res, next) {
 						console.log(err);
 					}
 
-					Challenge.find({ /*users: { $any: req.user.friends } */} , function(err, challenges) {
+					Challenge.find({/*users: { $any: req.user.friends } */}, function(err, challenges) {
 
 						if (err) {
 							console.log(err);
 						}
 
-						if (challenges) {
+						else if (challenges) {
 
-							var c = [];
+							var challenges_list = [];
 
-				    		for (var i = 0; i < challenges.length; i++ ) {
+							for (var i = 0; i < challenges.length; i++) {
 
-				    			lib.formatChallenge(challenges[i], function(challenge) {
-				    				c.push(challenge);
-				    			});
+								challenges[i].completed = challenges[i].users.indexOf(req.user._id.toString()) >= 0;
 
-				    		}
+								lib.formatChallenge(challenges[i], function(c) {
+									
+									challenges_list.push(c);
 
-							res.render('dashboard', {
-								account: req.user,
-								user: user,
-								challenges: c
-							}, function(err, data) {
-								if (err) {
-									console.log(err);
-								}
-								else {
-									res.send(data);
-									console.log("VOLUNTEER DASHBOARD RENDERED");
-								}
-							});
+									if (challenges_list.length == challenges.length) {
+
+										console.log(challenges_list);
+
+										res.render('dashboard', {
+											account: req.user,
+											user: user,
+											challenges: challenges_list
+										}, function(err, data) {
+											if (err) {
+												console.log(err);
+											}
+											else {
+												res.send(data);
+												console.log("VOLUNTEER DASHBOARD RENDERED");
+											}
+										});
+
+									}
+
+								});
+
+							}
+							
 						}
 
 					});
@@ -111,27 +120,37 @@ router.get('/dashboard', function(req, res, next) {
 
 			    	Challenge.find( { organization: org._id }, function(err, challenges) {
 
-			    		var c = [];
+			    		var challenges_list = [];
 
-			    		for (var i = 0; i < challenges.length; i++ ) {
-			    			lib.formatChallenge(challenges[i], function(c) {
-								challenges_list.push(c);
-							});
-			    		}
+			    		for (var i = 0; i < challenges.length; i++) {
 
-			    		res.render('org-dashboard', {
-			    			account: req.user,
-					    	org: org,
-					    	challenges: c
-					    }, function(err, data) {
-					    	if (err) {
-								console.log(err);
+								lib.formatChallenge(challenges[i], function(c) {
+
+									challenges_list.push(c);
+
+									if (challenges_list.length == challenges.length) {
+
+										res.render('org-dashboard', {
+							    			account: req.user,
+									    	org: org,
+									    	challenges: challenges_list
+									    }, function(err, data) {
+									    	if (err) {
+												console.log(err);
+											}
+											else {
+												res.send(data);
+												console.log("ORGANIZATION DASHBOARD RENDERED");
+											}
+									    });
+
+									}
+
+								});
+
 							}
-							else {
-								res.send(data);
-								console.log("ORGANIZATION DASHBOARD RENDERED");
-							}
-					    });
+
+			    		
 						
 					});
 
@@ -184,6 +203,36 @@ router.get('/profile/:id', function(req, res, next) {
 				}
 			}
 
+			var friends = [];
+
+			if (account.friends.length > 0) {
+
+				for (var i = 0; i < account.friends.length; i++) {
+
+
+					Account.findOne({ _id: account.friends[i] }, function(err, friend) {
+
+						//console.log(friend);
+
+						if (err) {
+							console.log(err);
+						}
+
+						else if (friend) {
+
+							console.log(friend);
+
+							var f = lib.exportVolunteer(friend);
+
+							friends.push(f);
+							
+						}
+
+					});
+				}
+
+			}
+
 			if (req.user) {
 
 				var following = req.user.friends.indexOf(account._id) >= 0;
@@ -194,7 +243,7 @@ router.get('/profile/:id', function(req, res, next) {
 						account: req.user,
 						user: account,
 						challenges: challenges,
-						friends: account.friends,
+						friends: friends,
 						following: following,
 						notSelf: notSelf
 			 		});
@@ -214,7 +263,7 @@ router.get('/profile/:id', function(req, res, next) {
 						account: req.user,
 						user: account,
 						challenges: challenges,
-						friends: account.friends,
+						friends: friends,
 			 		});
 				}
 
@@ -366,6 +415,33 @@ router.post('/followUser', function(req, res, next) {
 				}
 			})
 
+		}
+	})
+
+});
+
+/* POST to delete challenge. */
+router.post('/deleteChallenge', function(req, res, next) {
+
+	var id = req.body.id;
+
+	Challenge.findOne({ _id: id}, function(err, challenge) {
+
+		if (err) {
+			console.log(err);
+		}
+		else if (challenge) {
+
+			if (!(challenge.organization == req.user._id)) {
+				res.send('Error: Delete challenge not authorized');
+			}
+
+			else {
+				lib.deleteChallenge(challenge, function(data) {
+					res.send('Challenge deleted!');
+				})
+			}
+			
 		}
 	})
 

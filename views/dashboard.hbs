@@ -43,8 +43,8 @@
                   </div>
                 </div>
                 <a name="{{ _id }}">
-                  <div class="challenge-complete" id="{{_id}}">
-                      <p>complete</p>
+                  <div class="button challenge-complete{{#if completed}} completed{{/if}}" id="{{_id}}">
+                      <p>{{#if completed}}completed{{else}}complete{{/if}}</p>
                   </div>
                 </a>
               </div>

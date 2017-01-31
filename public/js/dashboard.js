@@ -2,12 +2,10 @@ $(document).ready(function() {
 
 	$('.challenge-complete').click(function(event){
 		if ($(this).hasClass("completed")) {
-			$(this).removeClass("completed");
-            var challengeId = $(this).attr("id")
+            return;
 		}
 		else {
 			$(this).addClass("completed");
-            var points = document.getElementById('')
             var challengeId = $(this).attr('id');
 
             $.ajax({
@@ -20,6 +18,7 @@ $(document).ready(function() {
                 }),
                 success: function(data) {
                     console.log(data);
+                    window.location.replace('/dashboard');
                 },
                 error: function(err) {
                     console.log(err);

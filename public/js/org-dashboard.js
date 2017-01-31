@@ -50,5 +50,34 @@ $(document).ready(function() {
       });
     }
   });
+
+  $("#feed .challenge .delete-challenge").click(function(event) {
+
+    var a = confirm("Are you sure you want to delete this challenge?");
+    var id = $(this).attr('name');
+    console.log(id);
+
+    if (a) {
+
+      $.ajax({
+        url: '/deleteChallenge',
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        datatype: 'json',
+        data: JSON.stringify({
+          id: id
+        }),
+        success: function(data) {
+          console.log(data);
+          window.location.replace('/dashboard');
+        },
+        error: function(err) {
+          console.log(err);
+        }
+      });
+
+    }
+    
+  });
 });
 

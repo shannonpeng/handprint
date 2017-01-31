@@ -40,6 +40,7 @@ var lib = {
 		challenge.location = c.location;
 		challenge.points = c.points;
 		challenge.category_tags = c.category_tags;
+		challenge.completed = c.completed;
 
 		Account.find({ _id: c.organization, mode: 'organization'}, function(err, orgs) {
 
@@ -128,13 +129,11 @@ var lib = {
 	/* Get challenges list */
 
 	getChallenges: function(callback) {
-		
 
 		Challenge.find({}, function(err, challenges) {
 
 			if (err) {
 				console.log(err);
-				return;
 			}
 
 			else if (challenges) {
@@ -147,18 +146,17 @@ var lib = {
 
 						challenges_list.push(c);
 
-						if (i == challenges.length - 1) {
-							callback(challenges_list);
-						}
+						if (challenges_list.length == challenges.length) {
 
+							console.log(challenges_list);
+							callback(challenges_list);
+
+						}
 
 					});
 
-					
-
 				}
-
-
+				
 			}
 
 		});
@@ -388,17 +386,17 @@ var lib = {
 				console.log(err);
 			}
 
-			if (challenge == null) {
-				callback("ERROR: NO CHALLENGE FOUND WITH ID " + c._id);
-			}
+			if (challenge) {
 
-			challenge.remove(function(err, data) {
-				if (err) {
-					console.log(err);
-				}
-				console.log("CHALLENGE " + c._id + " DELETED");
-				callback(data);
-			});
+				challenge.remove(function(err, data) {
+					if (err) {
+						console.log(err);
+					}
+					console.log("CHALLENGE " + c._id + " DELETED");
+					callback(data);
+				});
+
+			}
 
 		});
 
