@@ -21,9 +21,11 @@ connection.on('connected', function() {
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
+var Handlebars = require('handlebars');
 var exphbs = require('express-handlebars');
 app.engine('.hbs', exphbs({extname: '.hbs'}));
 app.set('view engine', '.hbs');
+Handlebars.registerPartial('navbar', '{{navbar}}')
 
 //connect to azure
 /*if (process.env.NODE_ENV == "production") {
