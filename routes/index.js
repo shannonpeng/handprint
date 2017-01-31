@@ -243,86 +243,92 @@ router.get('/profile/:id', function(req, res, next) {
 						else if (challenge) {
 
 							lib.formatChallenge(challenge, function(c) {
+
 								challenges.push(c);
+
+								if (challenges.length == account.challenges.length) {
+
+								var friends = [];
+
+								if (account.friends.length > 0) {
+
+									for (var i = 0; i < account.friends.length; i++) {
+
+
+										Account.findOne({ _id: account.friends[i] }, function(err, friend) {
+
+											//console.log(friend);
+
+											if (err) {
+												console.log(err);
+											}
+
+											else if (friend) {
+
+												console.log(friend);
+
+												var f = lib.exportVolunteer(friend);
+
+												friends.push(f);
+												
+											}
+
+										});
+									}
+
+								}
+
+								if (req.user) {
+
+									var following = req.user.friends.indexOf(account._id) >= 0;
+									var notSelf = !(account.username == req.user.username);
+									console.log(account.username + " vs " + req.user.username);
+									if (account.mode == "volunteer") {
+										res.render('profile', {
+											account: req.user,
+											user: account,
+											challenges: challenges,
+											friends: friends,
+											following: following,
+											notSelf: notSelf
+								 		});
+									}
+									else if (account.mode == "organization") {
+										res.render('org-profile', {
+											account: req.user,
+											org: account,
+											challenges: challenges,
+											notSelf: notSelf
+								 		});
+									}
+								}
+								else {
+
+									if (account.mode == "volunteer") {
+										res.render('profile', {
+											account: req.user,
+											user: account,
+											challenges: challenges,
+											friends: friends,
+								 		});
+									}
+
+									else if (account.mode == "organization") {
+										res.render('org-profile', {
+											account: req.user,
+											org: account,
+											challenges: challenges
+								 		});
+									}
+								}
+
+							}
+
 							});
 							
 						}
 
 					});
-				}
-			}
-
-			var friends = [];
-
-			if (account.friends.length > 0) {
-
-				for (var i = 0; i < account.friends.length; i++) {
-
-
-					Account.findOne({ _id: account.friends[i] }, function(err, friend) {
-
-						//console.log(friend);
-
-						if (err) {
-							console.log(err);
-						}
-
-						else if (friend) {
-
-							console.log(friend);
-
-							var f = lib.exportVolunteer(friend);
-
-							friends.push(f);
-							
-						}
-
-					});
-				}
-
-			}
-
-			if (req.user) {
-
-				var following = req.user.friends.indexOf(account._id) >= 0;
-				var notSelf = !(account.username == req.user.username);
-				console.log(account.username + " vs " + req.user.username);
-				if (account.mode == "volunteer") {
-					res.render('profile', {
-						account: req.user,
-						user: account,
-						challenges: challenges,
-						friends: friends,
-						following: following,
-						notSelf: notSelf
-			 		});
-				}
-				else if (account.mode == "organization") {
-					res.render('org-profile', {
-						account: req.user,
-						org: account,
-						challenges: challenges,
-						notSelf: notSelf
-			 		});
-				}
-			}
-			else {
-
-				if (account.mode == "volunteer") {
-					res.render('profile', {
-						account: req.user,
-						user: account,
-						challenges: challenges,
-						friends: friends,
-			 		});
-				}
-
-				else if (account.mode == "organization") {
-					res.render('org-profile', {
-						account: req.user,
-						org: account,
-						challenges: challenges
-			 		});
 				}
 			}
 			
