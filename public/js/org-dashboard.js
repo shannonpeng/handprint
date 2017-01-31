@@ -44,6 +44,7 @@ $(document).ready(function() {
 
     if (!(c.title && c.start_date && c.end_date && c.description && c.location && c.points)) {
       alert('Please fill out all required fields.');
+      console.log(c);
     }
     else {
       $.ajax({
