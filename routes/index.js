@@ -217,7 +217,7 @@ router.get('/profile/:id', function(req, res, next) {
 
 	Account.findOne({ username : req.params.id }, function(err, account) {
 
-		var r = function () {
+		function r() {
 			if (req.user) {
 
 					var following = req.user.friends.indexOf(account._id) >= 0;
@@ -241,7 +241,7 @@ router.get('/profile/:id', function(req, res, next) {
 							notSelf: notSelf
 				 		});
 					}
-				}
+			}
 				else {
 
 					if (account.mode == "volunteer") {
@@ -261,7 +261,7 @@ router.get('/profile/:id', function(req, res, next) {
 				 		});
 					}
 				}
-				
+					
 		};
 
 		var challenges = [];
@@ -277,7 +277,11 @@ router.get('/profile/:id', function(req, res, next) {
 
 		else { // account is defined
 
+			console.log("account found");
+
 			if (account.challenges.length > 0) { // if there are challenges to look for
+
+				console.log("account has challenges");
 
 				for (var i = 0; i < account.challenges.length; i++) {
 
@@ -290,12 +294,18 @@ router.get('/profile/:id', function(req, res, next) {
 						else if (challenge) {
 
 							lib.formatChallenge(challenge, function(c) {
+								console.log("challenge:");
+								console.log(c);
 								challenges.push(c);
-							});
+							
 
 							if (challenges.length == account.challenges.length) {
 
+								console.log("challenges.length = account.challenges.length");
+
 								if (account.friends.length > 0) { // if there are friends to look for
+
+									console.log("there are friends");
 
 									for (var i = 0; i < account.friends.length; i++) {
 
@@ -309,9 +319,12 @@ router.get('/profile/:id', function(req, res, next) {
 
 												var f = lib.exportVolunteer(friend);
 												friends.push(f);
+												console.log("friend:");
+												console.log(f);
 
 												if (friends.length == account.friends.length) { // yes challenges, yes friends
 
+													console.log("friends.length == account.friends.length");
 													r();
 												}
 												
@@ -324,15 +337,19 @@ router.get('/profile/:id', function(req, res, next) {
 
 								else { // yes challenges, no friends
 
-										r();
-											
-									}
+									console.log("challenges exist, but no friends");
 
+									r();
+											
 								}
 
 							}
+
+							});
+
+						}
 							
-						});
+					});
 
 				}
 
@@ -340,7 +357,11 @@ router.get('/profile/:id', function(req, res, next) {
 
 			else { // no challenges
 
+				console.log("no challenges exist");
+
 					if (account.friends.length > 0) { // if there are friends to look for
+
+						console.log("friends do though!");
 
 						for (var i = 0; i < account.friends.length; i++) {
 
@@ -354,9 +375,11 @@ router.get('/profile/:id', function(req, res, next) {
 
 									var f = lib.exportVolunteer(friend);
 									friends.push(f);
+									console.log("friend:");
+									console.log(f);
 
 									if (friends.length == account.friends.length) { // no challenges, yes friends
-
+										console.log("friends.length == account.friends.length");
 										r();
 									}
 									
@@ -369,9 +392,11 @@ router.get('/profile/:id', function(req, res, next) {
 
 					else { // no challenges, no friends
 
-							r();
+						console.log("no friends exist either :(");
+
+						r();
 								
-						}
+					}
 
 
 				}
