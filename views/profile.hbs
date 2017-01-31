@@ -12,34 +12,7 @@
   </head>
   <body>
 
-  	<nav> 
-        <!-- Logo -->
-        <div class="logo">
-          <a href="/"><img src="/images/logo-white.png"></a>
-        </div>
-
-        {{#if account}}
-        <div class="links">
-          <div><a href="/dashboard">dashboard</a></div>
-          <a href="/profile/{{ account.username}}">
-            <div class="account">
-            <div><h3>{{ account.name }}</h3></div>
-            <div class="profile-picture" style="background-image:url('{{ account.profile_pic_url}}')">
-            </div>
-            <div><a href="/logout">logout</a></div>
-            </div>
-          </a>
-        </div>
-        {{else}}
-        <div class="links">
-          <div><a href="/">Home</a></div>
-          <div><a href="/register">Become an Organization</a></div>
-          <div><a href="/register">Sign Up</a></div>
-          <div><a href="/login">Login</a></div>
-        </div>
-        {{/if}}
-        
-    </nav>
+  	{{>navbar}}
 
 
   	<div class="container">
@@ -89,14 +62,18 @@
 		  			{{/each}}
 		  		</div>
 
-		  		<div class="friends">
-		  			<h2>Friends</h2>
-		  			{{#each friends}}
-		  			<a href="/users/{{username}}"><div class="friend" style="background:linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1)), url('{{ profile_pic_url }}');background-size:cover">
-		  				<b><p>{{ name }}</p></b>
-		  			</div></a>
-		  			{{/each}}
-			  	</div>
+		  		{{# if user.mode == 'volunteer'}}
+
+			  		<div class="friends">
+			  			<h2>Friends</h2>
+			  			{{#each friends}}
+			  			<a href="/users/{{username}}"><div class="friend" style="background:linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1)), url('{{ profile_pic_url }}');background-size:cover">
+			  				<b><p>{{ name }}</p></b>
+			  			</div></a>
+			  			{{/each}}
+				  	</div>
+
+			  	{{/if}}
 
 	  		</div>
 		</div>

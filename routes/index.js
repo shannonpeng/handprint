@@ -324,7 +324,52 @@ router.post('/register', function(req, res, next) {
 			res.render('login', { message: 'Your account has been created! Login below to continue.'});
 		}
 	});
-})
+});
+
+/* POST to search users page */
+
+router.post('/search', function(req, res, next) {
+
+	Account.find({ username : req.body.searchItem, mode: 'volunteer' }, function(err, volunteers) {
+
+		if (err) {
+			console.log(err);
+		}
+
+		else if (volunteers) {
+
+			Account.find({ username: req.body.searchItem, mode: 'organization'}, function(err, organizations) {
+
+				if (err) {
+					console.log(err);
+				}
+
+				else if (organizations) {
+					console.log(req.user);
+					res.render('search', {
+						account: req.user,
+						searchItem: req.body.searchItem,
+						volunteers: volunteers,
+						organizations: organizations
+					} /*, function(err, data) {
+						if (err) {
+							console.log(err);
+						}
+						else {
+							res.send(data);
+							console.log("SEARCH PAGE RENDERED");
+						}
+					}*/);
+
+				}
+
+			});
+
+		}
+
+	});
+
+});
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

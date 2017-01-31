@@ -22,10 +22,10 @@ nav {
 	position: fixed;
 	top: 0;
 	padding: 5px;
-	padding-top: 15px;
+	padding-top: 10px;
 	padding-bottom: 10px;
 	color: white;
-	background: rgba(0, 0, 0, 0);
+	background: rgba(0, 0, 0, 0.3);
 	z-index: 999;
 }
 
@@ -92,12 +92,13 @@ nav .profile-picture  {
 	padding: 5px;
 }
 
-nav .links {
-	float: right;
+nav form {
+	display: inline-block;
 }
 
-nav.scrolled {
-	background: rgba(0, 0, 0, 0.8);
+nav .links {
+	float: right;
+	padding: 15px;
 }
 
 nav div {

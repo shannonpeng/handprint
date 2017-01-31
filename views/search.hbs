@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Search | Handprint</title>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <link rel="stylesheet" href="/stylesheets/base.css" />
+    <link rel="stylesheet" href="/stylesheets/search.css" />
+    <link rel="shortcut icon" href="/favicon.png" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/dashboard.js"></script>
+  </head>
+  <body>
+
+   {{>navbar}}
+
+    <div id="feed">
+
+      <div class="container">
+
+          <div class="header">
+            <h1>Search results for {{ searchItem }}</h1>
+          </div>
+
+          <div class="content">
+
+            <div class="volunteers">
+            <h1>Volunteers</h1>
+              {{#each volunteers}}
+                  <a href="/profile/{{username}}"><div class="volunteer" style="background:linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1)), url('{{ profile_pic_url }}');background-size:cover">
+                  <b><p>{{ name }}</p></b>
+                  </div></a>
+              {{else}}
+              <h3>No volunteers were found.</h3>
+              {{/each}}
+            </div>
+
+            <h1>Organizations</h1>
+            <div class="organizations">
+              {{#each organizations}}
+                  <a href="/profile/{{username}}"><div class="organization" style="background:linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1)), url('{{ profile_pic_url }}');background-size:cover">
+                  <b><p>{{ name }}</p></b>
+                  </div></a>
+              {{else}}
+              <h3>No organizations were found.</h3>
+              {{/each}}
+            </div>
+
+          </div>
+      </div>
+        
+    </div>
+  </body>
+</html>

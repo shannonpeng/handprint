@@ -1,0 +1,71 @@
+.container {
+	width: 100%;
+	margin: auto;
+}
+
+#feed {
+	width: 100%;
+	margin: auto;
+}
+
+#feed .header {
+	width: 100%;
+	color: white;
+	background: linear-gradient(45deg, rgba(61, 158, 223, 0.8), rgba(16, 102, 213, 0.8)), url('/images/killian.jpg');
+	background-size: cover;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	padding: 25px 0px;
+	padding-top: 75px;
+}
+
+#feed .header h1 {
+	font-size: 4em;
+	text-align: center;
+}
+
+#feed .content {
+	width: 65%;
+	margin: auto;
+	padding-top: 25px;
+}
+
+.volunteers .volunteer, .organizations .organization {
+	width: 150px;
+	height: 150px;
+	background-position: 50% 50%;
+	background-size: cover;
+	display: inline-block;
+	position: relative;
+}
+
+.volunteers .volunteer p, .organizations .organization p {
+	color: white;
+	position: absolute;
+	bottom: 0;
+	padding: 10px;
+}
+
+@media screen and (max-width: 1200px) {
+
+	#feed .header {
+		padding: 25px 0px;
+	}
+
+	#feed .header h1 {
+		font-size: 2em;
+	}
+
+	#feed .header .container > * {
+		display: block;
+		margin: auto;
+		margin: 15px;
+		text-align: center;
+	}
+
+	#feed .header .info {
+		width: 100%;
+		margin: auto;
+	}
+
+}
