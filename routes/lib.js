@@ -96,7 +96,7 @@ var lib = {
 	- String: Mongo ObjectID of newly created user
 	*/
 	addUser: function(user, callback) {
-		User.find({ username: user.username }, function(err, users) {
+		allUser.find({ username: user.username }, function(err, users) {
 
 			if (err) {
 				console.log(err);
@@ -122,7 +122,7 @@ var lib = {
 					level: 1
 				});
 
-				User.register(newUser, user.password, function(err) {
+				allUser.register(newUser, user.password, function(err) {
 					if (err) {
 						console.log(err);
 					}
@@ -139,8 +139,36 @@ var lib = {
 	RETURNS:
 	- String: Mongo ObjectID of modified user
 	*/
-	editUser: function(u, callback) {
+	editUser: function(username, u, callback) {
 
+		var username = req.user.username;
+		User.findOne({username:username}, function(err, user) {
+			if (err) {
+				console.log(err);
+			}
+
+			if (user == null) {
+				console.log("err: No user found with username " + u.username);
+			}
+
+			user.name = u.name;
+			user.email = u.email;
+			user.bio = u.bio;
+			user.location_name = u.location_name;
+			user.location_zipcode = u.location_zipcode;
+			user.profile_pic_url = u.profile_pic_url;
+			user.cover_pic_url = u.cover_pic_url;
+
+			user.save(function(err, data) {
+				if (err) {
+					console.log(err);
+				}
+				console.log("user " + u.username + " updated!");
+				callback(data);
+			});
+		});
+
+		/*
 		User.findOne({ username: u.username }, function(err, user) {
 
 			if (err) {
@@ -168,6 +196,7 @@ var lib = {
 			});
 
 		});
+		*/
 
 	},
 

@@ -38,13 +38,13 @@
         <input type="radio" name="mode" value="volunteer">Volunteer<br>
         <input type="radio" name="mode" value="organization">Orgnaization<br>
         <p>Name:*<br>
-        <input type="text" name="name" required><br>
+        <input type="text" name="name" pattern="[a-zA-Z0-9!@#$%^*_|]{1,10}" required><br>
         <p>Username:*<br>
-        <input type="text" name="username" required><br>
+        <input type="text" name="username" pattern="[a-zA-Z0-9!@#$%^*_|]{1,10}" required><br>
         <p>Email*<br>
-        <input type="text" name="email" required<br>
+        <input type="text" name="email" pattern="[a-zA-Z0-9!@#$%^*_|]{1,10}" required<br>
         <p>Password*<br>
-        <input type="password" name="password" required<br>
+        <input type="password" name="password" pattern="[a-zA-Z0-9!@#$%^*_|]{1,10}" required<br>
         <!-- Need to add location, bio/description -->
         <input type="submit" value="submit">
       </form>

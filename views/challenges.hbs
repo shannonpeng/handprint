@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Challenges | Handprint</title>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <link rel="stylesheet" href="/stylesheets/base.css" />
+    <link rel="stylesheet" href="/stylesheets/challenges.css" />
+    <link rel="shortcut icon" href="/favicon.png" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/js/login.js"></script>
+  </head>
+
+  <div id="feed">
+    <div class="container">
+      <div class="header">
+        <h1> Challenges </h1>
+      </div>
+    <div class="content">
+      <div class="challenges">
+        {{#each challenges}}
+        <div class="challenge">
+          <div class="challenge-points">
+            <h1>{{ points }} Points</h1>
+          </div>
+          <div class="challenge-info">
+            <b><p class="challenge-title">{{ title }}</p></b>
+            <p>{{ description }}</p>
+            <p class="challenge-location">{{ location_name }}</p>
+            <p class="challenge-organization">posted by <a href="/profile/{{ organization.username}}">{{ organization.name }}</a></p>
+            <p class="challenge-date">{{ start_date }} &mdash; {{ end_date }}</p>
+            <div class="challenge-tags">
+              {{#each category_tags}}
+              <div><p># {{ this }}</p></div>
+              {{/each}}
+            </div>
+          </div>
+          <a name="{{ _id }}">
+            <div class="challenge-complete" id="{{_id}}">
+              <p>complete</p>
+            </div>
+          </a>
+        </div>
+        {{else}}
+        <h2>Your challenges feed is empty.</h2>
+        {{/each}}
+      </div>
+    </div>
+  </div>

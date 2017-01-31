@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var FacebookStrategy = require('passport-facebook').Strategy;
 
 var User = require('../schemas/user');
 var Challenge = require('../schemas/challenge');
@@ -12,7 +13,39 @@ var allUser = require('../schemas/allUser');
 
 var lib = require('./lib');
 
-/* Passport */
+/* Passport Facebook Auth */
+passport.use(new FacebookStrategy({
+	clientID: "158615944635168",
+	clientSecret: "37aff8039f408a0c6f728cc54f7ea908",
+	callbackURL: "http://localhost:3000/auth/facebook/callback",
+}, 
+function(accessToken, refreshToken, profile, done) {
+		//console.log(profile);
+		//cb(profile);
+		console.log('line 25');
+		console.log(profile);
+		allUser.find({name: profile.displayName}, 
+			function(err, user) {
+			console.log('line 27' + user);
+			if (err) {
+				console.log(err);
+			}
+			done(null, user);
+		});
+	}
+));
+
+
+passport.serializeUser(function(user, done) {
+	done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+	done(null, obj);
+});
+
+
+/* Passport Regular Auth*/
 passport.use('local', allUser.createStrategy());
 passport.serializeUser(allUser.serializeUser());
 passport.deserializeUser(allUser.deserializeUser());
@@ -57,7 +90,8 @@ router.get('/dashboard', function(req, res, next) {
 	console.log(req.user);
 	if (req.user) {
 		if (req.user.mode == 'volunteer') {
-			var username = req.user.username;
+			console.log('req.user.mode is volunteer');
+			var username = req.user.username
 
 			var challenges = [];
 
@@ -96,6 +130,20 @@ router.get('/dashboard', function(req, res, next) {
 	}
     
 });
+
+/* GET challenges page */
+router.get('/challenges', function(req, res, next) {
+	Challenge.find({}, function(err, challenges) {
+		if (err) {
+			console.log(err);
+		}
+
+		if (challenges) {
+			console.log(challenges);
+			res.render('challenges', {challenges: challenges});
+		}
+	})
+})
 
 /* GET profile page. */
 router.get('/users/:id', function(req, res, next) {
@@ -256,6 +304,32 @@ router.post('/createChallenge', function(req, res, next) {
 
 });
 
+/* POST to delete account */
+router.post('/editProfile', function(req, res, next) {
+	/*
+	var username = req.body.username;
+	if (req.user.username == username) {
+		allUser.remove({username: username}, function() {
+			req.session.destroy(function(err) {
+				res.redirect('/');
+			});
+		});
+	}
+	else {
+		alert('Please enter the correct username');
+	}
+	*/
+	lib.editAccount(req.user.username, req.profile, function() {
+		res.redirect('/dashboard');
+	});
+})
+
+router.get('/editProfile', function(req, res, next) {
+	res.render('edit-profile');
+});
+
+
+
 /* POST to addPoints */
 /* Gives user points for completing challenge
  * by adding points to profile
@@ -298,6 +372,21 @@ router.post('/addPoints', function(req, res, next) {
 	});
 		
 });
+
+
+router.get('/auth', function (req, res, next) {
+	res.send('<form action="/auth/facebook" method="get">' + 
+		'<div> <input type="submit" value="Log In"/> </div> </form>');
+});
+
+router.get('/auth/facebook', 
+	passport.authenticate('facebook', {scope: ['user_friends']}));
+
+router.get('/auth/facebook/callback', 
+		passport.authenticate('facebook', {
+			successRedirect: '/',
+			failureRedirect: '/auth' 
+		}));
 
 
 /* GET login page. */

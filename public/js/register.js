@@ -88,7 +88,7 @@ $(document).ready(function() {
                     cover_pic_url: '/images/killian.jpg'
                 }),
                 success: function(data) {
-                    window.location.replace('/');
+                    window.location.replace('http://localhost:3000/search');
                 },
                 error: function(error) {
                     alert(error);

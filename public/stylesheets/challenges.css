@@ -1,0 +1,306 @@
+.container {
+    width: 100%;
+    margin: auto;
+}
+
+#feed {
+    width: 100%;
+    margin: auto;
+}
+
+#feed .header {
+    width: 100%;
+    color: white;
+    background: linear-gradient(45deg, rgba(61, 158, 223, 0.8), rgba(16, 102, 213, 0.8)), url('/images/killian.jpg');
+    background-size: cover;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    padding: 25px 0px;
+    padding-top: 100px;
+}
+
+#feed .header h1 {
+    font-size: 4em;
+    text-align: center;
+}
+
+#feed .content {
+    width: 65%;
+    margin: auto;
+    padding-top: 25px;
+}
+
+#feed .challenges {
+    margin: 15px;
+    padding: 10px 15px;
+}
+
+#feed .challenges {
+    width: 90%;
+}
+
+#feed .challenges > h3, #feed .friends > h3 {
+    padding: 15px 0px;
+}
+
+#feed .challenges h2, #feed .friends h2 {
+    color: rgb(16, 102, 213);
+    padding: 15px 0px;
+}
+
+#feed .challenge {
+    padding: 10px 0px;
+    padding-top: 0px;
+}
+
+#feed .challenge p {
+    padding: 0px;
+    margin: 0px;
+}
+
+#feed .challenge div {
+    display: inline-block;
+    vertical-align: top;
+}
+
+#feed .challenge .challenge-points {
+    width: 80px;
+    text-align: center;
+    font-size: .75em;
+    color: #8ae967;
+}
+
+#feed .challenge .challenge-info {
+    max-width: 70%;
+    margin-left: 20px;
+}
+
+#feed .challenge .challenge-info > * {
+    margin: 5px 0px;
+}
+
+#feed .challenge .challenge-title {
+    font-size: 1.5em;
+}
+
+#feed .challenge .challenge-location {
+    color: rgb(16, 102, 213);
+    margin-top: 5px;
+}
+
+#feed .challenge .challenge-date {
+    color: #808080;
+}
+
+#feed .challenge .challenge-location, #feed .challenge .challenge-date {
+    font-size: 0.8em;
+}
+    
+#feed .challenge .challenge-tags {
+    margin: 5px 0px;
+    font-size: 0.8em;
+}
+
+#feed .challenge .challenge-tags div {
+    padding: 5px;
+    margin: 5px;
+    margin-left: 0px;
+    border-radius: 1px;
+    background: #efefef;
+    color: #808080;
+}
+#feed .challenge-complete  {
+    float: right;
+    color:  rgba(16, 102, 213, 0.5);;
+    padding: 10px 25px;
+    border: 5px solid rgba(16, 102, 213, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin: 15px auto;
+}
+
+#feed .challenge-complete:hover {
+    color: rgba(16, 102, 213, 0.8);
+    border: 5px solid rgba(16, 102, 213, 0.8);
+    cursor: pointer;
+}
+
+#feed .challenge-complete.completed {
+    background: rgba(16, 102, 213, 1);
+    color: white;
+}
+
+#feed .create-challenge > div {
+    display: inline-block;
+    margin: 15px;
+    vertical-align: middle;
+}
+
+#feed .create-challenge h1 {
+    margin: auto;
+    color: rgba(61, 158, 223, 1);
+}
+
+#feed .create-challenge .plus-button {
+    width: 80px;
+    height: 80px;
+    border-radius: 50% 50%;
+    font-size: 2em;
+    background: rgba(61, 158, 223, 1);
+    text-align: center;
+}
+
+#feed .create-challenge .plus-button h1 {
+    color: white;
+}
+
+#feed .create-challenge:hover {
+    cursor: pointer;
+}
+
+#feed .challenge-form {
+    background: rgb(248, 248, 248);
+    margin-left: 125px;
+    padding: 25px;
+    padding-top: 40px;
+    border-left: 5px dotted rgba(61, 158, 223, 0.5);
+    overflow-y: hidden;
+    vertical-align: top;
+    opacity: 1;
+}
+
+#feed .challenge-form.closed {
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 0;
+    opacity: 0;
+}
+
+#feed .challenge-form.closed * {
+    display: none;
+}
+
+#feed .challenge-form input {
+    min-width: 300px;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    color: #808080;
+    font-size: 1.5em;
+    opacity: 0.5;
+    display: block;
+    margin: 5px 0px;
+    padding: 0;
+    background: transparent;
+}
+
+#feed .challenge-form input:focus {
+    opacity: 1;
+}
+
+#feed .challenge-form input::placeholder {
+    vertical-align: top;
+}
+
+#feed .challenge-form h2, #feed .challenge-form p {
+    margin: 5px 0px;
+}
+
+#feed .challenge-form h2 {
+    font-weight: normal;
+    display: inline-block;
+}
+
+#feed .challenge-form .form-element {
+    margin: 0px;
+    margin-bottom: 25px;
+    display: inline-block;
+}
+
+#feed .challenge-form .asterisk {
+    color: red;
+    font-size: 0.8em;
+    margin: 0px 5px;
+}
+
+#feed .challenge-form .button {
+    background: rgba(16, 102, 213, 1);
+    border: 5px solid rgba(16, 102, 213, 1);
+    color: white;
+    text-align: center;
+    text-transform: uppercase;
+    max-width: 150px;
+    padding: 10px 15px;
+}
+
+#feed .challenge-form .button h2 {
+    margin: auto;
+    font-weight: bold;
+}
+
+#feed .challenge-form .button:hover {
+    background: transparent;
+    color: rgba(16, 102, 213, 1);
+    cursor: pointer;
+}
+
+@media screen and (max-width: 1200px) {
+
+    #feed .header {
+        padding: 25px 0px;
+    }
+
+    #feed .header h1 {
+        font-size: 2em;
+    }
+
+    #feed .challenge > div {
+        display: block;
+        margin: 5px 0px;
+    }
+
+    #feed .challenge-complete  {
+        float: none;
+        position: static;
+        margin: 5px 20px;
+    }
+
+    #feed .content, #feed .challenges, #feed .challenge .challenge-info {
+        width: 100%;
+        padding: 0;
+    }
+
+    #feed .header .container > * {
+        display: block;
+        margin: auto;
+        margin: 15px;
+        text-align: center;
+    }
+
+    #feed .header .info {
+        width: 100%;
+        margin: auto;
+    }
+
+    #feed .create-challenge {
+        margin: 0;
+    }
+
+    #feed .create-challenge > div {
+        margin: 15px 5px;
+    }
+
+    #feed .create-challenge h1, #feed .challenge-form input, #feed .challenge-form h2, #feed .challenge-form p  {
+        font-size: 1em;
+    }
+
+    #feed .create-challenge .plus-button {
+        width: 40px;
+        height: 40px;
+    }
+
+    #feed .challenge-form {
+        margin-left: 25px;
+    }
+
+}
