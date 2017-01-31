@@ -293,7 +293,21 @@
 	cursor: pointer;
 }
 
-@media screen and (max-width: 1200px) {
+#feed .delete-form {
+	padding-top: 25px;
+}
+
+#feed .button.delete, #feed .button.delete:hover {
+	background: red;
+	border: 5px solid red;
+	color: white;
+	text-align: center;
+	text-transform: uppercase;
+	max-width: 150px;
+	padding: 10px 15px;
+}
+
+@media screen and (max-width: 1000px) {
 
 	#feed .header {
 		padding: 25px 0px;

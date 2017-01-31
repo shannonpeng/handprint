@@ -265,7 +265,8 @@ router.get('/profile/:id', function(req, res, next) {
 					res.render('org-profile', {
 						account: req.user,
 						org: account,
-						challenges: challenges
+						challenges: challenges,
+						notSelf: notSelf
 			 		});
 				}
 			}
@@ -332,9 +333,11 @@ router.post('/edit-profile', function(req, res, next) {
 
 /* POST to delete account */
 router.post('/delete-account', function(req, res, next) {
-	lib.deleteAccount(req.user, function() {
+
+	lib.deleteAccount(req.user, function(err, data) {
 		res.redirect('/');
 	});
+
 })
 
 

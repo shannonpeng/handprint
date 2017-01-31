@@ -26,6 +26,12 @@
 		  				<h3 class="org-location">{{ org.location }}</h3>
 			  			<p class="org-description">{{ org.bio }}</p>
 		  			</div>
+		  			{{#if account }}
+			  			{{#if notSelf}}
+			  			{{else}}
+			  				<a href="/edit-profile"><div class="button">manage account</div></a>
+			  		{{/if}}
+			  		{{/if}}
 		  		</div>
 	  		</div>
 

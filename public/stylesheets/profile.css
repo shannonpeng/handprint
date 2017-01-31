@@ -251,7 +251,7 @@
     cursor: pointer;
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1000px) {
 
 	#profile .content, #profile .challenges, #profile .friends, #profile .challenge .challenge-info {
 		width: 100%;

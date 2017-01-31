@@ -46,7 +46,7 @@
 	padding: 10px;
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1000px) {
 
 	#feed .header {
 		padding: 25px 0px;
