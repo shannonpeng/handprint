@@ -119,7 +119,7 @@ var lib = {
 					volunteer.location = volunteers[i].location;
 					volunteer.points = volunteers[i].points;
 					volunteer.level = volunteers[i].level;
-					volunteers.push(volunteer);
+					volunteers_list.push(volunteer);
 				}
 				callback(volunteers_list);
 			}
