@@ -45,16 +45,15 @@ router.get('/challenges-list', function(req, res, next) {
 
 /* GET challenges page */		
 router.get('/challenges', function(req, res, next) {		
-	Challenge.find({}, function(err, challenges) {		
+	lib.getChallenges( function(challenges) {		
 		if (err) {		
 			console.log(err);		
 		}		
-		if (challenges) {		
-			console.log(challenges);		
+		if (challenges) {			
 			res.render('challenges', {challenges: challenges});		
 		}		
 	})		
-})		
+})				
 
 /* GET dashboard. */
 router.get('/dashboard', function(req, res, next) {
