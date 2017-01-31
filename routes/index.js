@@ -264,6 +264,9 @@ router.get('/profile/:id', function(req, res, next) {
 				
 		};
 
+		var challenges = [];
+		var friends = [];
+
 		if (err) {
 			console.log(err);
 		}
@@ -271,9 +274,6 @@ router.get('/profile/:id', function(req, res, next) {
 		if (account == null) {
 			res.render('error', { message: 'Not Found'});
 		}
-
-		var challenges = [];
-		var friends = [];
 
 		else { // account is defined
 
@@ -320,7 +320,9 @@ router.get('/profile/:id', function(req, res, next) {
 										});
 									}
 
-									else { // yes challenges, no friends
+								}
+
+								else { // yes challenges, no friends
 
 										r();
 											
@@ -328,16 +330,15 @@ router.get('/profile/:id', function(req, res, next) {
 
 								}
 
-								}
-
 							}
 							
-						}
+						});
 
-					});
 				}
 
-				else { // no challenges
+			}
+
+			else { // no challenges
 
 					if (account.friends.length > 0) { // if there are friends to look for
 
@@ -364,16 +365,16 @@ router.get('/profile/:id', function(req, res, next) {
 							});
 						}
 
-						else { // no challenges, no friends
+					}
+
+					else { // no challenges, no friends
 
 							r();
 								
 						}
 
-					}
 
 				}
-			}
 			
 		}
 		
