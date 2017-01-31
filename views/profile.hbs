@@ -26,8 +26,12 @@
 		  				<h1 class="heavy">{{ user.name }}</h1>
 		  				<h3 class="user-location">{{ user.location }}</h3>
 			  			<p class="user-bio">{{ user.bio }}</p>
+			  			{{#if account }}
 			  			{{#if notSelf}}
 			  				<div class="button {{#if following}}unfollow{{else}}follow{{/if}}" name="{{user._id}}">{{#if following}}unfollow{{else}}follow{{/if}}</div>
+			  			{{else}}
+			  				<a href="/edit-profile"><div class="button">edit profile</div></a>
+			  			{{/if}}
 			  			{{/if}}
 		  			</div>
 		  			<div class="stats">

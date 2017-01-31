@@ -294,28 +294,39 @@ router.get('/profile/:id', function(req, res, next) {
 	});
 });
 
+/* GET edit profile. */
+
+router.get('/edit-profile', function(req, res, next) {
+	if (!(req.user)) {
+		res.redirect('/');
+	}
+	else {
+		res.render('edit-profile', {
+			account: req.user
+		});
+	}
+});
+
+
 /* POST to edit profile. */
 router.post('/edit-profile', function(req, res, next) {
 
-	if (req.body.mode == "user") {
+	var o = req.body.profile;
+	o.username = req.user.username;
 
-		lib.editUser(req.body, function(data) {
-			res.render('profile', {
-				user: user
-  			});
-		});
+	console.log(o);
 
-	}
+	lib.editAccount(o, function(err, data) {
 
-	else if (req.body.mode == "organization") {
+		if (err) {
+			console.log(err);
+		}
 
-		lib.editOrganization(req.body, function(data) {
-			res.render('org-profile', {
-				org: org
-  			});
-		});
-		
-	}
+		else {
+			res.redirect('/');
+		}
+
+	})
  	
 });
 
@@ -326,11 +337,6 @@ router.post('/delete-account', function(req, res, next) {
 	});
 })
 
-/* GET edit profile. */
-
-router.get('/editProfile', function(req, res, next) {
-	res.render('edit-profile');
-});
 
 /* POST to createChallenge. */
 router.post('/createChallenge', function(req, res, next) {

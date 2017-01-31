@@ -242,7 +242,7 @@ var lib = {
 				console.log(err);
 			}
 
-			if (account == null) {
+			if (!account) {
 				callback("ERROR: NO ACCOUNT FOUND WITH USERNAME " + u.username, null);
 			}
 
@@ -251,8 +251,8 @@ var lib = {
 				account.email = u.email;
 				account.bio = u.bio;
 				account.location = u.location;
-				account.profile_pic_url = u.profile_pic_url;
-				account.cover_pic_url = u.cover_pic_url;
+				//account.profile_pic_url = u.profile_pic_url;
+				//account.cover_pic_url = u.cover_pic_url;
 			}
 
 			account.save(function(err, data) {

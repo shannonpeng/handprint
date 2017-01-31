@@ -218,8 +218,9 @@
     text-transform: uppercase;
     max-width: 150px;
     padding: 10px 15px;
-    margin: auto;
     margin-top: 25px;
+    background: rgba(255, 255, 255, 0.4);
+    border: 5px solid white;
 }
 
 #profile .button.follow {
@@ -246,6 +247,7 @@
 }
 
 #profile .button:hover {
+	background: rgba(255, 255, 255, 0.2);
     cursor: pointer;
 }
 
@@ -273,6 +275,10 @@
 
 	#profile .stats .user-level {
 		max-width: 150px;
+	}
+
+	#profile .button {
+		margin: 15px auto;
 	}
 
 }

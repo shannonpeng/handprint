@@ -1,21 +1,22 @@
 $(document).ready(function() {
 
     $("#edit-profile-button").click(function(event) {
+        console.log("clicked");
         var p = {};
-        if ($(".name")) {
-            p.name = $(".name");
+        if ($(".name").val()) {
+            p.name = $(".name").val();
         }
-        if ($(".email")) {
-            p.name = $(".email");
+        if ($(".email").val()) {
+            p.email = $(".email").val();
         }
-        if ($(".location")) {
-            p.name = $(".location");
+        if ($(".location").val()) {
+            p.location = $(".location").val();
         }
-        if ($(".bio")) {
-            p.name = $(".bio");
+        if ($(".bio").val()) {
+            p.bio = $(".bio").val();
         }
         $.ajax({
-            url: '/editProfile',
+            url: '/edit-profile',
             type: 'POST',
             contentType: 'application/json; charset=utf-8',
             datatype: 'json',
@@ -24,22 +25,6 @@ $(document).ready(function() {
             }),
             success: function(data) {
                 window.location.replace('/dashboard');
-            },
-            error: function(err) {
-                console.log(err);
-            }
-        });
-    });
-
-    $('.delete').click(function(event) {
-        $.ajax({
-            url:'/delete',
-            type: 'POST',
-            contentType: 'application/json; charset=utf-8',
-            datatype: 'json'
-
-            success: function(data) {
-                console.log('success');
             },
             error: function(err) {
                 console.log(err);

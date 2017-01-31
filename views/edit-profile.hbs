@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Dashboard | Handprint</title>
+    <title>Edit Profile | Handprint</title>
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <link rel="stylesheet" href="/stylesheets/base.css" />
@@ -9,18 +9,12 @@
     <link rel="shortcut icon" href="/favicon.png" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="/js/main.js"></script>
-    <script src="/js/dashboard.js"></script>
+    <script src="/js/edit-profile.js"></script>
   </head>
   <body>
-    <!--
-    <div id="delete-form">
-      <form name="login" method="post" action="/delete">
-        <p>Username<span class="asterisk">*</span></p>
-        <input type="text" name="username" class="username" placeholder="" required></input>
-        <input type="submit" class="submit">
-      </form>
-    </div>
-    -->
+
+    {{>navbar}}
+    
     <div id="feed">
 
       <div class="container">
@@ -30,8 +24,8 @@
           </div>
 
           <div class="content">
-            <div class="challenge-form closed">
-              <!--<form name="edit-profile" method="post" action="/register">-->
+            <div class="challenge-form">
+
               <div class="form-element" style="display:block">
                 <h2>Name<span class="asterisk">*</span></h2>
                 <!-- class changed from challenge-title -->
@@ -54,21 +48,9 @@
                 <h2>Bio<span class="asterisk">*</span></h2>
                 <!-- class changed from challenge-location -->
                 <input type="text" class="bio"></input>
-              </div>
 
-              <!--
-              <div class="form-element">
-                <h2>Award Points<span class="asterisk">*</span></h2>
-                <input type="number" class="challenge-points" placeholder="e.g. 100" required></input>
-              </div>
+              <div class="button submit" id="edit-profile-button" value="submit"><h2>update</h2></div>
 
-              <div class="form-element">
-                <h2>Category Tags</h2>
-                <input type="text" class="challenge-tags" placeholder="e.g. kids, art, nature"></input>
-              </div>
-              -->
-              <div class="button submit" id="edit-profile-button" value="submit"><h2>post</h2></div>
-              <!--</form>-->
             </div>
           </div>
         </div>

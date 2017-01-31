@@ -32,8 +32,7 @@ $(document).ready(function() {
             url:'/challenges',
             type: 'GET',
             contentType: 'application/json; charset=utf-8',
-            datatype: 'json'
-
+            datatype: 'json',
             success: function(data) {
                 console.log('success');
             },
