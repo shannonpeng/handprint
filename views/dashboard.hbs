@@ -13,7 +13,42 @@
   </head>
   <body>
 
-    {{>navbar}}
+    <!--{{>navbar}}-->
+    <nav> 
+    <!-- Logo -->
+    <div class="logo">
+      <a href="/"><img src="/images/logo-white.png"></a>
+    </div>
+
+    <!-- Search -->
+    <form name="search" method="POST" action="/search">
+      <div class="search">
+        <img src="/images/search-white.png">
+        <input class="input-search" name="searchItem" placeholder="Search for users and organizations">
+      </div>
+    </form>
+
+    {{#if account}}
+    <div class="links">
+      <div><a href="/dashboard">dashboard</a></div>
+      <a href="/profile/{{ account.username}}">
+        <div class="account">
+        <div><h3>{{ account.name }}</h3></div>
+        <div class="profile-picture" style="background-image:url('{{ account.profile_pic_url}}')">
+        </div>
+        <div><a href="/logout">logout</a></div>
+        </div>
+      </a>
+    </div>
+    {{else}}
+    <div class="links" style="padding:15px">
+      <div><a href="/">Home</a></div>
+      <div><a href="/register">Become an Organization</a></div>
+      <div><a href="/register">Sign Up</a></div>
+      <div><a href="/login">Login</a></div>
+    </div>
+    {{/if}}
+    </nav>
 
     <div id="feed">
 
