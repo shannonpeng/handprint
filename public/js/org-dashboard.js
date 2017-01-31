@@ -20,17 +20,27 @@ $(document).ready(function() {
   });
 
   $("#feed .challenge-form .submit").click(function(event) {
+    
+    var current_date = (new Date).getTime();
     var c = {};
+    var start_date = dateToMS($("#feed .challenge-form .challenge-start-date").val());
+    var end_date = dateToMS($("#feed .challenge-form .challenge-end-date").val());
+    if (dates.compare(start_date, current_date) < 0 || dates.compare(start_date, current_date) < 0) {
+      alert('Please choose valid dates.');
+    }
+    else {
+      c.start_date = dateToMS($("#feed .challenge-form .challenge-start-date").val());
+      c.end_date = dateToMS($("#feed .challenge-form .challenge-end-date").val());
+    }
+
     c.title = $("#feed .challenge-form .challenge-title").val();
-    c.start_date = dateToMS($("#feed .challenge-form .challenge-start-date").val());
-    c.end_date = dateToMS($("#feed .challenge-form .challenge-end-date").val());
     c.description = $("#feed .challenge-form .challenge-description").val();
-    c.location = $("#feed .challenge-form .challenge-location").val();
+    c.location_name = $("#feed .challenge-form .challenge-location").val();
     c.points = $("#feed .challenge-form .challenge-points").val();
     c.category_tags = $("#feed .challenge-form .challenge-tags").val().split(", ");
+
     if (!(c.title && c.start_date && c.end_date && c.description && c.location && c.points)) {
       alert('Please fill out all required fields.');
-      console.log(c);
     }
     else {
       $.ajax({

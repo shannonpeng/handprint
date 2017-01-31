@@ -43,6 +43,19 @@ router.get('/challenges-list', function(req, res, next) {
 	})
 });
 
+/* GET challenges page */		
+router.get('/challenges', function(req, res, next) {		
+	Challenge.find({}, function(err, challenges) {		
+		if (err) {		
+			console.log(err);		
+		}		
+		if (challenges) {		
+			console.log(challenges);		
+			res.render('challenges', {challenges: challenges});		
+		}		
+	})		
+})		
+
 /* GET dashboard. */
 router.get('/dashboard', function(req, res, next) {
 
@@ -284,18 +297,39 @@ router.get('/profile/:id', function(req, res, next) {
 /* POST to edit profile. */
 router.post('/edit-profile', function(req, res, next) {
 
-	lib.editAccount(req.body, function(err, data) {
-		if (err) {
-			console.log(err);
-		}
-		else {
-			res.render('profile', {
-				account: req.user,
-				user: user
-			});
-		}
-	});
+	if (req.body.mode == "user") {
 
+		lib.editUser(req.body, function(data) {
+			res.render('profile', {
+				user: user
+  			});
+		});
+
+	}
+
+	else if (req.body.mode == "organization") {
+
+		lib.editOrganization(req.body, function(data) {
+			res.render('org-profile', {
+				org: org
+  			});
+		});
+		
+	}
+ 	
+});
+
+/* POST to delete account */
+router.post('/delete-account', function(req, res, next) {
+	lib.deleteAccount(req.user, function() {
+		res.redirect('/');
+	});
+})
+
+/* GET edit profile. */
+
+router.get('/editProfile', function(req, res, next) {
+	res.render('edit-profile');
 });
 
 /* POST to createChallenge. */
