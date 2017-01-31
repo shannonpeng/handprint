@@ -30,8 +30,8 @@ router.get('/organizations-list', function(req, res, next) {
 });
 
 /* GET users list. */
-router.get('/users-list', function(req, res, next) {
-	lib.getUsers(function(data) {
+router.get('/volunteers-list', function(req, res, next) {
+	lib.getVolunteers(function(data) {
 		res.send(data);
 	})
 });
