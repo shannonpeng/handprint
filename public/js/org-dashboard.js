@@ -38,7 +38,7 @@ $(document).ready(function() {
     
     c.title = $("#feed .challenge-form .challenge-title").val();
     c.description = $("#feed .challenge-form .challenge-description").val();
-    c.location_name = $("#feed .challenge-form .challenge-location").val();
+    c.location = $("#feed .challenge-form .challenge-location").val();
     c.points = $("#feed .challenge-form .challenge-points").val();
     c.category_tags = $("#feed .challenge-form .challenge-tags").val().split(", ");
 
