@@ -154,7 +154,7 @@ router.get('/dashboard', function(req, res, next) {
 			    	Challenge.find( { organization: org._id }, function(err, challenges) {
 
 			    		if (challenges.length == 0) {
-							res.render('dashboard', {
+							res.render('org-dashboard', {
 								account: req.user,
 								org: org,
 								challenges: []
