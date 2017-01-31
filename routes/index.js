@@ -217,6 +217,53 @@ router.get('/profile/:id', function(req, res, next) {
 
 	Account.findOne({ username : req.params.id }, function(err, account) {
 
+		var r = function () {
+			if (req.user) {
+
+					var following = req.user.friends.indexOf(account._id) >= 0;
+					var notSelf = !(account.username == req.user.username);
+					console.log(account.username + " vs " + req.user.username);
+					if (account.mode == "volunteer") {
+						res.render('profile', {
+							account: req.user,
+							user: account,
+							challenges: challenges,
+							friends: friends,
+							following: following,
+							notSelf: notSelf
+				 		});
+					}
+					else if (account.mode == "organization") {
+						res.render('org-profile', {
+							account: req.user,
+							org: account,
+							challenges: challenges,
+							notSelf: notSelf
+				 		});
+					}
+				}
+				else {
+
+					if (account.mode == "volunteer") {
+						res.render('profile', {
+							account: req.user,
+							user: account,
+							challenges: challenges,
+							friends: friends,
+				 		});
+					}
+
+					else if (account.mode == "organization") {
+						res.render('org-profile', {
+							account: req.user,
+							org: account,
+							challenges: challenges
+				 		});
+					}
+				}
+				
+		};
+
 		if (err) {
 			console.log(err);
 		}
@@ -225,11 +272,12 @@ router.get('/profile/:id', function(req, res, next) {
 			res.render('error', { message: 'Not Found'});
 		}
 
-		else {
+		var challenges = [];
+		var friends = [];
 
-			var challenges = [];
+		else { // account is defined
 
-			if (account.challenges.length > 0) {
+			if (account.challenges.length > 0) { // if there are challenges to look for
 
 				for (var i = 0; i < account.challenges.length; i++) {
 
@@ -244,84 +292,86 @@ router.get('/profile/:id', function(req, res, next) {
 							lib.formatChallenge(challenge, function(c) {
 								challenges.push(c);
 							});
+
+							if (challenges.length == account.challenges.length) {
+
+								if (account.friends.length > 0) { // if there are friends to look for
+
+									for (var i = 0; i < account.friends.length; i++) {
+
+										Account.findOne({ _id: account.friends[i] }, function(err, friend) {
+
+											if (err) {
+												console.log(err);
+											}
+
+											else if (friend) {
+
+												var f = lib.exportVolunteer(friend);
+												friends.push(f);
+
+												if (friends.length == account.friends.length) { // yes challenges, yes friends
+
+													r();
+												}
+												
+											}
+
+										});
+									}
+
+									else { // yes challenges, no friends
+
+										r();
+											
+									}
+
+								}
+
+								}
+
+							}
 							
 						}
 
 					});
 				}
-			}
 
-			var friends = [];
+				else { // no challenges
 
-			if (account.friends.length > 0) {
+					if (account.friends.length > 0) { // if there are friends to look for
 
-				for (var i = 0; i < account.friends.length; i++) {
+						for (var i = 0; i < account.friends.length; i++) {
 
+							Account.findOne({ _id: account.friends[i] }, function(err, friend) {
 
-					Account.findOne({ _id: account.friends[i] }, function(err, friend) {
+								if (err) {
+									console.log(err);
+								}
 
-						//console.log(friend);
+								else if (friend) {
 
-						if (err) {
-							console.log(err);
+									var f = lib.exportVolunteer(friend);
+									friends.push(f);
+
+									if (friends.length == account.friends.length) { // no challenges, yes friends
+
+										r();
+									}
+									
+								}
+
+							});
 						}
 
-						else if (friend) {
+						else { // no challenges, no friends
 
-							console.log(friend);
-
-							var f = lib.exportVolunteer(friend);
-
-							friends.push(f);
-							
+							r();
+								
 						}
 
-					});
-				}
+					}
 
-			}
-
-			if (req.user) {
-
-				var following = req.user.friends.indexOf(account._id) >= 0;
-				var notSelf = !(account.username == req.user.username);
-				console.log(account.username + " vs " + req.user.username);
-				if (account.mode == "volunteer") {
-					res.render('profile', {
-						account: req.user,
-						user: account,
-						challenges: challenges,
-						friends: friends,
-						following: following,
-						notSelf: notSelf
-			 		});
-				}
-				else if (account.mode == "organization") {
-					res.render('org-profile', {
-						account: req.user,
-						org: account,
-						challenges: challenges,
-						notSelf: notSelf
-			 		});
-				}
-			}
-			else {
-
-				if (account.mode == "volunteer") {
-					res.render('profile', {
-						account: req.user,
-						user: account,
-						challenges: challenges,
-						friends: friends,
-			 		});
-				}
-
-				else if (account.mode == "organization") {
-					res.render('org-profile', {
-						account: req.user,
-						org: account,
-						challenges: challenges
-			 		});
 				}
 			}
 			
