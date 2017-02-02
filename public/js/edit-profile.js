@@ -39,7 +39,7 @@ $(document).ready(function() {
             contentType: 'application/json; charset=utf-8',
             datatype: 'json',
             success: function(data) {
-                console.log('success');
+                window.location.replace('/');
             },
             error: function(err) {
                 console.log(err);

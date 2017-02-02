@@ -291,13 +291,13 @@ router.get('/profile/:id', function(req, res, next) {
 							console.log(err);
 						}
 
-						else if (challenge) {
+						else {
 
 							lib.formatChallenge(challenge, function(c) {
 								console.log("challenge:");
 								console.log(c);
 								challenges.push(c);
-							
+								console.log(challenges.length + " " + account.challenges.length);
 
 							if (challenges.length == account.challenges.length) {
 

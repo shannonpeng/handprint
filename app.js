@@ -12,8 +12,8 @@ var app = express();
 
 // database setup
 //mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://handprint:ULZUyCY9IJSE2S0NUzjQeYjy33p3705aIDOppv9YWgnitkyZag1kduCWwMD9dHgRbJZUqvnPQhDWNVsLe1TSVg==@handprint.documents.azure.com:10250/?ssl=true');
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://handprints:QxHwkmzOnqsCnzxYUjsoPYt6vtQ67RA5l7nliymYxk6fqWrnj9JbIMPWjQjsat4q8XLPdTfzcRSYmrBZ71QybA==@handprints.documents.azure.com:10250/db?ssl=true');
-//mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/handprint');
+//mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://handprints:QxHwkmzOnqsCnzxYUjsoPYt6vtQ67RA5l7nliymYxk6fqWrnj9JbIMPWjQjsat4q8XLPdTfzcRSYmrBZ71QybA==@handprints.documents.azure.com:10250/db?ssl=true');
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/handprint');
 var connection = mongoose.connection;
 connection.on('error', console.error.bind(console, 'connection error:'));
 connection.on('connected', function() {
@@ -22,11 +22,11 @@ connection.on('connected', function() {
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-var Handlebars = require('handlebars');
+//var Handlebars = require('handlebars');
 var exphbs = require('express-handlebars');
 app.engine('.hbs', exphbs({extname: '.hbs'}));
 app.set('view engine', '.hbs');
-Handlebars.registerPartial('navbar', '{{navbar}}')
+//Handlebars.registerPartial('navbar', '{{navbar}}')
 
 //connect to azure
 /*if (process.env.NODE_ENV == "production") {

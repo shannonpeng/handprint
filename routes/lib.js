@@ -388,6 +388,8 @@ var lib = {
 
 			if (challenge) {
 
+				// TODO: delete challenge from users' completed lists
+
 				challenge.remove(function(err, data) {
 					if (err) {
 						console.log(err);
