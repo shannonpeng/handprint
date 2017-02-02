@@ -410,7 +410,7 @@ router.get('/profile/:id', function(req, res, next) {
 
 router.get('/edit-profile', function(req, res, next) {
 	if (!(req.user)) {
-		res.redirect('/');
+		res.redirect('/dashboard');
 	}
 	else {
 		res.render('edit-profile', {
